@@ -29,6 +29,6 @@ for page_number in range(len(doc)):
                 image_ext = base_image["ext"]
                 image = Image.open(io.BytesIO(image_bytes))
                 # with open(f"{temp_dir}/image_page{page_number+1}_{img_index}.{image_ext}", "wb") as f:
-                text = pytesseract.image_to_string(image, lang='nld')
+                text = pytesseract.image_to_string(image, lang='eng')
                 print(text)
                     # f.write(image_bytes)
