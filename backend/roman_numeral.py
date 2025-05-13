@@ -4,6 +4,7 @@ class RomanNumeral:
         self.__representation = val.lower()
         self.__decimal_val = self.__calculate(self.__representation)
 
+    ##calculate decimal value of a roman numeral string
     def __calculate(self, value):
         if not value:
             return 0
@@ -19,6 +20,7 @@ class RomanNumeral:
         else:
             return current_val + self.__calculate(value[1:])
 
+    ##Convert a single Roman numeral character to its decimal value.
     def __get_decimal_value(self, roman_numeral):
 
         representation_dict = {
