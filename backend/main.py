@@ -2,21 +2,15 @@ import fitz
 from pathlib import Path
 import os
 import shutil
-from PIL import Image
+from PIL import Image, ImageEnhance
 import io
 import pytesseract
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
-# filename = files / "seminarie.pdf"
 filename = files / "DIGI_2007_000118_01.pdf"
-temp_dir = curr_dir/'temp'
 
-if os.path.exists(temp_dir):
-    shutil.rmtree(temp_dir)
-os.mkdir(temp_dir)
-
-doc = fitz.open("backend/files/DIGI_2007_000118_01.pdf")
+doc = fitz.open(filename)
 
 for page_number in range(len(doc)):
     if page_number == 9:
@@ -28,7 +22,20 @@ for page_number in range(len(doc)):
                 image_bytes = base_image["image"]
                 image_ext = base_image["ext"]
                 image = Image.open(io.BytesIO(image_bytes))
-                # with open(f"{temp_dir}/image_page{page_number+1}_{img_index}.{image_ext}", "wb") as f:
-                text = pytesseract.image_to_string(image, lang='eng')
+
+                # changes
+                width, height = image.size
+                image = image.crop((
+                        int(width*0.05),
+                        int(height*0.87),
+                        int(width*0.95),
+                        int(height*1)
+                    ))
+                
+                image = image.convert("L")
+                image = ImageEnhance.Contrast(image).enhance(2)
+
+                text = pytesseract.image_to_string(image, lang='eng', config=r'--psm 6')
                 print(text)
-                    # f.write(image_bytes)
+
+                image.save("cropped_image.png")
