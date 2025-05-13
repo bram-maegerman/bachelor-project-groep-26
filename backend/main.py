@@ -74,11 +74,19 @@ if firstPageWithPageNumber == -1:
         "This could mean that the there is something wrong with the first 3 numerated pages")
 else:
     print("The first page with a page number is " + str(firstPageWithPageNumber + 1))
+    
 
-    errors = set()
+def recursive_check(page_numbers, wanted_number=1, missingNumbers:set=set()):
+    if len(page_numbers) == 0:
+        return missingNumbers
+    if wanted_number not in page_numbers[0]:
+        if wanted_number in missingNumbers:
+            missingNumbers.remove(wanted_number)
+        else:
+            missingNumbers.add(wanted_number)
 
-    for index, page in enumerate(found_page_numbers[firstPageWithPageNumber:]):
-        if not checkForNumber(page, index+1): 
-             errors.add(str(index + 1) + " doesn't have a page number")
+        return recursive_check(page_numbers[1:], wanted_number + 1, missingNumbers)
+    return recursive_check(page_numbers[1:], wanted_number + 1, missingNumbers)
+    
+print(recursive_check(found_page_numbers[firstPageWithPageNumber:]))
 
-    print(errors)
