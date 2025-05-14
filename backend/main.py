@@ -11,8 +11,8 @@ doc = fitz.open(filename)
 found_page_numbers = []
 
 #uncomment to test with previously extracted values
-#doc = None
-#found_page_numbers = [[1, 9000, 8794914, -10, 12, 1], [3, 8], [], [], [], [], [5], [], [], [1], [1, 2], [1, 3], [4], [2, 5], [2, 6], [2, 7, 8], [2, 8], [2, 9], [2, 10], [2, 11], [2, 12], [2, 13, 8], [2, 14], [2, 15, 8], [2, 16], [17], [3, 18], [3, 19], [3, 20], [21], [4, 22], [4, 23], [4, 24], [4, 25], [4, 26], [4, 27], [4, 28], [4, 29], [4, 30], [4, 31], [4, 32], [33], [5, 34], [5, 35], [5, 36], [5, 37], [5, 38, 0], [5, 39], [5, 40], [5, 41], [5, 42], [5, 43], [5, 44], [5, 45], [5, 46], [5, 47], [5, 48], [5, 49], [5, 50], [5, 51], [52], [53], [54], [55], [56], [57], [58, 8, 2, 8], [59], [60], [61], [62], [63], [64], [65], [66], [67, 2, 4], [68], [69, 25], [70], [71], [72], [73], [74], [75], [], [], [], [1], [], [], [82], [2, 5, 2, 6, 6, 6, 1, 2, 4, 4, 4, 8, 5, 2]]
+doc = fitz.open(None)
+found_page_numbers = [[1, 9000, 8794914, -10, 12, 1], [3, 8], [], [], [], [], [5], [], [], [1], [1, 2], [1, 3], [4], [2, 5], [2, 6], [2, 7, 8], [2, 8], [2, 9], [2, 10], [2, 11], [2, 12], [2, 13, 8], [2, 14], [2, 15, 8], [2, 16], [17], [3, 18], [3, 19], [3, 20], [21], [4, 22], [4, 23], [4, 24], [4, 25], [4, 26], [4, 27], [4, 28], [4, 29], [4, 30], [4, 31], [4, 32], [33], [5, 34], [5, 35], [5, 36], [5, 37], [5, 38, 0], [5, 39], [5, 40], [5, 41], [5, 42], [5, 43], [5, 44], [5, 45], [5, 46], [5, 47], [5, 48], [5, 49], [5, 50], [5, 51], [52], [53], [54], [55], [56], [57], [58, 8, 2, 8], [59], [60], [61], [62], [63], [64], [65], [66], [67, 2, 4], [68], [69, 25], [70], [71], [72], [73], [74], [75], [], [], [], [1], [], [], [82], [2, 5, 2, 6, 6, 6, 1, 2, 4, 4, 4, 8, 5, 2]]
 
 
 for page_number in range(len(doc)):
@@ -56,10 +56,7 @@ for page_number in range(len(doc)):
 
 
 def checkForNumber(array, num):
-    for value in array:
-        if value == num:
-            return True
-    return False
+    return num in array
 
 # Finding the first page with page numbers
 firstPageWithPageNumber = -1
@@ -77,6 +74,19 @@ if firstPageWithPageNumber == -1:
         "This could mean that the there is something wrong with the first 3 numerated pages")
 else:
     print("The first page with a page number is " + str(firstPageWithPageNumber + 1))
+    
 
-    # for index, page in enumerate(found_page_numbers):
-    #     if 
+def recursive_check(page_numbers, wanted_number=1, missingNumbers:set=set()):
+    if len(page_numbers) == 0:
+        return missingNumbers
+    if wanted_number not in page_numbers[0]:
+        if wanted_number in missingNumbers:
+            missingNumbers.remove(wanted_number)
+        else:
+            missingNumbers.add(wanted_number)
+
+        return recursive_check(page_numbers[1:], wanted_number + 1, missingNumbers)
+    return recursive_check(page_numbers[1:], wanted_number + 1, missingNumbers)
+    
+print(recursive_check(found_page_numbers[firstPageWithPageNumber:]))
+
