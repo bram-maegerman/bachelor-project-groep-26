@@ -65,6 +65,7 @@ for page_index in range(len(doc)):
         if previous is not None:
             print(f"WARNING: Expected to find {previous+1}")
             previous += 1
+            missing_numbers.add(previous)
         else:
             print(f"WARNING: No page number found on PDF page {pdf_page_number}.")
     else:
@@ -75,17 +76,22 @@ for page_index in range(len(doc)):
                     previous += 1
                 else:
                     print(f"WARNING: Expected to find {previous+1} but found {parsed_numbers} instead")
-                    for i in range(2, 12):
-                        print(f'Checking if {previous+i} in {parsed_numbers}')
-                        if previous + i in parsed_numbers:
-                            previous += i
-                            print(f"SUCCESS: Found expected page number on page {previous}")
-                            break
-                        else:
-                            missing_numbers.add(previous+i)
+                    # previous+1 toevoegen aan missing numbers?
+
+                    if all(x > len(doc) - first_index_with_page_number or x < previous for x in parsed_numbers):
+                        print(f"INFO: Found numbers outside of range: {parsed_numbers}")
                     else:
-                        print(f"WARNING: Too many missing pages. Last found page number was {previous}")
-                        quit()
+                        for i in range(2, 12):
+                            print(f'Checking if {previous+i} in {parsed_numbers}')
+                            if previous + i in parsed_numbers:
+                                previous += i
+                                print(f"SUCCESS: Found expected page number on page {previous}")
+                                break
+                            else:
+                                missing_numbers.add(previous+i)
+                        else:
+                            print(f"WARNING: Too many missing pages. Last found page number was {previous}")
+                            quit()
 
 
             else:
