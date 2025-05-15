@@ -62,13 +62,20 @@ def find_first_index(found_numbers, current_index):
 previous = None
 first_index = -1
 missing_numbers = set()
+log_messages = []
+
 for page_index in range(len(doc)):
+
     pdf_page_number = page_index + 1
     print(f"\nProcessing PDF page: {pdf_page_number}")
     page = doc[page_index]
-    xref = page.get_images(full=True)[0][0]
+    xref = page.get_images()[0][0]
     base_image = doc.extract_image(xref)
+    
+    #   Reads bytes out of image
     image_bytes = base_image["image"]
+
+    #   
     image = Image.open(io.BytesIO(image_bytes))
 
     header = extract_numbers(image, 0, 0.12)
@@ -87,10 +94,12 @@ for page_index in range(len(doc)):
             previous += 1
             missing_numbers.add(previous)
             print(f"{colored('WARNING', 'red')}: Expected to find {previous} but found nothing.")
+            log_messages.append(f"WARNING: Expected to find {previous} but found nothing.\n")
 
         #   If pagination hasn't started
         else:
             print(f"{colored('WARNING', 'red')}: No page number found on PDF page {pdf_page_number}.")
+            log_messages.append(f"WARNING: No page number found on PDF page {pdf_page_number}.\n")
 
     #   If numbers have been found on current page
     else:
@@ -102,16 +111,19 @@ for page_index in range(len(doc)):
                 if previous+1 in parsed_numbers:
                     previous += 1
                     print(f"{colored('SUCCESS', 'green')}: Found expected page number {previous}")
+                    log_messages.append(f"SUCCESS: Found expected page number {previous}.\n")
 
                 #   Expected page number is not found on current page
                 else:
                     expected_num = previous + 1
                     print(f"{colored('WARNING', 'red')}: Expected to find {expected_num} but found {parsed_numbers} instead.")
+                    log_messages.append(f"WARNING: Expected to find {expected_num} but found {parsed_numbers} instead.\n")
                     missing_numbers.add(expected_num)
 
                     # Check if numbers could be possible page numbers
                     if all(x > len(doc) - first_index or x < previous for x in parsed_numbers):
                         print(f"{colored('INFO', 'yellow')}: Found numbers are outside of range: {parsed_numbers}.")
+                        log_messages.append(f"INFO: Found numbers are outside of range: {parsed_numbers}.\n")
                     else:
 
                         #   Check if found page numbers are between previous and previous+10
@@ -127,12 +139,14 @@ for page_index in range(len(doc)):
                             #   Add all numbers between previous+1 and the smallest found number to missing_numbers
                             missing_numbers.update(x for x in range(previous + 1, first_found))
                             previous = first_found
-                            print(f"{colored('SUCCESS', 'green')}: Found expected page number on page {previous}")
+                            print(f"{colored('SUCCESS', 'green')}: Found expected page number on page {previous}.")
+                            log_messages.append(f"SUCCESS: Found expected page number on page {previous}.\n")
 
                         #   If there is no intersection between the sets of numbers, then too many pages are missing
                         #   and we believe there is no use in continuing
                         else:
-                            print(f"{colored('WARNING', 'red')}: Too many missing pages. Last found page number was {previous}")
+                            print(f"{colored('WARNING', 'red')}: Too many missing pages. Last found page number was {previous}.")
+                            log_messages.append(f"WARNING: Too many missing pages. Last found page number was {previous}.\n")
                             quit()
 
             #   If starting index (for page numbers) hasn't been found 
@@ -143,9 +157,17 @@ for page_index in range(len(doc)):
 
                 #   If three consecutive page numbers are found, that means pagination has started
                 if first_index != -1:
-                    print(f"{colored('INFO', 'yellow')}: The first page with a page number is {first_index + 1}")
+                    print(f"{colored('INFO', 'yellow')}: The first page with a page number is {first_index + 1}.")
+                    log_messages.append(f"INFO: The first page with a page number is {first_index + 1}.\n")
                     previous = actual_page_number
                 else:
                     print(f"{colored('WARNING', 'red')}: No page number found on PDF page {pdf_page_number}.")
+                    log_messages.append(f"WARNING: No page number found on PDF page {pdf_page_number}.\n")
 
 print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {missing_numbers}")
+log_messages.append(f"Missing pages; {missing_numbers}")
+
+with open (f"{filename}_LOG.txt", "w") as file:
+    # for message in log_messages:
+    #     file.write(f"{message}\n")
+    file.writelines(log_messages)
