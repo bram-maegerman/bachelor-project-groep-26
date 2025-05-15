@@ -76,7 +76,7 @@ for page_index in range(len(doc)):
                     previous += 1
                 else:
                     print(f"WARNING: Expected to find {previous+1} but found {parsed_numbers} instead")
-                    # previous+1 toevoegen aan missing numbers?
+                    missing_numbers.add(previous+1)
 
                     if all(x > len(doc) - first_index_with_page_number or x < previous for x in parsed_numbers):
                         print(f"INFO: Found numbers outside of range: {parsed_numbers}")
@@ -102,7 +102,7 @@ for page_index in range(len(doc)):
                 else:
                     print(f"WARNING: No page number found on PDF page {pdf_page_number}.")
 
-print(f"Missing pages: {missing_numbers}")
+print(f"\nMissing pages: {missing_numbers}")
 
 
 
