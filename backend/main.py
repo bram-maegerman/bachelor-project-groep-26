@@ -5,7 +5,7 @@ from termcolor import colored
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
-filename = files / "DIGI_2007_000118_01_DELETED_PAGE.pdf"
+filename = files / "DIGI_2007_000429_01.pdf"
 
 doc = fitz.open(filename)
 
@@ -31,7 +31,7 @@ def extract_numbers(full_image, upper, lower):
     cropped = ImageEnhance.Contrast(cropped).enhance(2)
 
     content = pytesseract.image_to_string(cropped, lang='eng', config=r'--psm 6')
-    return re.findall(r'[-+]?\d+(?:\.\d+)?', content)
+    return re.findall(r'[-+]?\d+', content)
 
 def find_first_index(found_numbers, current_index):
     """
@@ -147,7 +147,7 @@ for page_index in range(len(doc)):
                         else:
                             print(f"{colored('WARNING', 'red')}: Too many missing pages. Last found page number was {previous}.")
                             log_messages.append(f"WARNING: Too many missing pages. Last found page number was {previous}.\n")
-                            quit()
+                            
 
             #   If starting index (for page numbers) hasn't been found 
             else:
