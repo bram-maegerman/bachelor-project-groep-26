@@ -5,7 +5,6 @@ import re
 from pathlib import Path
 from PIL import Image, ImageEnhance
 from multiprocessing import Pool, Manager, cpu_count
-import time
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
