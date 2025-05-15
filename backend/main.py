@@ -1,7 +1,7 @@
 import fitz, io, pytesseract, re
 from pathlib import Path
 from PIL import Image, ImageEnhance
-import numpy as np
+from termcolor import colored
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
@@ -26,23 +26,20 @@ def extract_numbers(full_image, upper, lower):
     content = pytesseract.image_to_string(cropped, lang='eng', config=r'--psm 6')
     return re.findall(r'[-+]?\d+(?:\.\d+)?', content)
 
-def find_first_page_with_page_number_previous(found_numbers, current_index):
+def find_first_index(found_numbers, current_index):
     for num in found_numbers[current_index]:
         if num - 1 in found_numbers[current_index - 1] and num-2 in found_numbers[current_index - 2]:
             return (current_index - 2, num)
     return (-1, None)
+    
 
-#uncomment to test with previously extracted values
-# doc = fitz.open(None)
-# found_numbers = [[1, 9000, 8794914, -10, 12, 1], [3, 8], [], [], [], [], [5], [], [], [1], [1, 2], [1, 3], [4], [2, 5], [2, 6], [2, 7, 8], [2, 8], [2, 9], [2, 10], [2, 11], [2, 12], [2, 13, 8], [2, 14], [2, 15, 8], [2, 16], [17], [3, 18], [3, 19], [3, 20], [21], [4, 22], [4, 23], [4, 24], [4, 25], [4, 26], [4, 27], [4, 28], [4, 29], [4, 30], [4, 31], [4, 32], [33], [5, 34], [5, 35], [5, 36], [5, 37], [5, 38, 0], [5, 39], [5, 40], [5, 41], [5, 42], [5, 43], [5, 44], [5, 45], [5, 46], [5, 47], [5, 48], [5, 49], [5, 50], [5, 51], [52], [53], [54], [55], [56], [57], [58, 8, 2, 8], [59], [60], [61], [62], [63], [64], [65], [66], [67, 2, 4], [68], [69, 25], [70], [71], [72], [73], [74], [75], [], [], [], [1], [], [], [82], [2, 5, 2, 6, 6, 6, 1, 2, 4, 4, 4, 8, 5, 2]]
-# found_numbers = [{1}, {2}, {3}, {5}, {6}]
 # Goes over all pages of the scanned pdf document
 # Converts each page to an image
 # Extract the header and footer from this image
 # Scan these sections for numbers
 # Adds those numbers to the found_numbers list
 previous = None
-first_index_with_page_number = -1
+first_index = -1
 missing_numbers = set()
 for page_index in range(len(doc)):
     pdf_page_number = page_index + 1
@@ -61,25 +58,32 @@ for page_index in range(len(doc)):
     parsed_numbers.update(int(num) for num in footer)
     found_numbers.append(parsed_numbers)
 
+    #   If no numbers found on page
     if len(parsed_numbers) == 0:
+
+        #   If pagination has started
         if previous is not None:
-            print(f"WARNING: Expected to find {previous+1}")
             previous += 1
             missing_numbers.add(previous)
+            print(f"{colored('WARNING', 'red')}: Expected to find {previous} but found nothing.")
+
+        #   If pagination hasn't started
         else:
-            print(f"WARNING: No page number found on PDF page {pdf_page_number}.")
+            print(f"{colored('WARNING', 'red')}: No page number found on PDF page {pdf_page_number}.")
     else:
+        
+        #
         if page_index >= 2:
             if previous is not None:
                 if previous+1 in parsed_numbers:
-                    print(f"SUCCESS: Found expected page number {previous+1}")
+                    print(f"{colored('SUCCESS', 'green')}: Found expected page number {previous+1}")
                     previous += 1
                 else:
-                    print(f"WARNING: Expected to find {previous+1} but found {parsed_numbers} instead")
+                    print(f"{colored('WARNING', 'red')}: Expected to find {previous+1} but found {parsed_numbers} instead")
                     missing_numbers.add(previous+1)
 
-                    if all(x > len(doc) - first_index_with_page_number or x < previous for x in parsed_numbers):
-                        print(f"INFO: Found numbers outside of range: {parsed_numbers}")
+                    if all(x > len(doc) - first_index or x < previous for x in parsed_numbers):
+                        print(f"{colored('INFO', 'yellow')}: Found numbers outside of range: {parsed_numbers}")
                     else:
                         cap_range = set(previous + i for i in range(2,12))
                         common = cap_range & parsed_numbers
@@ -88,16 +92,16 @@ for page_index in range(len(doc)):
                             first_found = min(common)
                             missing_numbers.update(x for x in range(previous + 1, first_found))
                             previous = first_found
-                            print(f"SUCCESS: Found expected page number on page {previous}")
+                            print(f"{colored('SUCCESS', 'green')}: Found expected page number on page {previous}")
                         else:
-                            print(f"WARNING: Too many missing pages. Last found page number was {previous}")
+                            print(f"{colored('WARNING', 'red')}: Too many missing pages. Last found page number was {previous}")
                             quit()
             else:
-                first_index_with_page_number, actual_page_number = find_first_page_with_page_number_previous(found_numbers, page_index)
-                if first_index_with_page_number != -1:
-                    print(f"INFO: The first page with a page number is {first_index_with_page_number + 1}")
+                first_index, actual_page_number = find_first_index(found_numbers, page_index)
+                if first_index != -1:
+                    print(f"{colored('INFO', 'yellow')}: The first page with a page number is {first_index + 1}")
                     previous = actual_page_number
                 else:
-                    print(f"WARNING: No page number found on PDF page {pdf_page_number}.")
+                    print(f"{colored('WARNING', 'red')}: No page number found on PDF page {pdf_page_number}.")
 
-print(f"\nMissing pages: {missing_numbers}")
+print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {missing_numbers}")
