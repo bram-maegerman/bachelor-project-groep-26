@@ -81,19 +81,17 @@ for page_index in range(len(doc)):
                     if all(x > len(doc) - first_index_with_page_number or x < previous for x in parsed_numbers):
                         print(f"INFO: Found numbers outside of range: {parsed_numbers}")
                     else:
-                        for i in range(2, 12):
-                            print(f'Checking if {previous+i} in {parsed_numbers}')
-                            if previous + i in parsed_numbers:
-                                previous += i
-                                print(f"SUCCESS: Found expected page number on page {previous}")
-                                break
-                            else:
-                                missing_numbers.add(previous+i)
+                        cap_range = set(previous + i for i in range(2,12))
+                        common = cap_range & parsed_numbers
+
+                        if len(common) > 0:
+                            first_found = min(common)
+                            missing_numbers.update(x for x in range(previous + 1, first_found))
+                            previous = first_found
+                            print(f"SUCCESS: Found expected page number on page {previous}")
                         else:
                             print(f"WARNING: Too many missing pages. Last found page number was {previous}")
                             quit()
-
-
             else:
                 first_index_with_page_number, actual_page_number = find_first_page_with_page_number_previous(found_numbers, page_index)
                 if first_index_with_page_number != -1:
