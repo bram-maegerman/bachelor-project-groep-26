@@ -6,7 +6,7 @@ from typing import Literal
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
-filename = files / "DIGI_2007_000429_01.pdf"
+filename = files / "DIGI_2007_000118_01.pdf"
 
 doc = fitz.open(filename)
 
