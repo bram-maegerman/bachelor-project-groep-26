@@ -3,6 +3,7 @@ from pathlib import Path
 from PIL import Image, ImageEnhance
 from termcolor import colored
 from typing import Literal
+from roman_numeral import RomanNumeral
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
@@ -33,6 +34,75 @@ def extract_numbers(full_image, *, upper, lower):
 
     content = pytesseract.image_to_string(cropped, lang='eng', config=r'--psm 6')
     return re.findall(r'[-+]?\d+', content)
+
+def extract_roman_numbers(full_image, *, upper, lower):
+    from PIL import ImageEnhance
+    import pytesseract
+    import re
+
+    if full_image.mode != "RGB":
+        full_image = full_image.convert("RGB")
+
+    width, height = full_image.size
+    cropped = full_image.crop((
+        int(width * 0.05),
+        int(height * upper),
+        int(width * 0.95),
+        int(height * lower)
+    ))
+
+    # Enhance contrast more aggressively
+    cropped = ImageEnhance.Contrast(cropped).enhance(3)
+
+    # Try multiple PSM modes to improve recognition
+    custom_configs = [
+        r'--psm 7 --oem 3',  # Treat as single line
+        r'--psm 6 --oem 3',  # Treat as block of text
+        r'--psm 11 --oem 3'  # Sparse text with OSD
+    ]
+
+    for config in custom_configs:
+        content = pytesseract.image_to_string(cropped, lang='eng', config=config).strip()
+        print(f"OCR Raw with {config}: {repr(content)}")
+
+        if content:
+            # Normalize the string (remove spaces, convert to uppercase)
+            normalized = re.sub(r'\s+', '', content.upper())
+
+            # Non-capturing regex for Roman numerals (no parentheses that create capture groups)
+            roman_pattern = r'\b(?=[MDCLXVI])M*(?:C[MD]|D?C{0,3})(?:X[CL]|L?X{0,3})(?:I[XV]|V?I{0,3})\b'
+            matches = re.findall(roman_pattern, normalized)
+
+            # Simpler pattern as backup
+            if not matches:
+                simple_pattern = r'[IVXLCDM]+'
+                matches = re.findall(simple_pattern, normalized)
+
+            print(f"Regex Matches: {matches}")
+
+            if matches:
+                try:
+                    # Now matches[0] will be a string, not a tuple
+                    return RomanNumeral(matches[0])
+                except (ValueError, IndexError):
+                    print(f"Invalid Roman numeral format: {matches[0]}")
+                    continue
+
+    # Try one more search specifically for lowercase roman numerals
+    content = pytesseract.image_to_string(cropped, lang='eng', config=r'--psm 7').strip().lower()
+    simple_lower_pattern = r'\b(?:iv|ix|i{1,3}|vi{0,3}|xi{0,3}|x{1,3})\b'
+    lower_matches = re.findall(simple_lower_pattern, content)
+
+    if lower_matches:
+        try:
+            print(f"Found lowercase roman numeral: {lower_matches[0]}")
+            return RomanNumeral(lower_matches[0].upper())
+        except ValueError:
+            pass
+
+    print("No Roman numerals found after all attempts")
+    return None
+
 
 def find_first_index(found_numbers, current_index):
     """
@@ -89,6 +159,7 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
 previous = None
 first_index = -1
 missing_numbers = set()
+contains_roman_numerals = False
 
 for page_index in range(len(doc)):
 
@@ -106,7 +177,9 @@ for page_index in range(len(doc)):
 
     #   Extract the numbers from the header and footer (defined by upper and lower)
     header = extract_numbers(image, upper=0, lower=0.12)
+    header_roman = extract_roman_numbers(image, upper=0, lower=0.12)
     footer = extract_numbers(image, upper=0.87, lower=1)
+    footer_roman = extract_roman_numbers(image, upper=0.87, lower=1)
 
 
     parsed_numbers = set()
