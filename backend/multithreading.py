@@ -3,6 +3,7 @@ from pathlib import Path
 from PIL import Image, ImageEnhance
 from multiprocessing import Pool, Manager, cpu_count
 from termcolor import colored
+from typing import Literal
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
@@ -10,7 +11,7 @@ filename = files / "DIGI_2007_000118_01_DELETED_PAGE.pdf"
 log_messages = []
 missing_numbers = set()
 
-def extract_numbers(full_image, upper, lower):
+def extract_numbers(full_image, *, upper, lower):
     
     """
     Given an image, we crop only part of it, \n
@@ -31,26 +32,6 @@ def extract_numbers(full_image, upper, lower):
     content = pytesseract.image_to_string(cropped, lang='eng', config=r'--psm 6')
     return re.findall(r'[-+]?\d+(?:\.\d+)?', content)
 
-def process_page(args):
-    page_index, pdf_path, progress_queue = args
-    doc = fitz.open(pdf_path)
-    page = doc[page_index]
-    xref = page.get_images(full=True)[0][0]
-    base_image = doc.extract_image(xref)
-
-    #   Reads bytes out of image
-    image_bytes = base_image["image"]
-    image = Image.open(io.BytesIO(image_bytes))
-
-    header = extract_numbers(image, 0, 0.12)
-    footer = extract_numbers(image, 0.87, 1)
-
-    parsed_numbers = set()
-    parsed_numbers.update(int(num) for num in header)
-    parsed_numbers.update(int(num) for num in footer)
-    progress_queue.put(1)
-    return parsed_numbers
-
 def find_first_index(found_numbers, current_index):
     """
         Given a list of found numbers for each page, \n
@@ -70,6 +51,51 @@ def find_first_index(found_numbers, current_index):
 
     #   Returns -1 if the index of the first numbered page is not found
     return (-1, None)
+
+def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], statement=None):
+    """
+    Given a statement and a statement_type, apply a custom style to it.
+    Allowed types: INFO, WARNING, SUCCESS
+    """
+    #  Safety checks
+    if statement_type not in {"INFO", "WARNING", "SUCCESS"}:
+        raise TypeError(f'Expected statement_type to be one of ["INFO", "WARNING", "SUCCESS"], got {statement_type}')
+
+    if not statement:
+        raise ValueError("statement cannot be empty")
+
+    if statement_type == "INFO":
+        print(f"{colored('INFO', 'yellow')}:    {statement}")
+        log_messages.append(f"[INFO]:    {statement}\n")
+
+    elif statement_type == "WARNING":
+        print(f"{colored('WARNING', 'red')}: {statement}")
+        log_messages.append(f"[WARNING]: {statement}\n")
+
+    elif statement_type == "SUCCESS":
+        print(f"{colored('SUCCESS', 'green')}: {statement}")
+        log_messages.append(f"[SUCCESS]: {statement}\n")
+
+def process_page(args):
+    page_index, pdf_path, progress_queue = args
+    doc = fitz.open(pdf_path)
+    page = doc[page_index]
+    xref = page.get_images(full=True)[0][0]
+    base_image = doc.extract_image(xref)
+
+    #   Reads bytes out of image
+    image_bytes = base_image["image"]
+    image = Image.open(io.BytesIO(image_bytes))
+
+    header = extract_numbers(image, upper=0, lower=0.12)
+    footer = extract_numbers(image, upper=0.87, lower=1)
+
+    parsed_numbers = set()
+    parsed_numbers.update(int(num) for num in header)
+    parsed_numbers.update(int(num) for num in footer)
+    progress_queue.put(1)
+    return parsed_numbers
+
 
 # Goes over all pages of the scanned pdf document
 # Converts each page to an image
@@ -107,13 +133,11 @@ def main():
                 if previous is not None:
                     previous += 1
                     missing_numbers.add(previous)
-                    print(f"{colored('WARNING', 'red')}: Expected to find {previous} but found nothing.")
-                    log_messages.append(f"WARNING: Expected to find {previous} but found nothing.\n")
+                    custom_print(statement_type="WARNING", statement=f"Expected to find {previous} but found nothing")
 
                 #   If pagination hasn't started
                 else:
-                    print(f"{colored('WARNING', 'red')}: No page number found on PDF page {pdf_page_number}.")
-                    log_messages.append(f"WARNING: No page number found on PDF page {pdf_page_number}.\n")
+                    custom_print(statement_type="WARNING", statement=f"No page number found on PDF page {pdf_page_number}")
 
             #   If numbers have been found on current page
             else:
@@ -124,20 +148,17 @@ def main():
                         #   i.e expected page number is previous page number+1
                         if previous+1 in parsed_numbers:
                             previous += 1
-                            print(f"{colored('SUCCESS', 'green')}: Found expected page number {previous}")
-                            log_messages.append(f"SUCCESS: Found expected page number {previous}.\n")
+                            custom_print(statement_type="SUCCESS", statement=f"Found expected page number {previous}")
 
                         #   Expected page number is not found on current page
                         else:
                             expected_num = previous + 1
-                            print(f"{colored('WARNING', 'red')}: Expected to find {expected_num} but found {parsed_numbers} instead.")
-                            log_messages.append(f"WARNING: Expected to find {expected_num} but found {parsed_numbers} instead.\n")
+                            custom_print(statement_type="WARNING", statement=f"Expected to find {expected_num} but found {parsed_numbers} instead.")
                             missing_numbers.add(expected_num)
 
                             # Check if numbers could be possible page numbers
                             if all(x > len(doc) - first_index or x < previous for x in parsed_numbers):
-                                print(f"{colored('INFO', 'yellow')}: Found numbers are outside of range: {parsed_numbers}.")
-                                log_messages.append(f"INFO: Found numbers are outside of range: {parsed_numbers}.\n")
+                                custom_print(statement_type="INFO", statement=f"Found numbers are outside of range: {parsed_numbers}.")
                             else:
 
                                 #   Check if found page numbers are between previous and previous+10
@@ -153,14 +174,12 @@ def main():
                                     #   Add all numbers between previous+1 and the smallest found number to missing_numbers
                                     missing_numbers.update(x for x in range(previous + 1, first_found))
                                     previous = first_found
-                                    print(f"{colored('SUCCESS', 'green')}: Found expected page number on page {previous}.")
-                                    log_messages.append(f"SUCCESS: Found expected page number on page {previous}.\n")
+                                    custom_print(statement_type="SUCCESS", statement=f"Found expected page number on page {previous}.")
 
                                 #   If there is no intersection between the sets of numbers, then too many pages are missing
                                 #   and we believe there is no use in continuing
                                 else:
-                                    print(f"{colored('WARNING', 'red')}: Too many missing pages. Last found page number was {previous}.")
-                                    log_messages.append(f"WARNING: Too many missing pages. Last found page number was {previous}.\n")
+                                    custom_print(statement_type="WARNING", statement=f"Too many pages are missing. Last found page number was {previous}.")
                                     quit()
 
                     #   If starting index (for page numbers) hasn't been found 
@@ -171,19 +190,26 @@ def main():
 
                         #   If three consecutive page numbers are found, that means pagination has started
                         if first_index != -1:
-                            print(f"{colored('INFO', 'yellow')}: The first page with a page number is {first_index + 1}.")
-                            log_messages.append(f"INFO: The first page with a page number is {first_index + 1}.\n")
+                            next_index = first_index + 1
+                            custom_print(statement_type="INFO", statement=f"The first page with a page number is {next_index}.")
+                            custom_print(statement_type="SUCCESS", statement=f"Found first three pages in order ({actual_page_number-2}, {actual_page_number-1}, {actual_page_number}).")
                             previous = actual_page_number
                         else:
-                            print(f"{colored('WARNING', 'red')}: No page number found on PDF page {pdf_page_number}.")
-                            log_messages.append(f"WARNING: No page number found on PDF page {pdf_page_number}.\n")
+                            custom_print(statement_type="WARNING", statement=f"No page number found on PDF page {pdf_page_number}.")
+                else:
+                    custom_print(statement_type="WARNING", statement="No page number found on PDF page 1.")
+    
+    if len(missing_numbers) > 0:
+        print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored(', '.join(str(x) for x in missing_numbers), 'red', attrs=['bold'])}")
+    else:
+        print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored('None', 'green', attrs=['bold'])}")
 
-    print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {missing_numbers}")
-    log_messages.append(f"Missing pages; {missing_numbers}")
+    # Show some stats
+    print(f"\n{colored('Total pages in document','blue', attrs=['bold'])}: {len(doc)}")
+    print(f"{colored('Total pages with numbers','blue', attrs=['bold'])}: {len(found_numbers) - len(missing_numbers)}")
+    print(f"{colored('Total pages with missing numbers','blue', attrs=['bold'])}: {len(missing_numbers)}\n")
 
-    with open (f"{filename}_LOG.txt", "w") as file:
-        # for message in log_messages:
-        #     file.write(f"{message}\n")
+    with open(f"{filename}_LOG.txt", "w") as file:
         file.writelines(log_messages)
 
 if __name__ == "__main__":
