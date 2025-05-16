@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Live Output</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    button { padding: 0.5rem 1rem; margin-bottom: 1rem; }
+    pre { background: #eee; padding: 1rem; white-space: pre-wrap; height: 300px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <h1>Live Python Output</h1>
+  <button onclick="run()">Run Script</button>
+  <pre id="output">[Output will appear here]</pre>
+
+  <script>
+    function run() {
+      document.getElementById("output").textContent = "";
+      pywebview.api.run_script_live();
+    }
+
+    function appendOutput(line) {
+      const pre = document.getElementById("output");
+      pre.textContent += line + "\n";
+      pre.scrollTop = pre.scrollHeight;
+    }
+  </script>
+</body>
+</html>
