@@ -48,7 +48,7 @@ class RomanNumeral:
             return self.__decimal_val < other
         else:
             return NotImplemented
-        
+
     def __le__(self, other):
         if isinstance(other, RomanNumeral):
             return self.__decimal_val <= other.__decimal_val
@@ -56,7 +56,7 @@ class RomanNumeral:
             return self.__decimal_val <= other
         else:
             return NotImplemented
-        
+
     def  __gt__(self, other):
         if isinstance(other, RomanNumeral):
             return self.__decimal_val > other.__decimal_val
@@ -64,7 +64,7 @@ class RomanNumeral:
             return self.__decimal_val > other
         else:
             return NotImplemented
-        
+
     def  __ge__(self, other):
         if isinstance(other, RomanNumeral):
             return self.__decimal_val >= other.__decimal_val
@@ -72,11 +72,14 @@ class RomanNumeral:
             return self.__decimal_val >= other
         else:
             return NotImplemented
-    
+
     @property
     def roman_representation(self):
         return self.__representation.upper()
-    
+
     @property
     def decimal_value(self):
         return self.__decimal_val
+
+    def __repr__(self):
+        return self.roman_representation
