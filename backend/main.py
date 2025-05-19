@@ -6,12 +6,14 @@ from typing import Literal
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
-filename = files / "DIGI_2007_000118_01.pdf"
+filename = files / "DIGI_2007_000121_01.pdf"
 
 doc = fitz.open(filename)
 
 #   All found numbers from header and footer scan
 found_numbers = []
+avg_height = 3520
+avg_width = 2375
 
 def extract_numbers(full_image, *, upper, lower):
 
@@ -22,6 +24,7 @@ def extract_numbers(full_image, *, upper, lower):
     """
 
     width, height = full_image.size
+
     cropped = full_image.crop((
             int(width*0.05),
             int(height*upper),
@@ -91,7 +94,7 @@ first_index = -1
 missing_numbers = set()
 
 for page_index in range(len(doc)):
-
+   
     pdf_page_number = page_index + 1
     print(f"\nProcessing PDF page: {pdf_page_number}")
     page = doc[page_index]
@@ -103,6 +106,10 @@ for page_index in range(len(doc)):
 
     #   Creates an image from those bytes
     image = Image.open(io.BytesIO(image_bytes))
+    width, height = image.size
+
+    if width > avg_width*1.2 or height > avg_height*1.2:
+        custom_print(statement_type="WARNING", statement=f"Found a probable double print on page {previous + 1}")
 
     #   Extract the numbers from the header and footer (defined by upper and lower)
     header = extract_numbers(image, upper=0, lower=0.12)
@@ -193,7 +200,7 @@ for page_index in range(len(doc)):
             custom_print(statement_type="WARNING", statement="No page number found on PDF page 1.")
 
 if len(missing_numbers) > 0:
-    print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored(', '.join(str(x) for x in missing_numbers), 'red', attrs=['bold'])}")
+    print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored(', '.join(str(x) for x in sorted(missing_numbers)), 'red', attrs=['bold'])}")
 else:
     print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored('None', 'green', attrs=['bold'])}")
 
