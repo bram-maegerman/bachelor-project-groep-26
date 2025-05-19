@@ -67,10 +67,10 @@ def extract_roman_numbers(full_image, *, upper, lower):
 
         if content:
             # Normalize the string (remove spaces, convert to uppercase)
-            normalized = re.sub(r'\s+', '', content.upper())
+            normalized = content.upper()
 
             # Non-capturing regex for Roman numerals (no parentheses that create capture groups)
-            roman_pattern = r'\b(?=[MDCLXVI])M*(?:C[MD]|D?C{0,3})(?:X[CL]|L?X{0,3})(?:I[XV]|V?I{0,3})\b'
+            roman_pattern = r'(?=[MDCLXVI])M*(?:C[MD]|D?C{0,3})(?:X[CL]|L?X{0,3})(?:I[XV]|V?I{0,3})'
             matches = re.findall(roman_pattern, normalized)
 
             # Simpler pattern as backup
@@ -79,11 +79,14 @@ def extract_roman_numbers(full_image, *, upper, lower):
                 matches = re.findall(simple_pattern, normalized)
 
             print(f"Regex Matches: {matches}")
-
+            decimal_values = []
             if matches:
                 try:
                     # Now matches[0] will be a string, not a tuple
-                    return RomanNumeral(matches[0])
+                    found_matches = [RomanNumeral(match) for match in matches]
+                    for found_match in found_matches:
+                        decimal_values.append(found_match.decimal_value)
+                    print(decimal_values)
                 except (ValueError, IndexError):
                     print(f"Invalid Roman numeral format: {matches[0]}")
                     continue
