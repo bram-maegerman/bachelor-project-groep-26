@@ -16,6 +16,6 @@ def run_script():
     process.stdout.close()
     process.wait()
 
-@app.get("/check-numbers")
-def check_numbers():
+@app.get("/scan-checker")
+def scan_checker():
     return StreamingResponse(run_script(), media_type="text/plain")
