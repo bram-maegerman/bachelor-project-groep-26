@@ -4,26 +4,18 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::io::Write;
 use std::sync::{Arc, Mutex};
-use std::thread;
 
 type Result<T> = std::result::Result<T, Box<dyn Error + Send + Sync>>;
 
 fn main() -> Result<()> {
     // Parse command line arguments
     let args: Vec<String> = std::env::args().collect();
-    if args.len() < 3 {
-        eprintln!("Usage: {} <PDF file> <Page number>", args[0]);
+    if args.len() < 2 {
+        eprintln!("Usage: {} <PDF file>", args[0]);
         std::process::exit(1);
     }
 
     let pdf_path = &args[1];
-    let page_number: u32 = match args[2].parse() {
-        Ok(num) => num,
-        Err(_) => {
-            eprintln!("Error: Invalid page number '{}'", args[2]);
-            std::process::exit(1);
-        }
-    };
 
     // Setup output directory
     let output_dir = PathBuf::from("../files/images");
@@ -48,65 +40,62 @@ fn main() -> Result<()> {
     };
 
     let pages = doc.get_pages();
+    println!("Found {} pages in the document", pages.len());
 
-    // Check if the requested page exists
-    if !pages.contains_key(&page_number) {
-        eprintln!("Error: Page {} not found in document", page_number);
-        std::process::exit(1);
-    }
+    // Track total images processed
+    let total_images = Arc::new(Mutex::new(0));
 
-    println!("--- Processing Page {} ---", page_number);
+    // Process each page
+    for (&page_number, &page_id) in pages.iter() {
+        println!("--- Processing Page {} ---", page_number);
 
-    // Get page object
-    let page_id = pages[&page_number];
-    let page_obj = match doc.get_object(page_id) {
-        Ok(obj) => obj,
-        Err(e) => {
-            eprintln!("Error: Failed to get page object: {}", e);
-            std::process::exit(1);
-        }
-    };
+        // Get page object
+        let page_obj = match doc.get_object(page_id) {
+            Ok(obj) => obj,
+            Err(e) => {
+                eprintln!("Error: Failed to get page object for page {}: {}", page_number, e);
+                continue;
+            }
+        };
 
-    // Get page dictionary
-    let page_dict = match page_obj.as_dict() {
-        Ok(dict) => dict,
-        Err(_) => {
-            eprintln!("Error: Page is not a valid dictionary");
-            std::process::exit(1);
-        }
-    };
+        // Get page dictionary
+        let page_dict = match page_obj.as_dict() {
+            Ok(dict) => dict,
+            Err(_) => {
+                eprintln!("Error: Page {} is not a valid dictionary", page_number);
+                continue;
+            }
+        };
 
-    // Get resources dictionary
-    let resources_obj = match page_dict.get(b"Resources") {
-        Ok(obj) => obj,
-        Err(_) => {
-            println!("No resources found for page {}", page_number);
-            return Ok(());
-        }
-    };
+        // Get resources dictionary
+        let resources_obj = match page_dict.get(b"Resources") {
+            Ok(obj) => obj,
+            Err(_) => {
+                println!("No resources found for page {}", page_number);
+                continue;
+            }
+        };
 
-    // Get XObject dictionary
-    let resources_dict = match resources_obj.as_dict() {
-        Ok(dict) => dict,
-        Err(_) => {
-            println!("Resources is not a valid dictionary");
-            return Ok(());
-        }
-    };
+        // Get XObject dictionary
+        let resources_dict = match resources_obj.as_dict() {
+            Ok(dict) => dict,
+            Err(_) => {
+                println!("Resources is not a valid dictionary for page {}", page_number);
+                continue;
+            }
+        };
 
-    // Get XObject subdictionary
-    let xobject_dict = match resources_dict.get(b"XObject").and_then(|obj| obj.as_dict()) {
-        Ok(dict) => dict,
-        Err(_) => {
-            println!("No XObjects found on page {}", page_number);
-            return Ok(());
-        }
-    };
+        // Get XObject subdictionary
+        let xobject_dict = match resources_dict.get(b"XObject").and_then(|obj| obj.as_dict()) {
+            Ok(dict) => dict,
+            Err(_) => {
+                println!("No XObjects found on page {}", page_number);
+                continue;
+            }
+        };
 
-    // If we have multiple images, process them in parallel
-    let image_count = Arc::new(Mutex::new(0));
-    let threads: Vec<_> = xobject_dict.iter()
-        .filter_map(|(name, xobj_ref)| {
+        // Process each image on the page
+        for (_name, xobj_ref) in xobject_dict.iter() {
             // Only process references
             if let Object::Reference(obj_id) = xobj_ref {
                 // Get the actual object
@@ -114,44 +103,26 @@ fn main() -> Result<()> {
                     Ok(xobject) => {
                         // Check if it's an image stream
                         if is_image_stream(&xobject) {
-                            let name_str = std::str::from_utf8(name).unwrap_or("unnamed");
-                            println!("Found image: {}", name_str);
 
                             // Track how many images we found
-                            let mut count = image_count.lock().unwrap();
+                            let mut count = total_images.lock().unwrap();
                             *count += 1;
 
-                            // Clone necessary data for the thread
-                            let xobject_clone = xobject.clone();
-                            let output_dir = output_dir.clone();
-                            let image_id = format!("{}_{}", page_number, name_str);
+                            let image_id = page_number.to_string();
 
-                            // Create thread
-                            Some(thread::spawn(move || {
-                                if let Err(e) = process_image(&xobject_clone, &image_id, &output_dir) {
-                                    eprintln!("Error processing image {}: {}", image_id, e);
-                                }
-                            }))
-                        } else {
-                            None
+                            // Process image directly without threading
+                            if let Err(e) = process_image(&xobject, &image_id, &output_dir) {
+                                eprintln!("Error processing image {}: {}", image_id, e);
+                            }
                         }
                     }
-                    Err(_) => None,
+                    Err(e) => {
+                        eprintln!("Error: {}", e);
+                    }
                 }
-            } else {
-                None
             }
-        })
-        .collect();
-
-    // Wait for all threads to complete
-    for thread in threads {
-        let _ = thread.join();
+        }
     }
-
-    let total_images = *image_count.lock().unwrap();
-    println!("Processed {} images from page {}", total_images, page_number);
-
     Ok(())
 }
 
@@ -168,58 +139,90 @@ fn is_image_stream(obj: &Object) -> bool {
 }
 
 /// Process a single image - extract and run OCR
-fn process_image(image_obj: &Object, image_id: &str, output_dir: &Path) -> Result<()> {
-    if let Object::Stream(ref stream) = image_obj {
-        // Get raw image data
-        let raw_bytes = &stream.content;
+fn process_image(image_obj: &Object, image_id: &str, _output_dir: &Path) -> Result<()> {
+    match image_obj {
+        Object::Stream(stream) => {
+            // Extract raw image data
+            let raw_bytes = &stream.content;
 
-        // Create path for OCR output
-        let output_base = output_dir.join(image_id);
-        let output_path = output_base.to_string_lossy().to_string();
+            // Load image from raw bytes
+            let img = image::load_from_memory(raw_bytes)
+                .map_err(|e| format!("Failed to load image from memory: {}", e))?;
 
-        // Run tesseract OCR
-        let mut tesseract = Command::new("tesseract")
-            .arg("-")
-            .arg(&output_path)
-            .arg("--oem")
-            .arg("3")
-            .arg("--psm")
-            .arg("6")
-            .stdin(std::process::Stdio::piped())
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()?;
+            // Process the image
+            let processed_image = process_image_section(img, "img")?;
 
-        // Write image data to tesseract's stdin
-        {
-            let stdin = tesseract.stdin.as_mut().ok_or("Failed to open stdin")?;
-            stdin.write_all(raw_bytes)?;
-        }
-
-        // Wait for tesseract to finish
-        let output = tesseract.wait_with_output()?;
-
-        if output.status.success() {
-            // Read OCR result
-            let text_file_path = format!("{}.txt", output_path);
-            match std::fs::read_to_string(&text_file_path) {
-                Ok(text) => {
-                    let trimmed_text = text.trim();
-                    if !trimmed_text.is_empty() {
-                        println!("Text from image {}: {}", image_id, trimmed_text);
-                    } else {
-                        println!("No text extracted from image {}", image_id);
-                    }
-                },
-                Err(e) => {
-                    println!("Could not read OCR output file for {}: {}", image_id, e);
-                }
+            // Print results if available
+            if let Some(text) = processed_image {
+                println!("Header text from image {}: {}", image_id, text);
+            } else {
+                println!("No text extracted from header of image {}", image_id);
             }
-        } else {
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            return Err(format!("Tesseract failed: {}", stderr).into());
-        }
+
+            Ok(())
+        },
+        _ => Err("Object is not a stream".into())
+    }
+}
+
+/// Helper function to process a section of an image (header or footer)
+fn process_image_section(
+    img: image::DynamicImage,
+    section_name: &str
+) -> Result<Option<String>> {
+    // Convert the image to raw bytes
+    let mut image_bytes = Vec::new();
+    {
+        let mut cursor = std::io::Cursor::new(&mut image_bytes);
+        img.write_to(&mut cursor, image::ImageFormat::Png)
+            .map_err(|e| format!("Failed to encode {}: {}", section_name, e))?;
     }
 
-    Ok(())
+    // Run tesseract OCR on the image without writing to disk
+    run_tesseract(&image_bytes, section_name)
+}
+
+/// Run the tesseract OCR process and capture output directly
+fn run_tesseract(image_bytes: &[u8], section_name: &str) -> Result<Option<String>> {
+    // Use stdout directly for output instead of writing to a file
+    let mut tesseract = Command::new("tesseract")
+        .arg("-")  // Read from stdin
+        .arg("stdout")  // Output to stdout instead of a file
+        .arg("--oem")
+        .arg("3")  // Use LSTM OCR engine
+        .arg("--psm")
+        .arg("6")  // Assume a single uniform block of text
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .map_err(|e| format!("Failed to spawn tesseract: {}", e))?;
+
+    // Write image data to tesseract's stdin
+    {
+        let stdin = tesseract.stdin.as_mut()
+            .ok_or_else(|| "Failed to open stdin".to_string())?;
+        stdin.write_all(image_bytes)
+            .map_err(|e| format!("Failed to write to tesseract: {}", e))?;
+    }
+
+    // Wait for tesseract to finish
+    let output = tesseract.wait_with_output()
+        .map_err(|e| format!("Failed to wait for tesseract: {}", e))?;
+
+    // Check if tesseract succeeded
+    if output.status.success() {
+        // Process stdout directly instead of reading from a file
+        let text = String::from_utf8_lossy(&output.stdout).to_string();
+        let trimmed_text = text;
+
+        if !trimmed_text.is_empty() {
+            Ok(Some(trimmed_text.to_string()))
+        } else {
+            Ok(None)
+        }
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        Err(format!("Tesseract failed on {}: {}", section_name, stderr).into())
+    }
 }
