@@ -5,14 +5,13 @@ from typing import Literal
 
 log_messages = []
 
-def extract_numbers(full_image, *, upper, lower):
+def extract_numbers(full_image, *, width, height, upper, lower):
     """
     Given an image, we crop only part of it, \n
     we then perform OCR on this part, \n
     we then use regex to extract all numbers
     """
 
-    width, height = full_image.size
     cropped = full_image.crop((
             int(width*0.05),
             int(height*upper),

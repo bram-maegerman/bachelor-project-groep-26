@@ -46,8 +46,8 @@ for page_index in range(len(doc)):
         custom_print(statement_type="WARNING", statement=f"Found a probable double print on page {previous + 1}")
 
     #   Extract the numbers from the header and footer (defined by upper and lower)
-    header = extract_numbers(image, upper=0, lower=0.12)
-    footer = extract_numbers(image, upper=0.87, lower=1)
+    header = extract_numbers(image, width=width, height=height, upper=0, lower=0.12)
+    footer = extract_numbers(image, width=width, height=height, upper=0.87, lower=1)
 
 
     parsed_numbers = set()
