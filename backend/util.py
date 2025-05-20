@@ -1,28 +1,7 @@
-import pytesseract, re
-from PIL import ImageEnhance
 from termcolor import colored
 from typing import Literal
 
 log_messages = []
-
-def extract_numbers(full_image, *, width, height, upper, lower):
-    """
-    Given an image, we crop only part of it, \n
-    we then perform OCR on this part, \n
-    we then use regex to extract all numbers
-    """
-
-    cropped = full_image.crop((
-            int(width*0.05),
-            int(height*upper),
-            int(width*0.95),
-            int(height*lower)
-        ))
-
-    cropped = ImageEnhance.Contrast(cropped).enhance(2)
-
-    content = pytesseract.image_to_string(cropped, lang='eng', config=r'--psm 6')
-    return re.findall(r'[-+]?\d+', content)
 
 def find_first_index(found_numbers, current_index):
     """
