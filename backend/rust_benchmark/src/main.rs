@@ -1,6 +1,7 @@
 use lopdf::{Document, Object};
 use std::error::Error;
 use std::process::Command;
+use std::io::Write;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Expect a path as an argument
@@ -64,10 +65,6 @@ fn main() -> Result<(), Box<dyn Error>> {
                                                                     if subtype_name == b"Image" {
                                                                         println!("Found image: {:?}", std::str::from_utf8(name).unwrap_or("invalid"));
                                                                         let _ = extract_image_data(page_number, &xobject);
-
-                                                                        // Extract text from the saved image
-                                                                        let image_filename = format!("../files/images/image_{}.jpg", page_number);
-                                                                        let _ = extract_text_from_image(&image_filename, &page_number.to_string());
                                                                     } else {
                                                                         println!("Not an image, subtype is: {:?}", std::str::from_utf8(subtype_name).unwrap_or("invalid"));
                                                                     }
@@ -103,78 +100,46 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn extract_image_data(obj_id: u32, image_obj: &Object) -> Result<(), Box<dyn Error>> {
     match image_obj {
         Object::Stream(ref stream) => {
-            // Get image properties from the stream's dictionary
-            let dict = &stream.dict;
+            // Get the raw bytes of the image in utf-8
+            let raw_bytes_str = &stream.content;
 
-            // Get filter information
-            match dict.get(b"Filter") {
-                Ok(filter) => {
-                    match filter.as_name() {
-                        Ok(filter_name) => {
-                            println!("Filter: {:?}", std::str::from_utf8(filter_name)?);
+            // use the raw bytes as stdinput for tesseract without saving it to a file
+            let mut tesseract = Command::new("tesseract")
+                .arg("-") // Use "-" to read from stdin
+                .arg(format!("../files/images/image_{}", obj_id)) // Output file path
+                .arg("--oem")
+                .arg("3") // Use LSTM OCR engine
+                .arg("--psm")
+                .arg("6") // Assume a single uniform block of text
+                .stdin(std::process::Stdio::piped())
+                .spawn()?;
 
-                            // The stream contains the compressed image data
-                            let stream_data = &stream.content;
+            // Write the raw bytes to tesseract's stdin
+            {
+                let stdin = tesseract.stdin.as_mut().expect("Failed to open stdin");
+                stdin.write(raw_bytes_str)?;
+            }
+            // Wait for tesseract to finish
+            let output = tesseract.wait_with_output()?;
 
-                            match filter_name {
-                                b"DCTDecode" => {
-                                    // JPEG image - you can save this directly
-                                    std::fs::write(format!("../files/images/image_{}.jpg", obj_id), stream_data)?;
-                                    println!("Saved JPEG image as image_{}.jpg", obj_id);
-                                }
-                                b"FlateDecode" => {
-                                    // Compressed data - needs decompression
-                                    println!("Found FlateDecode image (needs decompression)");
-                                    // You would need to decompress with flate/zlib and then interpret based on ColorSpace, etc.
-                                }
-                                _ => {
-                                    println!("Unsupported filter: {:?}", std::str::from_utf8(filter_name)?);
-                                }
-                            }
-                        }
-                        Err(e) => println!("Filter is not a name: {:?}", e),
-                    }
-                }
-                Err(e) => println!("No Filter field found: {:?}", e),
+            // Check if the command succeeded
+            if output.status.success() {
+                // Read the generated text file (tesseract adds .txt extension)
+                let text_file_path = format!("../files/images/image_{}.txt", obj_id);
+                let text = std::fs::read_to_string(&text_file_path)?;
+
+                // Print the extracted text
+                println!("Extracted text from image {}: {}", obj_id, text);
+            } else {
+                // If tesseract failed, return an error
+                let error_message = String::from_utf8_lossy(&output.stderr);
+                return Err(format!("Tesseract failed: {}", error_message).into());
             }
         }
         _ => {
-            println!("Image object is not a stream");
+            println!("Not a stream");
         }
     }
 
     Ok(())
-}
-
-fn extract_text_from_image(image_path: &str, page_number: &str) -> Result<(), Box<dyn Error>> {
-    // Create the output path for the text file
-    let output_path = format!("../files/images/image_{}", page_number);
-
-    // Run tesseract command
-    let output = Command::new("tesseract")
-        .arg(image_path)          // Input image path
-        .arg(&output_path)        // Output file path (without extension)
-        // OEM and PSM options
-        .arg("--oem")
-        .arg("3")                // Use LSTM OCR engine
-        .arg("--psm")
-        .arg("6")                // Assume a single uniform block of text
-        .output()?;               // Execute and get output
-
-    // Check if the command succeeded
-    if output.status.success() {
-        // Read the generated text file (tesseract adds .txt extension)
-        let text_file_path = format!("{}.txt", output_path);  // Fixed path construction
-        std::fs::read_to_string(&text_file_path)?;
-
-        // Remove the image file after processing
-        std::fs::remove_file(image_path)?;
-
-        // Return the text without printing anything
-        Ok(())
-    } else {
-        // If tesseract failed, return an error
-        let error_message = String::from_utf8_lossy(&output.stderr);
-        Err(format!("Tesseract failed: {}", error_message).into())
-    }
 }
