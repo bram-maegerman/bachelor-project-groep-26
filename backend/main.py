@@ -9,12 +9,83 @@ from util import extract_numbers, find_first_index, custom_print, log_messages
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
-filename = files / "DIGI_2007_000118_01.pdf"
+filename = files / "DIGI_2007_000121_01.pdf"
 
 doc = fitz.open(filename)
 
 #   All found numbers from header and footer scan
 found_numbers = []
+avg_height = 3520
+avg_width = 2375
+
+def extract_numbers(full_image, *, upper, lower):
+
+    """
+    Given an image, we crop only part of it, \n
+    we then perform OCR on this part, \n
+    we then use regex to extract all numbers
+    """
+
+    width, height = full_image.size
+
+    cropped = full_image.crop((
+            int(width*0.05),
+            int(height*upper),
+            int(width*0.95),
+            int(height*lower)
+        ))
+
+    cropped = ImageEnhance.Contrast(cropped).enhance(2)
+
+    content = pytesseract.image_to_string(cropped, lang='eng', config=r'--psm 6')
+    return re.findall(r'[-+]?\d+', content)
+
+def find_first_index(found_numbers, current_index):
+    """
+        Given a list of found numbers for each page, \n
+        if there are three consecutive numbers in three consecutive lists \n
+        then we have found the starting page.
+    """
+
+    #   Loop over the found numbers on current index
+    for num in found_numbers[current_index]:
+
+        #   Check if the current number-1 appears in the found numbers on previous index (index-1)
+        #   and if the current number-2 appears in the found numbers on the one before the previous index (index-2)
+        if num - 1 in found_numbers[current_index - 1] and num-2 in found_numbers[current_index - 2]:
+
+            #   Returns the index of the first numbered page, along with the page number of the third page
+            return (current_index - 2, num)
+
+    #   Returns -1 if the index of the first numbered page is not found
+    return (-1, None)
+
+log_messages = []
+
+def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], statement=None):
+    """
+    Given a statement and a statement_type, apply a custom style to it.
+    Allowed types: INFO, WARNING, SUCCESS
+    """
+    #  Safety checks
+    if statement_type not in {"INFO", "WARNING", "SUCCESS"}:
+        raise TypeError(f'Expected statement_type to be one of ["INFO", "WARNING", "SUCCESS"], got {statement_type}')
+
+    if not statement:
+        raise ValueError("statement cannot be empty")
+
+    if statement_type == "INFO":
+        print(f"{colored('INFO', 'yellow')}:    {statement}")
+        log_messages.append(f"[INFO]:    {statement}\n")
+
+    elif statement_type == "WARNING":
+        print(f"{colored('WARNING', 'red')}: {statement}")
+        log_messages.append(f"[WARNING]: {statement}\n")
+
+    elif statement_type == "SUCCESS":
+        print(f"{colored('SUCCESS', 'green')}: {statement}")
+        log_messages.append(f"[SUCCESS]: {statement}\n")
+
 
 #   Goes over all pages of the scanned pdf document
 #   Converts each page to an image
@@ -26,7 +97,7 @@ first_index = -1
 missing_numbers = set()
 
 for page_index in range(len(doc)):
-
+   
     pdf_page_number = page_index + 1
     print(f"\nProcessing PDF page: {pdf_page_number}")
     page = doc[page_index]
@@ -38,6 +109,10 @@ for page_index in range(len(doc)):
 
     #   Creates an image from those bytes
     image = Image.open(io.BytesIO(image_bytes))
+    width, height = image.size
+
+    if width > avg_width*1.2 or height > avg_height*1.2:
+        custom_print(statement_type="WARNING", statement=f"Found a probable double print on page {previous + 1}")
 
     #   Extract the numbers from the header and footer (defined by upper and lower)
     header = extract_numbers(image, upper=0, lower=0.12)
@@ -128,7 +203,7 @@ for page_index in range(len(doc)):
             custom_print(statement_type="WARNING", statement="No page number found on PDF page 1.")
 
 if len(missing_numbers) > 0:
-    print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored(', '.join(str(x) for x in missing_numbers), 'red', attrs=['bold'])}")
+    print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored(', '.join(str(x) for x in sorted(missing_numbers)), 'red', attrs=['bold'])}")
 else:
     print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored('None', 'green', attrs=['bold'])}")
 
