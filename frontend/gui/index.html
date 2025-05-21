@@ -16,24 +16,13 @@
         Naar controle overzicht
       </button>
     </header>
-    <div id="drop-area">
-      <form class="my-form">
-        <p>
-          <strong>Sleep hier je bestanden naartoe</strong> of
-          <label for="fileElem" class="button">klik om te bladeren</label>
-        </p>
-        <input
-          type="file"
-          id="fileElem"
-          multiple
-          accept=".pdf"
-          onchange="handleFiles(this.files)"
-        />
-      </form>
+
+    <div style="margin: 20px 0">
+      <button onclick="pickFile()" class="button">Bestand kiezen</button>
+      <p id="filePath">Geen bestand geselecteerd.</p>
     </div>
 
-    <div id="file-list" class="file-list" style="margin-top: 15px"></div>
-    <div id="file-section"></div>
+    <div id="file-section">Geen bestanden geselecteerd.</div>
 
     <script src="js/script.js"></script>
   </body>

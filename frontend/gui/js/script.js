@@ -1,62 +1,35 @@
-const dropArea = document.getElementById("drop-area");
-const fileInput = document.getElementById("fileElem");
-const fileList = document.getElementById("file-list");
+const currentFiles = [];
 
-let currentFiles = [];
-
-dropArea.addEventListener("click", () => fileInput.click());
-
-["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-  dropArea.addEventListener(eventName, preventDefaults, false);
-});
-
-function preventDefaults(e) {
-  e.preventDefault();
-  e.stopPropagation();
-}
-
-["dragenter", "dragover"].forEach((eventName) => {
-  dropArea.addEventListener(
-    eventName,
-    () => dropArea.classList.add("dragover"),
-    false
-  );
-});
-
-["dragleave", "drop"].forEach((eventName) => {
-  dropArea.addEventListener(
-    eventName,
-    () => dropArea.classList.remove("dragover"),
-    false
-  );
-});
-
-dropArea.addEventListener("drop", handleDrop, false);
-fileInput.addEventListener("change", () => {
-  addFiles(fileInput.files);
-});
-
-function handleDrop(e) {
-  const dt = e.dataTransfer;
-  const files = dt.files;
-  addFiles(files);
-}
-
-function addFiles(files) {
-  for (const file of files) {
-    if (file.type !== "application/pdf") {
-      alert(`"${file.name}" is geen PDF-bestand en wordt overgeslagen.`);
-      continue;
-    }
-
-    const alreadyAdded = currentFiles.some(
-      (f) => f.name === file.name && f.size === file.size
-    );
-    if (!alreadyAdded) {
-      currentFiles.push(file);
-    }
+function pickFile() {
+  if (!window.pywebview?.api?.open_file_dialog) {
+    alert("Backend API not available");
+    return;
   }
-  updateFileList();
+
+  window.pywebview.api.open_file_dialog().then((paths) => {
+    if (paths && paths.length > 0) {
+      currentFiles.length = 0; // clear previous selections
+
+      paths.forEach((path) => {
+        currentFiles.push({
+          name: path.split(/[/\\]/).pop(),
+          size: 0,
+          path: path,
+        });
+      });
+
+      document.getElementById("filePath").textContent = "";
+      // "Geselecteerde bestanden:\n" +
+      // currentFiles.map((f) => f.name).join("\n");
+
+      updateFileList();
+    } else {
+      document.getElementById("filePath").textContent =
+        "Geen bestanden geselecteerd.";
+      currentFiles.length = 0;
+      updateFileList();
+    }
+  });
 }
 
 function updateFileList() {
@@ -82,7 +55,9 @@ function updateFileList() {
 
   currentFiles.forEach((file, index) => {
     const li = document.createElement("li");
-    li.textContent = `${file.name} (${formatFileSize(file.size)}) `;
+    li.textContent = `${file.name} (${
+      file.size ? formatFileSize(file.size) : "onbekend formaat"
+    }) `;
 
     const removeBtn = document.createElement("button");
     removeBtn.className = "remove-btn";
@@ -92,6 +67,9 @@ function updateFileList() {
     removeBtn.addEventListener("click", () => {
       currentFiles.splice(index, 1);
       updateFileList();
+      document.getElementById("filePath").textContent = currentFiles.length
+        ? "Geselecteerd bestand: " + currentFiles[0].path
+        : "";
     });
 
     li.appendChild(removeBtn);
@@ -100,25 +78,7 @@ function updateFileList() {
 
   listWrapper.appendChild(ul);
 
-  const checkWrapper = document.createElement("div");
-  checkWrapper.className = "check-wrapper";
-
-  const checkButton = document.createElement("button");
-  checkButton.textContent = "Controleer";
-  checkButton.className = "check-btn";
-
-  checkButton.addEventListener("click", async () => {
-    if (window.pywebview?.api?.greet) {
-      const result = await window.pywebview.api.greet();
-      console.log("Backend said:", result);
-    } else {
-      console.warn("PyWebView API not ready yet");
-    }
-  }); 
-  checkWrapper.appendChild(checkButton);
-
   container.appendChild(listWrapper);
-  container.appendChild(checkWrapper);
 
   fileSection.appendChild(container);
 }
