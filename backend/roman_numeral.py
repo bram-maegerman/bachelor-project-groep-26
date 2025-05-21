@@ -48,7 +48,7 @@ class RomanNumeral:
             return self.__decimal_val < other
         else:
             return NotImplemented
-        
+
     def __le__(self, other):
         if isinstance(other, RomanNumeral):
             return self.__decimal_val <= other.__decimal_val
@@ -56,7 +56,7 @@ class RomanNumeral:
             return self.__decimal_val <= other
         else:
             return NotImplemented
-        
+
     def  __gt__(self, other):
         if isinstance(other, RomanNumeral):
             return self.__decimal_val > other.__decimal_val
@@ -64,7 +64,7 @@ class RomanNumeral:
             return self.__decimal_val > other
         else:
             return NotImplemented
-        
+
     def  __ge__(self, other):
         if isinstance(other, RomanNumeral):
             return self.__decimal_val >= other.__decimal_val
@@ -72,11 +72,40 @@ class RomanNumeral:
             return self.__decimal_val >= other
         else:
             return NotImplemented
-    
+
+    def __eq__(self, other):
+        if isinstance(other, RomanNumeral):
+            return self.__decimal_val == other.__decimal_val
+        elif isinstance(other, int):
+            return self.__decimal_val == other
+        else:
+            return NotImplemented
+
+    # function to add decimal value to the roman numeral
+    def __add__(self, other):
+        if isinstance(other, RomanNumeral):
+            return self.__decimal_val + other.__decimal_val
+        elif isinstance(other, int):
+            return self.__decimal_val + other
+        else:
+            return NotImplemented
+
+    # function to subtract decimal value from the roman numeral
+    def __sub__(self, other):
+        if isinstance(other, RomanNumeral):
+            return self.__decimal_val - other.__decimal_val
+        elif isinstance(other, int):
+            return self.__decimal_val - other
+        else:
+            return NotImplemented
+
+    def __repr__(self):
+        return str(self.__representation)
+
     @property
     def roman_representation(self):
         return self.__representation.upper()
-    
+
     @property
     def decimal_value(self):
         return self.__decimal_val
