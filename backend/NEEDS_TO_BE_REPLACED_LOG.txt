@@ -7,39 +7,3 @@
 [WARNING]: Expected to find 8 but found {9} instead.
 [SUCCESS]: Found expected page number on page 9.
 [SUCCESS]: Found expected page number 10
-[INFO]:    The first page with a page number is 1.
-[SUCCESS]: Found first three pages in order (1, 2, 3).
-[SUCCESS]: Found expected page number 4
-[SUCCESS]: Found expected page number 5
-[WARNING]: Expected to find 6 but found nothing
-[SUCCESS]: Found expected page number 7
-[WARNING]: Expected to find 8 but found {9} instead.
-[SUCCESS]: Found expected page number on page 9.
-[SUCCESS]: Found expected page number 10
-[INFO]:    The first page with a page number is 1.
-[SUCCESS]: Found first three pages in order (1, 2, 3).
-[SUCCESS]: Found expected page number 4
-[SUCCESS]: Found expected page number 5
-[WARNING]: Expected to find 6 but found nothing
-[SUCCESS]: Found expected page number 7
-[WARNING]: Expected to find 8 but found {9} instead.
-[SUCCESS]: Found expected page number on page 9.
-[SUCCESS]: Found expected page number 10
-[INFO]:    The first page with a page number is 1.
-[SUCCESS]: Found first three pages in order (1, 2, 3).
-[SUCCESS]: Found expected page number 4
-[SUCCESS]: Found expected page number 5
-[WARNING]: Expected to find 6 but found nothing
-[SUCCESS]: Found expected page number 7
-[WARNING]: Expected to find 8 but found {9} instead.
-[SUCCESS]: Found expected page number on page 9.
-[SUCCESS]: Found expected page number 10
-[INFO]:    The first page with a page number is 1.
-[SUCCESS]: Found first three pages in order (1, 2, 3).
-[SUCCESS]: Found expected page number 4
-[SUCCESS]: Found expected page number 5
-[WARNING]: Expected to find 6 but found nothing
-[SUCCESS]: Found expected page number 7
-[WARNING]: Expected to find 8 but found {9} instead.
-[SUCCESS]: Found expected page number on page 9.
-[SUCCESS]: Found expected page number 10
