@@ -1,47 +1,15 @@
 body {
-    font-family: sans-serif;
-    padding: 1rem;
-    margin: 0;
-    padding: 0;
-  }
+  font-family: sans-serif;
+  padding: 1rem;
+  margin: 0;
+  padding: 0;
+}
 
-  .container{
-    display: flex;
-    align-items: flex-start;
-    gap: 260px;
-  }
-
-  #drop-area {
-    border: 2px dashed #2596be;
-    border-radius: 15px;
-    width: 80%;
-    margin: 20px auto;
-    padding: 30px;
-    text-align: center;
-    background-color: #f8f9fa;
-    transition: border-color 0.3s, background-color 0.3s;
-  }
-  
-  #drop-area.highlight {
-    border-color: #28a745;
-    background-color: #e6ffed;
-  }
-  
-  #drop-area p {
-    margin: 0;
-    font-size: 16px;
-    color: #333;
-  }
-  
-  #drop-area .button {
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  
-  #drop-area input[type="file"] {
-    display: none;
-  }
+.container{
+  display: flex;
+  align-items: flex-start;
+  gap: 260px;
+}
 
 .list-wrapper {
   width: 50%;
@@ -103,5 +71,12 @@ body {
   border: none;
   background: transparent;
   font-weight: bold;
+}
+
+.standard-btn {
+  padding: 5px;
+  color: white;
+  background-color: #52BDEC;
+  border: 1px solid #52BDEC;
 }
   

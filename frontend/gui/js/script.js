@@ -15,13 +15,8 @@ function pickFile() {
           path: path,
         });
       });
-
-      document.getElementById("filePath").textContent = "";
-
       updateFileList();
     } else {
-      document.getElementById("filePath").textContent =
-        "Geen bestanden geselecteerd.";
       currentFiles.length = 0;
       updateFileList();
     }
