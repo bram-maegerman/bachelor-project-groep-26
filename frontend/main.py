@@ -1,16 +1,17 @@
-import webview
+import webview, subprocess
 
 class API:
-    def greet(self):
-        return "Hello from backend!"
 
     def open_file_dialog(self):
         # Use the window created by webview
         window = webview.windows[0]
         result = window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=True)
         return result if result else []
-        
     
+    def run_script_on_files(self, files:list):
+        result = subprocess.run(["python", "../backend/pipeline.py", *files])
+        return result.returncode
+        
 api = API()
 webview.create_window("Scan-Checker", "gui/index.html", js_api=api)
 webview.start(debug=True)

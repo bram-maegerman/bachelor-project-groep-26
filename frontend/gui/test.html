@@ -11,13 +11,9 @@
 
   <script>
     function pickFile() {
-      window.pywebview.api.open_file_dialog().then(function(path) {
-        if (path) {
-          document.getElementById('filePath').textContent = "Selected file: " + path;
-        } else {
-          document.getElementById('filePath').textContent = "No file selected.";
-        }
-      });
+      window.pywebview.api.run_script_on_files(["file1_path"]).then(function(output){
+        console.log(output);
+      })
     }
   </script>
 </body>
