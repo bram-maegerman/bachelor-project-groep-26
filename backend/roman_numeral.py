@@ -127,6 +127,9 @@ class RomanNumeral:
         else:
             return NotImplemented
 
+    def __int__(self):
+        return int(self.__decimal_val)
+
     def __hash__(self):
         return hash(self.decimal_value)
 
