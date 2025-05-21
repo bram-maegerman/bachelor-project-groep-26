@@ -107,10 +107,14 @@ function updateFileList() {
   checkButton.textContent = "Controleer";
   checkButton.className = "check-btn";
 
-  checkButton.addEventListener("click", () => {
-    alert("Controle gestart voor geselecteerde bestanden.");
-  });
-
+  checkButton.addEventListener("click", async () => {
+    if (window.pywebview?.api?.greet) {
+      const result = await window.pywebview.api.greet();
+      console.log("Backend said:", result);
+    } else {
+      console.warn("PyWebView API not ready yet");
+    }
+  }); 
   checkWrapper.appendChild(checkButton);
 
   container.appendChild(listWrapper);
