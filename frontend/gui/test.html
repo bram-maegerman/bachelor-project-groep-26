@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>File Picker</title>
+</head>
+<body>
+  <h1>Select a file</h1>
+  <button onclick="pickFile()">Pick File</button>
+  <p id="filePath"></p>
+
+  <script>
+    function pickFile() {
+      window.pywebview.api.open_file_dialog().then(function(path) {
+        if (path) {
+          document.getElementById('filePath').textContent = "Selected file: " + path;
+        } else {
+          document.getElementById('filePath').textContent = "No file selected.";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
