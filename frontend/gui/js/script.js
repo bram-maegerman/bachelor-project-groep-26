@@ -1,5 +1,4 @@
 const currentFiles = [];
-const filePaths = [];
 
 function pickFile() {
   if (!window.pywebview?.api?.open_file_dialog) {
@@ -80,9 +79,7 @@ function updateFileList() {
   checkBtn.title = "Controleren";
 
   checkBtn.addEventListener("click", () => {
-    currentFiles.forEach((file) => {
-      filePaths.push(file.path);
-    });
+    const filePaths = currentFiles.map((file) => file.path);
 
     window.pywebview.api.run_script_on_files(filePaths).then(function (output) {
       console.log(output);
