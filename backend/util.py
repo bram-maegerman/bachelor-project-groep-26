@@ -1,22 +1,19 @@
-import pytesseract, re
-from PIL import ImageEnhance, Image
-from termcolor import colored
+import re
 from typing import Literal
-import time
+import pytesseract
+from termcolor import colored
+import re
+import pytesseract
+from PIL import ImageEnhance, ImageOps, Image
+from roman_numeral import RomanNumeral
+
 log_messages = []
 
-from PIL import Image, ImageEnhance, ImageOps
-import pytesseract
-import re
-
-from PIL import Image, ImageEnhance, ImageOps
-import pytesseract
-import re
 
 def extract_header_footer(full_image):
     # Crop header and footer
-    header = full_image.crop((120, 18, 2250, 420))
-    footer = full_image.crop((120, 3085, 2250, 3502))
+    header = full_image.crop((120, 20, 2250, 420))
+    footer = full_image.crop((120, 3085, 2250, 3500))
 
     # Convert to grayscale
     header_gray = header.convert("L")
@@ -31,46 +28,32 @@ def extract_header_footer(full_image):
     header_inverted = ImageOps.invert(header_bw.convert("L"))
     footer_inverted = ImageOps.invert(footer_bw.convert("L"))
 
-    content_header = pytesseract.image_to_string(
-        header_inverted,
-        config=r'--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ivxlcd'
-    )
-    content_footer = pytesseract.image_to_data(
-        footer_inverted,
-        config=r'--oem 3 --psm 7 -c tessedit_char_whitelist=0123456789ivxlcdI',
-        output_type=pytesseract.Output.DICT
-    )
-
-    print(content_header)
-    print(content_footer)
-    return set()
     # Get dimensions
-    # width = header_inverted.width
-    # header_height = header_inverted.height
-    # footer_height = footer_inverted.height
-    # gap = 3085 - 420
+    width = header_inverted.width
+    header_height = header_inverted.height
+    footer_height = footer_inverted.height
+    gap = 3085 - 420
 
-    # # Create a new black background image
-    # total_height = header_height + gap + footer_height
-    # combined_image = Image.new("L", (width, total_height), color=0)  # 'L' mode, black background
+    # Create a new black background image
+    total_height = header_height + gap + footer_height
+    combined_image = Image.new("L", (width, total_height), color=0)  # 'L' mode, black background
 
-    # # Paste header and footer
-    # combined_image.paste(header_inverted, (0, 0))
-    # combined_image.paste(footer_inverted, (0, header_height + gap))
+    # Paste header and footer
+    combined_image.paste(header_inverted, (0, 0))
+    combined_image.paste(footer_inverted, (0, header_height + gap))
 
-    # # OCR with contrast already handled by binarization
-    # content = pytesseract.image_to_string(
-    #     combined_image,
-    #     config=r'--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ivxlcd'
-    # )
+    # OCR with contrast already handled by binarization
+    content = pytesseract.image_to_string(
+        combined_image,
+        config=r'--oem 2 --psm 7 -c tessedit_char_whitelist=0123456789ivxlcdIVXLCDM'
+    )
 
     # Extract numbers and Roman numerals
-    # found_numbers = set(int(x) for x in re.findall(r'[-+]?\d+', content))
-    # for x in re.findall(r'[ivxlcdm]+', content, re.IGNORECASE):
-    #     print(x.lower())
-    
-    # return found_numbers
-    
+    found_numbers = set(str(x) for x in re.findall(r'[-+]?\d+', content))
+    found_romans = set(RomanNumeral(x.lower()) for x in re.findall(r'[ivxlcdm]+', content, re.IGNORECASE))
+
+    return found_numbers.union(found_romans)
+
 
 
 
@@ -136,5 +119,5 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
     elif statement_type == "SUCCESS":
         print(f"{colored('SUCCESS', 'green')}: {statement}")
         log_messages.append(f"[SUCCESS]: {statement}\n")
-    
+
     return log_messages
