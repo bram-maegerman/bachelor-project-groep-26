@@ -1,4 +1,5 @@
 const currentFiles = [];
+const filePaths = [];
 
 function pickFile() {
   if (!window.pywebview?.api?.open_file_dialog) {
@@ -8,19 +9,15 @@ function pickFile() {
 
   window.pywebview.api.open_file_dialog().then((paths) => {
     if (paths && paths.length > 0) {
-      currentFiles.length = 0; // clear previous selections
-
+      currentFiles.length = 0;
       paths.forEach((path) => {
         currentFiles.push({
           name: path.split(/[/\\]/).pop(),
-          size: 0,
           path: path,
         });
       });
 
       document.getElementById("filePath").textContent = "";
-      // "Geselecteerde bestanden:\n" +
-      // currentFiles.map((f) => f.name).join("\n");
 
       updateFileList();
     } else {
@@ -55,10 +52,7 @@ function updateFileList() {
 
   currentFiles.forEach((file, index) => {
     const li = document.createElement("li");
-    li.textContent = `${file.name} (${
-      file.size ? formatFileSize(file.size) : "onbekend formaat"
-    }) `;
-
+    li.textContent = file.name;
     const removeBtn = document.createElement("button");
     removeBtn.className = "remove-btn";
     removeBtn.textContent = "×";
@@ -67,9 +61,6 @@ function updateFileList() {
     removeBtn.addEventListener("click", () => {
       currentFiles.splice(index, 1);
       updateFileList();
-      document.getElementById("filePath").textContent = currentFiles.length
-        ? "Geselecteerd bestand: " + currentFiles[0].path
-        : "";
     });
 
     li.appendChild(removeBtn);
@@ -80,11 +71,28 @@ function updateFileList() {
 
   container.appendChild(listWrapper);
 
-  fileSection.appendChild(container);
-}
+  const checkWrapper = document.createElement("div");
+  checkWrapper.className = "check-wrapper";
 
-function formatFileSize(bytes) {
-  if (bytes < 1024) return bytes + " B";
-  else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
-  else return (bytes / 1048576).toFixed(1) + " MB";
+  const checkBtn = document.createElement("button");
+  checkBtn.className = "check-btn";
+  checkBtn.textContent = "Controleer";
+  checkBtn.title = "Controleren";
+
+  checkBtn.addEventListener("click", () => {
+    currentFiles.forEach((file) => {
+      filePaths.push(file.path);
+    });
+
+    window.pywebview.api.run_script_on_files(filePaths).then(function (output) {
+      console.log(output);
+    });
+    console.log(filePaths);
+  });
+
+  checkWrapper.appendChild(checkBtn);
+  container.appendChild(checkWrapper);
+  fileSection.appendChild(container);
+
+  fileSection.appendChild(container);
 }
