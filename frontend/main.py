@@ -1,6 +1,7 @@
 import webview
 import subprocess
 import threading
+import os
 
 class API:
     def __init__(self):
@@ -31,5 +32,6 @@ def on_loaded():
     # Optionally do any init logic here
 
 if __name__ == '__main__':
+    print(os.getcwd())
     webview.create_window("Live Output Example", "gui/index.html", js_api=api)
     webview.start(on_loaded, gui='qt', debug=True)

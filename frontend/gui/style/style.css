@@ -1,0 +1,107 @@
+body {
+    font-family: sans-serif;
+    padding: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container{
+    display: flex;
+    align-items: flex-start;
+    gap: 260px;
+  }
+
+  #drop-area {
+    border: 2px dashed #2596be;
+    border-radius: 15px;
+    width: 80%;
+    margin: 20px auto;
+    padding: 30px;
+    text-align: center;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s, background-color 0.3s;
+  }
+  
+  #drop-area.highlight {
+    border-color: #28a745;
+    background-color: #e6ffed;
+  }
+  
+  #drop-area p {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  #drop-area .button {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  #drop-area input[type="file"] {
+    display: none;
+  }
+
+.list-wrapper {
+  width: 50%;
+}
+
+.list-wrapper h3 {
+  margin-bottom: 10px;
+}
+  
+.list-wrapper ul {
+  height: 415px;
+  overflow-y: scroll;
+  padding: 0;
+}
+
+.list-wrapper ul li {
+  list-style-type: none;
+  border: 1px solid gray;
+}
+
+.file-list {
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: 1rem;
+  font-family: monospace;
+  color: #222;
+}
+
+.file-list li {
+  margin-bottom: 4px;
+}
+
+#file-section{
+  margin: 20px auto;
+  width: 84%;
+}
+
+.check-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+}
+
+.check-btn{
+  border-radius: 20px;
+  border: 1px solid #2596be;
+  background-color: #2596be;
+  color: white;
+  height: fit-content;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.remove-btn {
+  margin-left: 10px;
+  cursor: pointer;
+  color: red;
+  border: none;
+  background: transparent;
+  font-weight: bold;
+}
+  
