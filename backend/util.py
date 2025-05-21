@@ -1,9 +1,78 @@
 import pytesseract, re
-from PIL import ImageEnhance
+from PIL import ImageEnhance, Image
 from termcolor import colored
 from typing import Literal
-
+import time
 log_messages = []
+
+from PIL import Image, ImageEnhance, ImageOps
+import pytesseract
+import re
+
+from PIL import Image, ImageEnhance, ImageOps
+import pytesseract
+import re
+
+def extract_header_footer(full_image):
+    # Crop header and footer
+    header = full_image.crop((120, 18, 2250, 420))
+    footer = full_image.crop((120, 3085, 2250, 3502))
+
+    # Convert to grayscale
+    header_gray = header.convert("L")
+    footer_gray = footer.convert("L")
+
+    # Apply binary threshold (turns into black & white only)
+    threshold = 160  # Adjust as needed
+    header_bw = header_gray.point(lambda x: 255 if x > threshold else 0, mode='1')
+    footer_bw = footer_gray.point(lambda x: 255 if x > threshold else 0, mode='1')
+
+    # Invert: text becomes white, background becomes black
+    header_inverted = ImageOps.invert(header_bw.convert("L"))
+    footer_inverted = ImageOps.invert(footer_bw.convert("L"))
+
+    content_header = pytesseract.image_to_string(
+        header_inverted,
+        config=r'--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ivxlcd'
+    )
+    content_footer = pytesseract.image_to_data(
+        footer_inverted,
+        config=r'--oem 3 --psm 7 -c tessedit_char_whitelist=0123456789ivxlcdI',
+        output_type=pytesseract.Output.DICT
+    )
+
+    print(content_header)
+    print(content_footer)
+    return set()
+    # Get dimensions
+    # width = header_inverted.width
+    # header_height = header_inverted.height
+    # footer_height = footer_inverted.height
+    # gap = 3085 - 420
+
+    # # Create a new black background image
+    # total_height = header_height + gap + footer_height
+    # combined_image = Image.new("L", (width, total_height), color=0)  # 'L' mode, black background
+
+    # # Paste header and footer
+    # combined_image.paste(header_inverted, (0, 0))
+    # combined_image.paste(footer_inverted, (0, header_height + gap))
+
+    # # OCR with contrast already handled by binarization
+    # content = pytesseract.image_to_string(
+    #     combined_image,
+    #     config=r'--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ivxlcd'
+    # )
+
+    # Extract numbers and Roman numerals
+    # found_numbers = set(int(x) for x in re.findall(r'[-+]?\d+', content))
+    # for x in re.findall(r'[ivxlcdm]+', content, re.IGNORECASE):
+    #     print(x.lower())
+    
+    # return found_numbers
+    
+
+
 
 def extract_numbers(full_image, *, width, height, upper, lower):
     """

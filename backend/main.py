@@ -5,11 +5,11 @@ from termcolor import colored
 from typing import Literal
 
 # own python scripts
-from util import extract_numbers, find_first_index, custom_print, log_messages
+from util import find_first_index, custom_print, extract_header_footer, log_messages
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
-filename = files / "DIGI_2007_000121_01.pdf"
+filename = files / "DIGI_2007_000118_01.pdf"
 
 doc = fitz.open(filename)
 
@@ -46,13 +46,8 @@ for page_index in range(len(doc)):
         custom_print(statement_type="WARNING", statement=f"Found a probable double print on page {previous + 1}")
 
     #   Extract the numbers from the header and footer (defined by upper and lower)
-    header = extract_numbers(image, width=width, height=height, upper=0, lower=0.12)
-    footer = extract_numbers(image, width=width, height=height, upper=0.87, lower=1)
 
-
-    parsed_numbers = set()
-    parsed_numbers.update(int(num) for num in header)
-    parsed_numbers.update(int(num) for num in footer)
+    parsed_numbers = extract_header_footer(image)
     found_numbers.append(parsed_numbers)
 
     #   If no numbers found on page
