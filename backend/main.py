@@ -5,7 +5,7 @@ from termcolor import colored
 from typing import Literal
 
 # own python scripts
-from util import find_first_index, custom_print, extract_header_footer, log_messages
+from util import find_sequence, custom_print, extract_header_footer, log_messages
 
 curr_dir = Path(__file__).parent
 files = curr_dir / "files"
@@ -26,6 +26,8 @@ avg_width = 2375
 previous = None
 first_index = -1
 missing_numbers = set()
+
+out_of_range = set()
 
 for page_index in range(len(doc)):
    
@@ -85,7 +87,8 @@ for page_index in range(len(doc)):
                     #   Check if numbers could be possible page numbers
                     if all(x > len(doc) - first_index or x < previous for x in parsed_numbers):
                         custom_print(statement_type="INFO", statement=f"Found numbers are outside of range: {parsed_numbers}.")
-                        previous = expected_num
+                        previous = find_sequence(found_numbers, page_index, previous)
+                        
                     else:
 
                         #   Check if found page numbers are between previous and previous+10
@@ -114,17 +117,7 @@ for page_index in range(len(doc)):
             else:
 
             #   Detection of three consecutive page numbers
-                first_index, actual_page_number = find_first_index(found_numbers, page_index)
-
-                #   If three consecutive page numbers are found, that means pagination has started
-                if first_index != -1:
-                    next_index = first_index + 1
-
-                    custom_print(statement_type="INFO", statement=f"The first page with a page number is {next_index}.")
-                    custom_print(statement_type="SUCCESS", statement=f"Found first three pages in order ({actual_page_number-2}, {actual_page_number-1}, {actual_page_number}).")
-                    previous = actual_page_number
-                else:
-                    custom_print(statement_type="WARNING", statement=f"No page number found on PDF page {pdf_page_number}.")
+                previous = find_sequence(found_numbers, page_index, previous)
         else:
             custom_print(statement_type="WARNING", statement="No page number found on PDF page 1.")
 
