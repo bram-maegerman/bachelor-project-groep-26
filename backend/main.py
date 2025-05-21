@@ -102,8 +102,10 @@ for page_index in range(len(doc)):
                             first_found = min(common)
 
                             #   Add all numbers between previous+1 and the smallest found number to missing_numbers
-                            missing_numbers.update(x for x in range(previous + 1, first_found))
-                            previous = first_found
+                            print(first_found)
+                            if type(previous) == type(first_found):
+                                missing_numbers.update(x for x in range(int(previous) + 1, int(first_found)))
+                                previous = first_found
 
                             custom_print(statement_type="SUCCESS", statement=f"Found expected page number on page {previous}.")
 
