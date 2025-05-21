@@ -98,6 +98,9 @@ class RomanNumeral:
             return self.__decimal_val - other
         else:
             return NotImplemented
+        
+    def __hash__(self):
+        return hash(self.decimal_value)
 
     def __repr__(self):
         return str(self.__representation)

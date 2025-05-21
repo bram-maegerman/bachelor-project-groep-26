@@ -49,8 +49,8 @@ def extract_header_footer(full_image):
     )
 
     # Extract numbers and Roman numerals
-    found_numbers = set(str(x) for x in re.findall(r'[-+]?\d+', content))
-    found_romans = set(RomanNumeral(x.lower()) for x in re.findall(r'[ivxlcdm]+', content, re.IGNORECASE))
+    found_numbers = set(int(x) for x in re.findall(r'[-+]?\d+', content))
+    found_romans = set(RomanNumeral(str(x).lower()) for x in re.findall(r'[ivxlcdm]+', content, re.IGNORECASE))
 
     return found_numbers.union(found_romans)
 
