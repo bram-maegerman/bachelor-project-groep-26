@@ -4,7 +4,7 @@ import pytesseract
 from termcolor import colored
 import re
 import pytesseract
-from PIL import ImageEnhance, ImageOps, Image
+from PIL import ImageEnhance, ImageOps, Image, ImageDraw, ImageFilter
 from roman_numeral import RomanNumeral
 
 log_messages = []
@@ -24,37 +24,44 @@ def extract_header_footer(full_image):
     header_bw = header_gray.point(lambda x: 255 if x > threshold else 0, mode='1')
     footer_bw = footer_gray.point(lambda x: 255 if x > threshold else 0, mode='1')
 
-    # Invert: text becomes white, background becomes black
-    header_inverted = ImageOps.invert(header_bw.convert("L"))
-    footer_inverted = ImageOps.invert(footer_bw.convert("L"))
-
     # Get dimensions
-    width = header_inverted.width
-    header_height = header_inverted.height
-    footer_height = footer_inverted.height
-    gap = 3085 - 420
-
+    width = header_bw.width
+    header_height = header_bw.height
+    footer_height = footer_bw.height
+    gap = 0 # gap = 3085 - 420
+    
     # Create a new black background image
     total_height = header_height + gap + footer_height
     combined_image = Image.new("L", (width, total_height), color=0)  # 'L' mode, black background
 
     # Paste header and footer
-    combined_image.paste(header_inverted, (0, 0))
-    combined_image.paste(footer_inverted, (0, header_height + gap))
+    combined_image.paste(header_bw, (0, 0))
+    combined_image.paste(footer_bw, (0, header_height + gap))
+    combined_image = combined_image.filter(ImageFilter.EDGE_ENHANCE_MORE)
 
     # OCR with contrast already handled by binarization
     content = pytesseract.image_to_string(
         combined_image,
-        config=r'--oem 2 --psm 7 -c tessedit_char_whitelist=0123456789ivxlcdIVXLCDM'
+        config=r'--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ivx'# -c tessedit_char_whitelist=0123456789ivxlcdIVXLCDM'
     )
 
+    combined_image.save("test.jpg")
+    
+    # Code to find rotation of page 
+    # try:
+    #     osd = pytesseract.image_to_osd(full_image)
+    #     angle = int([line.split(": ")[1] for line in osd.split("\n") if "Rotate" in line][0])
+    #     print(angle)
+    #     # if angle == 90:
+    #     #     full_image.rotate()
+    # except Exception as e:
+    #     print(f"OSD failed: {e}")
+        
     # Extract numbers and Roman numerals
     found_numbers = set(int(x) for x in re.findall(r'[-+]?\d+', content))
     found_romans = set(RomanNumeral(str(x).lower()) for x in re.findall(r'[ivxlcdm]+', content, re.IGNORECASE))
 
     return found_numbers.union(found_romans)
-
-
 
 
 def extract_numbers(full_image, *, width, height, upper, lower):
@@ -70,6 +77,7 @@ def extract_numbers(full_image, *, width, height, upper, lower):
             int(width*0.95),
             int(height*lower)
         ))
+
 
     cropped = ImageEnhance.Contrast(cropped).enhance(2)
 

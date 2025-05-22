@@ -88,6 +88,8 @@ for page_index in range(len(doc)):
                     if all(x > len(doc) - first_index or x < previous for x in parsed_numbers):
                         custom_print(statement_type="INFO", statement=f"Found numbers are outside of range: {parsed_numbers}.")
                         previous = find_sequence(found_numbers, page_index, previous)
+                        if previous is not None:
+                            missing_numbers.remove(expected_num)
                         
                     else:
 
