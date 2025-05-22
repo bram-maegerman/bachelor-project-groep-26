@@ -5,9 +5,9 @@ from termcolor import colored
 from multiprocessing import Pool, Manager, cpu_count
 
 # own python scripts
-from util import find_sequence, custom_print, extract_header_footer, log_messages
+from util import find_sequence, custom_print, extract_header_footer, log_messages, process_page
 
-curr_dir = Path(__file__).parent
+curr_dir = Path(__file__).parent.parent
 files = curr_dir / "files"
 filename = files / "DIGI_2007_000118_01.pdf"
 
@@ -23,48 +23,30 @@ avg_width = 2375
 #   Extract the header and footer from this image
 #   Scan these sections for numbers
 #   Adds those numbers to the found_numbers list
-previous = None
-first_index = -1
-missing_numbers = set()
 
 def main():
+    previous = None
+    first_index = -1
+    missing_numbers = set()
+
     with Manager() as manager:
         page_count = len(doc)
 
         progress_queue = manager.Queue()
-        args = [(i, str(filename), progress_queue) for i in range(page_count)]
+        args = [(i, str(filename), progress_queue, previous) for i in range(page_count)]
         print("Processing...")
         with Pool(processes=cpu_count()) as pool:
-            found_numbers_result = pool.map_async(extract_header_footer, args)
+            found_numbers_result = pool.map_async(process_page, args)
 
             completed = 0
             while completed < page_count:
                 progress_queue.get()
                 completed += 1
                 print(f"\rProgress: {completed}/{page_count} ({(completed/page_count)*100:.1f}%)", end='')
-            found_numbers = found_numbers_result.get()
+            found_numbers_result = found_numbers_result.get()
 
-        for page_index in range(len(doc)):
-        
-            pdf_page_number = page_index + 1
-            print(f"\nProcessing PDF page: {pdf_page_number}")
-            page = doc[page_index]
-            xref = page.get_images()[0][0]
-            base_image = doc.extract_image(xref)
-
-            #   Reads out the bytes of the image
-            image_bytes = base_image["image"]
-
-            #   Creates an image from those bytes
-            image = Image.open(io.BytesIO(image_bytes))
-            width, height = image.size
-
-            if width > avg_width*1.2 or height > avg_height*1.2:
-                custom_print(statement_type="WARNING", statement=f"Found a probable double print on page {previous + 1}")
-
-            #   Extract the numbers from the header and footer (defined by upper and lower)
-
-            parsed_numbers = extract_header_footer(image)
+        for page_index, parsed_numbers in enumerate(found_numbers_result):
+            pdf_page_number = page_index 
             found_numbers.append(parsed_numbers)
 
             #   If no numbers found on page
