@@ -1,8 +1,7 @@
-import fitz, io, pytesseract, re
+import fitz, io
 from pathlib import Path
-from PIL import Image, ImageEnhance
+from PIL import Image
 from termcolor import colored
-from typing import Literal
 
 # own python scripts
 from util import find_sequence, custom_print, extract_header_footer, log_messages
@@ -26,8 +25,6 @@ avg_width = 2375
 previous = None
 first_index = -1
 missing_numbers = set()
-
-out_of_range = set()
 
 for page_index in range(len(doc)):
    
