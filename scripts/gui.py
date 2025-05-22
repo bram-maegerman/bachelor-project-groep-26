@@ -13,14 +13,14 @@ class API:
         for file_path in files:
             result = subprocess.run(
                 ["python", "scripts/multi_main.py", file_path],
-                # capture_output=True,
-                text=True  # So stdout/stderr are strings
+                capture_output=True,
+                text=True  
             )
             results.append({
             "file": file_path,
             "success": result.returncode == 0,
-            # "stdout": result.stdout.strip(),
-            # "stderr": result.stderr.strip(),
+            "stdout": result.stdout.strip(),
+            "stderr": result.stderr.strip(),
             "returncode": result.returncode
             })
 

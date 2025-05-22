@@ -116,15 +116,15 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
         raise ValueError("statement cannot be empty")
 
     if statement_type == "INFO":
-        print(f"{colored('INFO', 'yellow')}:    {statement}")
+        # print(f"{colored('INFO', 'yellow')}:    {statement}")
         log_messages.append(f"[INFO]:    {statement}\n")
 
     elif statement_type == "WARNING":
-        print(f"{colored('WARNING', 'red')}: {statement}")
+        # print(f"{colored('WARNING', 'red')}: {statement}")
         log_messages.append(f"[WARNING]: {statement}\n")
 
     elif statement_type == "SUCCESS":
-        print(f"{colored('SUCCESS', 'green')}: {statement}")
+        # print(f"{colored('SUCCESS', 'green')}: {statement}")
         log_messages.append(f"[SUCCESS]: {statement}\n")
 
     return log_messages

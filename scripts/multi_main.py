@@ -46,7 +46,7 @@ def main():
 
         progress_queue = manager.Queue()
         args = [(i, str(filename), progress_queue, previous) for i in range(page_count)]
-        print("Processing...")
+        # print("Processing...")
         with Pool(processes=cpu_count()) as pool:
             found_numbers_result = pool.map_async(process_page, args)
 
@@ -54,7 +54,7 @@ def main():
             while completed < page_count:
                 progress_queue.get()
                 completed += 1
-                print(f"\rProgress: {completed}/{page_count} ({(completed/page_count)*100:.1f}%)", end='')
+                # print(f"\rProgress: {completed}/{page_count} ({(completed/page_count)*100:.1f}%)", end='')
             found_numbers_result = found_numbers_result.get()
 
         for page_index, parsed_numbers in enumerate(found_numbers_result):
@@ -113,7 +113,7 @@ def main():
                                     first_found = min(common)
 
                                     #   Add all numbers between previous+1 and the smallest found number to missing_numbers
-                                    print(first_found)
+                                    # print(first_found)
                                     if type(previous) == type(first_found):
                                         missing_numbers.update(x for x in range(int(previous) + 1, int(first_found)))
                                         previous = first_found
@@ -135,17 +135,21 @@ def main():
                     custom_print(statement_type="WARNING", statement="No page number found on PDF page 1.")
 
         if len(missing_numbers) > 0:
-            print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored(', '.join(str(x) for x in sorted(missing_numbers)), 'red', attrs=['bold'])}")
+            log_messages.append(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored(', '.join(str(x) for x in sorted(missing_numbers)), 'red', attrs=['bold'])}")
         else:
-            print(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored('None', 'green', attrs=['bold'])}")
+            log_messages.append(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored('None', 'green', attrs=['bold'])}")
 
         # Show some stats
-        print(f"\n{colored('Total pages in document','blue', attrs=['bold'])}: {len(doc)}")
-        print(f"{colored('Total pages with numbers','blue', attrs=['bold'])}: {len(found_numbers) - len(missing_numbers)}")
-        print(f"{colored('Total pages with missing numbers','blue', attrs=['bold'])}: {len(missing_numbers)}\n")
+        log_messages.append(f"\n{colored('Total pages in document','blue', attrs=['bold'])}: {len(doc)}")
+        log_messages.append(f"{colored('Total pages with numbers','blue', attrs=['bold'])}: {len(found_numbers) - len(missing_numbers)}")
+        log_messages.append(f"{colored('Total pages with missing numbers','blue', attrs=['bold'])}: {len(missing_numbers)}\n")
 
-        with open(f"{filename}_LOG.txt", "w") as file:
+        log_file_location = f"{filename}_LOG.txt"
+
+        with open(log_file_location, "w") as file:
             file.writelines(log_messages)
+            
+        print(log_file_location)
 
 if __name__ == "__main__":
     main()
