@@ -23,16 +23,17 @@ function pickFile() {
   });
 }
 
-function checkFiles() {
+async function checkFiles() {
   if (currentFiles.length === 0) {
-    alert("Selecteer minimum 1 bestand!")
+    alert("Selecteer minimum 1 bestand!");
   }
   const filePaths = currentFiles.map((file) => file.path);
 
-  window.pywebview.api.run_script_on_files(filePaths).then(function (output) {
-    console.log(output);
-  });
-  console.log(filePaths);
+  const result = await window.pywebview.api.run_script_on_files(filePaths);
+
+  const outputPaths = result.map((item) => item.stdout);
+
+  console.log(outputPaths);
 }
 
 function updateFileList() {
