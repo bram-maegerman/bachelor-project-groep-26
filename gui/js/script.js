@@ -23,18 +23,26 @@ function pickFile() {
   });
 }
 
+function checkFiles() {
+  if (currentFiles.length === 0) {
+    alert("Selecteer minimum 1 bestand!")
+  }
+  const filePaths = currentFiles.map((file) => file.path);
+
+  window.pywebview.api.run_script_on_files(filePaths).then(function (output) {
+    console.log(output);
+  });
+  console.log(filePaths);
+}
+
 function updateFileList() {
   const fileSection = document.getElementById("file-section");
-  const buttonSection = document.getElementById("button-section")
   fileSection.innerHTML = "";
 
   if (currentFiles.length === 0) {
     fileSection.textContent = "Geen bestanden geselecteerd.";
     return;
   }
-
-  const container = document.createElement("div");
-  container.className = "container";
 
   const listWrapper = document.createElement("div");
   listWrapper.className = "list-wrapper";
@@ -63,29 +71,5 @@ function updateFileList() {
   });
 
   listWrapper.appendChild(ul);
-
-  container.appendChild(listWrapper);
-
-  const checkWrapper = document.createElement("div");
-  checkWrapper.className = "check-wrapper";
-
-  const checkBtn = document.createElement("button");
-  checkBtn.className = "standard-btn";
-  checkBtn.textContent = "Controleer";
-  checkBtn.title = "Controleren";
-
-  checkBtn.addEventListener("click", () => {
-    const filePaths = currentFiles.map((file) => file.path);
-
-    window.pywebview.api.run_script_on_files(filePaths).then(function (output) {
-      console.log(output);
-    });
-    console.log(filePaths);
-  });
-
-  checkWrapper.appendChild(checkBtn);
-  container.appendChild(checkWrapper);
-  fileSection.appendChild(container);
-
-  fileSection.appendChild(container);
+  fileSection.appendChild(listWrapper);
 }
