@@ -1,8 +1,8 @@
 class RomanNumeral:
 
     def __init__(self, val):
-        self.__representation = val.lower()
-        self.__decimal_val = self.__calculate(self.__representation)
+        self.__representation = val if type(val) == str else self.__convert_to_roman(val)
+        self.__decimal_val = self.__calculate(self.__representation) if type(val) == str else val if type(val) == int else None
 
     ##calculate decimal value of a roman numeral string
     def __calculate(self, value):
@@ -38,6 +38,34 @@ class RomanNumeral:
         except KeyError:
             raise ValueError(f"Invalid Roman numeral character: {roman_numeral}")
 
+    def __convert_to_roman(self, decimal_val):
+        if decimal_val < 1 or decimal_val > 3999:
+            raise ValueError(f"Decimal value out of range (1-3999): {decimal_val}")
+
+        roman_numerals = [
+            ("m", 1000),
+            ("cm", 900),
+            ("d", 500),
+            ("cd", 400),
+            ("c", 100),
+            ("xc", 90),
+            ("l", 50),
+            ("xl", 40),
+            ("x", 10),
+            ("ix", 9),
+            ("v", 5),
+            ("iv", 4),
+            ("i", 1)
+        ]
+
+        result = ""
+        for numeral, value in roman_numerals:
+            while decimal_val >= value:
+                result += numeral
+                decimal_val -= value
+
+        return result
+
     def get_decimal(self):
         return self.__decimal_val
 
@@ -48,7 +76,7 @@ class RomanNumeral:
             return self.__decimal_val < other
         else:
             return NotImplemented
-        
+
     def __le__(self, other):
         if isinstance(other, RomanNumeral):
             return self.__decimal_val <= other.__decimal_val
@@ -56,7 +84,7 @@ class RomanNumeral:
             return self.__decimal_val <= other
         else:
             return NotImplemented
-        
+
     def  __gt__(self, other):
         if isinstance(other, RomanNumeral):
             return self.__decimal_val > other.__decimal_val
@@ -64,7 +92,7 @@ class RomanNumeral:
             return self.__decimal_val > other
         else:
             return NotImplemented
-        
+
     def  __ge__(self, other):
         if isinstance(other, RomanNumeral):
             return self.__decimal_val >= other.__decimal_val
@@ -72,11 +100,46 @@ class RomanNumeral:
             return self.__decimal_val >= other
         else:
             return NotImplemented
-    
+
+    def __eq__(self, other):
+        if isinstance(other, RomanNumeral):
+            return self.__decimal_val == other.__decimal_val
+        elif isinstance(other, int):
+            return self.__decimal_val == other
+        else:
+            return NotImplemented
+
+    # function to add decimal value to the roman numeral
+    def __add__(self, other):
+        if isinstance(other, RomanNumeral):
+            return self.__decimal_val + other.__decimal_val
+        elif isinstance(other, int):
+            return self.__decimal_val + other
+        else:
+            return NotImplemented
+
+    # function to subtract decimal value from the roman numeral
+    def __sub__(self, other):
+        if isinstance(other, RomanNumeral):
+            return self.__decimal_val - other.__decimal_val
+        elif isinstance(other, int):
+            return self.__decimal_val - other
+        else:
+            return NotImplemented
+
+    def __int__(self):
+        return int(self.__decimal_val)
+
+    def __hash__(self):
+        return hash(self.decimal_value)
+
+    def __repr__(self):
+        return str(self.__representation)
+
     @property
     def roman_representation(self):
         return self.__representation.upper()
-    
+
     @property
     def decimal_value(self):
         return self.__decimal_val
