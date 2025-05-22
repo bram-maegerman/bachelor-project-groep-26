@@ -73,6 +73,13 @@ body {
   font-weight: bold;
 }
 
+.index-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .standard-btn {
   padding: 5px;
   color: white;

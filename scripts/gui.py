@@ -18,5 +18,5 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-webview.create_window("Scan-Checker", "../gui/overview.html", js_api=api)
+webview.create_window("Scan-Checker", "../gui/index.html", js_api=api)
 webview.start(maximize_window)
