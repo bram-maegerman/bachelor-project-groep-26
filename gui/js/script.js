@@ -25,6 +25,7 @@ function pickFile() {
 
 function updateFileList() {
   const fileSection = document.getElementById("file-section");
+  const buttonSection = document.getElementById("button-section")
   fileSection.innerHTML = "";
 
   if (currentFiles.length === 0) {
@@ -69,7 +70,7 @@ function updateFileList() {
   checkWrapper.className = "check-wrapper";
 
   const checkBtn = document.createElement("button");
-  checkBtn.className = "check-btn";
+  checkBtn.className = "standard-btn";
   checkBtn.textContent = "Controleer";
   checkBtn.title = "Controleren";
 
