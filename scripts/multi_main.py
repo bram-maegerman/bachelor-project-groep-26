@@ -134,10 +134,7 @@ def main():
                 else:
                     custom_print(statement_type="WARNING", statement="No page number found on PDF page 1.")
 
-        if len(missing_numbers) > 0:
-            log_messages.append(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored(', '.join(str(x) for x in sorted(missing_numbers)), 'red', attrs=['bold'])}")
-        else:
-            log_messages.append(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored('None', 'green', attrs=['bold'])}")
+        log_messages.append(f"\nMissing pages: {', '.join(str(x) for x in sorted(missing_numbers)) if len(missing_numbers) > 0 else 'None'}")
 
         # Show some stats
         log_messages.append(f"\nTotal pages in document {len(doc)}")
