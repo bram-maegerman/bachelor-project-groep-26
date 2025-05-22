@@ -58,7 +58,7 @@ def main():
             found_numbers_result = found_numbers_result.get()
 
         for page_index, parsed_numbers in enumerate(found_numbers_result):
-            pdf_page_number = page_index 
+            pdf_page_number = page_index
             found_numbers.append(parsed_numbers)
 
             #   If no numbers found on page
@@ -99,7 +99,7 @@ def main():
                                 previous = find_sequence(found_numbers, page_index, previous)
                                 if previous is not None:
                                     missing_numbers.remove(expected_num)
-                                
+
                             else:
 
                                 #   Check if found page numbers are between previous and previous+10
@@ -140,15 +140,15 @@ def main():
             log_messages.append(f"\n{colored('Missing pages','red', attrs=['bold','underline'])}: {colored('None', 'green', attrs=['bold'])}")
 
         # Show some stats
-        log_messages.append(f"\n{colored('Total pages in document','blue', attrs=['bold'])}: {len(doc)}")
-        log_messages.append(f"{colored('Total pages with numbers','blue', attrs=['bold'])}: {len(found_numbers) - len(missing_numbers)}")
-        log_messages.append(f"{colored('Total pages with missing numbers','blue', attrs=['bold'])}: {len(missing_numbers)}\n")
+        log_messages.append(f"\nTotal pages in document {len(doc)}")
+        log_messages.append(f"\nTotal pages with numbers {len(found_numbers) - len(missing_numbers)}")
+        log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
 
         log_file_location = f"{filename}_LOG.txt"
 
         with open(log_file_location, "w") as file:
             file.writelines(log_messages)
-            
+
         print(log_file_location)
 
 if __name__ == "__main__":
