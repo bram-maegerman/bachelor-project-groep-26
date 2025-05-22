@@ -96,13 +96,19 @@ def find_sequence(found_numbers, current_index, previous=None):
 
         #   Check if the current number-1 appears in the found numbers on previous index (index-1)
         #   and if the current number-2 appears in the found numbers on the one before the previous index (index-2)
-        if actual_page_number - 1 in found_numbers[current_index - 1] and actual_page_number-2 in found_numbers[current_index - 2]:
+        estimated_previous_1 = actual_page_number - 1
+        estimated_previous_2 = actual_page_number - 2
+
+        if estimated_previous_1 in found_numbers[current_index - 1] and estimated_previous_2 in found_numbers[current_index - 2]:
 
             #   Returns the index of the first numbered page, along with the page number of the third page
             next_index = current_index - 1
 
+            previous_1 = RomanNumeral(estimated_previous_1) if type(actual_page_number) == RomanNumeral else estimated_previous_1
+            previous_2 = RomanNumeral(estimated_previous_2) if type(actual_page_number) == RomanNumeral else estimated_previous_2
+
             custom_print(statement_type="INFO", statement=f"The first page with a page number is {next_index}.")
-            custom_print(statement_type="SUCCESS", statement=f"Found first three pages in order ({actual_page_number-2}, {actual_page_number-1}, {actual_page_number}).")
+            custom_print(statement_type="SUCCESS", statement=f"Found first three pages in order ({previous_2}, {previous_1}, {actual_page_number}).")
             return actual_page_number
 
     #   Returns -1 if the index of the first numbered page is not found
