@@ -8,8 +8,14 @@ class API:
         return result if result else []
     
     def run_script_on_files(self, files:list):
-        result = subprocess.run(["python", "../backend/pipeline.py", *files])
-        return result.returncode
+        results = []
+        
+        # TODO SCRIPT OPROEPEN
+        for file_path in files:
+            result = subprocess.run(["python", "", file_path])
+            results.append(result)
+
+        return results
         
 api = API()
 
