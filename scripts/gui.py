@@ -6,15 +6,15 @@ class API:
         window = webview.windows[0]
         result = window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=True)
         return result if result else []
-    
+
     def run_script_on_files(self, files: list):
         results = []
-        
+
         for file_path in files:
             result = subprocess.run(
                 ["python", "scripts/multi_main.py", file_path],
                 capture_output=True,
-                text=True  
+                text=True
             )
             results.append({
             "file": file_path,
@@ -24,8 +24,8 @@ class API:
             "returncode": result.returncode
             })
 
-        return results 
-        
+        return results
+
 api = API()
 
 def maximize_window():
@@ -34,4 +34,4 @@ def maximize_window():
     window.maximize()
 
 webview.create_window("Scan-Checker", "../gui/index.html", js_api=api)
-webview.start(maximize_window, debug=True, icon=r'C:/School/2024-2025/BP/bachelor-project-groep-26/gui/assets/scanner-icon.ico')
+webview.start(maximize_window, debug=True)
