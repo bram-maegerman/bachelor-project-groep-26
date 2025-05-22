@@ -34,4 +34,4 @@ def maximize_window():
     window.maximize()
 
 webview.create_window("Scan-Checker", "../gui/index.html", js_api=api)
-webview.start(maximize_window, debug=True)
+webview.start(maximize_window, debug=True, icon=r'C:/School/2024-2025/BP/bachelor-project-groep-26/gui/assets/scanner-icon.ico')
