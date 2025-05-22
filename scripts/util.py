@@ -1,4 +1,4 @@
-import re, fitz, io
+import re, fitz, io, os
 from typing import Literal
 import pytesseract
 from termcolor import colored
@@ -130,28 +130,35 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
     return log_messages
 
 def process_page(args):
-    page_index, pdf_path, progress_queue, previous = args
-    doc = fitz.open(pdf_path)
-    
+    try:
+        page_index, pdf_path, progress_queue, previous = args
+        # print(f"Start processing page {page_index} - PID: {os.getpid()}")  
+
+        doc = fitz.open(pdf_path)
         
-    pdf_page_number = page_index + 1
-    page = doc[page_index]
-    xref = page.get_images()[0][0]
-    base_image = doc.extract_image(xref)
+            
+        pdf_page_number = page_index + 1
+        page = doc[page_index]
+        xref = page.get_images()[0][0]
+        base_image = doc.extract_image(xref)
 
-    #   Reads out the bytes of the image
-    image_bytes = base_image["image"]
+        #   Reads out the bytes of the image
+        image_bytes = base_image["image"]
 
-    #   Creates an image from those bytes
-    image = Image.open(io.BytesIO(image_bytes))
-    width, height = image.size
+        #   Creates an image from those bytes
+        image = Image.open(io.BytesIO(image_bytes))
+        width, height = image.size
 
-    if width > avg_width*1.2 or height > avg_height*1.2:
-        custom_print(statement_type="WARNING", statement=f"Found a probable double print on page {previous + 1}")
+        if width > avg_width*1.2 or height > avg_height*1.2:
+            custom_print(statement_type="WARNING", statement=f"Found a probable double print on page {previous + 1}")
 
-    #   Extract the numbers from the header and footer (defined by upper and lower)
-    parsed_numbers = extract_header_footer(image)
+        #   Extract the numbers from the header and footer (defined by upper and lower)
+        parsed_numbers = extract_header_footer(image)
 
-    progress_queue.put(1)
+        progress_queue.put(1)
 
-    return parsed_numbers
+        return parsed_numbers
+    except Exception as e:
+        print(f"Error processing page {args[0]}: {e}")
+        progress_queue.put(1)
+        return []

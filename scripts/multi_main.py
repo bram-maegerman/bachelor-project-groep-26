@@ -1,4 +1,4 @@
-import fitz, io
+import fitz, sys
 from pathlib import Path
 from PIL import Image
 from termcolor import colored
@@ -7,11 +7,23 @@ from multiprocessing import Pool, Manager, cpu_count
 # own python scripts
 from util import find_sequence, custom_print, extract_header_footer, log_messages, process_page
 
-curr_dir = Path(__file__).parent.parent
-files = curr_dir / "files"
-filename = files / "DIGI_2007_000118_01.pdf"
+# curr_dir = Path(__file__).parent.parent
+# files = curr_dir / "files"
+# filename = files / "DIGI_2007_000118_01.pdf"
+
+# doc = fitz.open(filename)
+
+if len(sys.argv) < 2:
+    print("Usage: python multi_main.py <path_to_pdf>")
+    sys.exit(1)
+
+filename = Path(sys.argv[1])
+if not filename.exists():
+    print(f"File not found: {filename}")
+    sys.exit(1)
 
 doc = fitz.open(filename)
+
 
 #   All found numbers from header and footer scan
 found_numbers = []

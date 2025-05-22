@@ -7,15 +7,24 @@ class API:
         result = window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=True)
         return result if result else []
     
-    def run_script_on_files(self, files:list):
+    def run_script_on_files(self, files: list):
         results = []
         
-        # TODO SCRIPT OPROEPEN
         for file_path in files:
-            result = subprocess.run(["python", "", file_path])
-            results.append(result)
+            result = subprocess.run(
+                ["python", "scripts/multi_main.py", file_path],
+                # capture_output=True,
+                text=True  # So stdout/stderr are strings
+            )
+            results.append({
+            "file": file_path,
+            "success": result.returncode == 0,
+            # "stdout": result.stdout.strip(),
+            # "stderr": result.stderr.strip(),
+            "returncode": result.returncode
+            })
 
-        return results
+        return results 
         
 api = API()
 
