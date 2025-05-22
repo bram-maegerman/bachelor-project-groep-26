@@ -9,7 +9,6 @@ from roman_numeral import RomanNumeral
 
 log_messages = []
 
-
 def extract_header_footer(full_image):
     # Crop header and footer
     header = full_image.crop((120, 20, 2250, 420))
@@ -44,22 +43,10 @@ def extract_header_footer(full_image):
         combined_image,
         config=r'--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ivx'# -c tessedit_char_whitelist=0123456789ivxlcdIVXLCDM'
     )
-
-    combined_image.save("test.jpg")
-    
-    # Code to find rotation of page 
-    # try:
-    #     osd = pytesseract.image_to_osd(full_image)
-    #     angle = int([line.split(": ")[1] for line in osd.split("\n") if "Rotate" in line][0])
-    #     print(angle)
-    #     # if angle == 90:
-    #     #     full_image.rotate()
-    # except Exception as e:
-    #     print(f"OSD failed: {e}")
         
     # Extract numbers and Roman numerals
     found_numbers = set(int(x) for x in re.findall(r'[-+]?\d+', content))
-    found_romans = set(RomanNumeral(str(x).lower()) for x in re.findall(r'[ivxlcdm]+', content, re.IGNORECASE))
+    found_romans = set(RomanNumeral(str(x).lower()) for x in re.findall(r'[ivx]+', content, re.IGNORECASE))
 
     return found_numbers.union(found_romans)
 
