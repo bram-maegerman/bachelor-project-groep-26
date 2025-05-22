@@ -1,2 +1,3 @@
-/backend/files/*
-/backend/__pycache__/*
+files/*
+scripts/__pycache__/*
+.vscode
