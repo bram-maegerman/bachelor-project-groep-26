@@ -1,13 +1,13 @@
-import re
+import re, fitz, io
 from typing import Literal
 import pytesseract
 from termcolor import colored
-import re
-import pytesseract
 from PIL import ImageEnhance, ImageOps, Image, ImageDraw, ImageFilter
 from roman_numeral import RomanNumeral
 
 log_messages = []
+avg_height = 3520
+avg_width = 2375
 
 def extract_header_footer(full_image):
     # Crop header and footer
@@ -128,3 +128,30 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
         log_messages.append(f"[SUCCESS]: {statement}\n")
 
     return log_messages
+
+def process_page(args):
+    page_index, pdf_path, progress_queue, previous = args
+    doc = fitz.open(pdf_path)
+    
+        
+    pdf_page_number = page_index + 1
+    page = doc[page_index]
+    xref = page.get_images()[0][0]
+    base_image = doc.extract_image(xref)
+
+    #   Reads out the bytes of the image
+    image_bytes = base_image["image"]
+
+    #   Creates an image from those bytes
+    image = Image.open(io.BytesIO(image_bytes))
+    width, height = image.size
+
+    if width > avg_width*1.2 or height > avg_height*1.2:
+        custom_print(statement_type="WARNING", statement=f"Found a probable double print on page {previous + 1}")
+
+    #   Extract the numbers from the header and footer (defined by upper and lower)
+    parsed_numbers = extract_header_footer(image)
+
+    progress_queue.put(1)
+
+    return parsed_numbers
