@@ -34,6 +34,7 @@ async function checkFiles() {
   const outputPaths = result.map((item) => item.stdout);
 
   console.log(outputPaths);
+  window.location.href = "overview.html";
 }
 
 function updateFileList() {

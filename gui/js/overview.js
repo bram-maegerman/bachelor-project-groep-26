@@ -1,33 +1,31 @@
-const files = Array.from({ length: 73 }, (_, i) => ({
-  name: `file_${i + 1}.txt`,
-  link: `#file_${i + 1}`,
-}));
-
 const itemsPerPage = 10;
 let currentPage = 1;
+let files = [];
 
-function renderListPage(page) {
-  const container = document.getElementById("file-list-container");
-  container.innerHTML = "";
+async function renderListPage(page) {
+  window.addEventListener("pywebviewready", async () => {
+    files = await window.pywebview.api.get_files();
+    console.log(files);
+    const container = document.getElementById("file-list-container");
+    container.innerHTML = "";
 
-  const start = (page - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  const filesToDisplay = files.slice(start, end);
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const filesToDisplay = files.slice(start, end);
 
-  const ul = document.createElement("ul");
-  filesToDisplay.forEach((file) => {
-    const li = document.createElement("li");
-    li.textContent = file.name;
-    li.classList.add("clickable-li");
-    li.addEventListener("click", () => {
-      window.location.href = `details.html?file=${encodeURIComponent(
-        file.name
-      )}`;
+    const ul = document.createElement("ul");
+    filesToDisplay.forEach((file) => {
+      const li = document.createElement("li");
+      li.textContent = file;
+      li.classList.add("clickable-li");
+      li.addEventListener("click", () => {
+        window.location.href = `details.html?file=${encodeURIComponent(file)}`;
+      });
+      ul.appendChild(li);
     });
-    ul.appendChild(li);
-  });
 
-  container.appendChild(ul);
+    container.appendChild(ul);
+  });
 }
 
 function renderPagination() {
