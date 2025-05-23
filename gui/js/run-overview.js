@@ -1,3 +1,5 @@
+const fullOverview = document.getElementById("fullOverview");
+
 function renderLastRun(files) {
   const container = document.getElementById("file-list-container");
   container.innerHTML = "";
@@ -15,8 +17,13 @@ function renderLastRun(files) {
 
   container.appendChild(ul);
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("pywebviewready", () => {
-    window.pywebview.api.run_overview();
+    window.pywebview.api.run_last();
+  });
+
+  fullOverview.addEventListener("click", () => {
+    window.location.href = "overview.html";
   });
 });
