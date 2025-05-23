@@ -1,27 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bestandsdetails</title>
-    <link rel="stylesheet" href="style/nav.css" />
-    <link rel="stylesheet" href="style/details.css" />
-  </head>
-  <body>
-    <header>
-      <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
-      <button
-        class="home-button"
-        onclick="window.location.href='run-overview.html'"
-      >
-        Terug
-      </button>
-    </header>
 
-    <main>
-      <div id="file-details" class="details-container"></div>
-    </main>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bestandsdetails</title>
+  <link rel="stylesheet" href="style/nav.css" />
+  <link rel="stylesheet" href="style/details.css" />
+  <script src="js/global.js" defer></script>
+  <script src="js/details.js" defer></script>
+</head>
 
-    <script src="js/details.js"></script>
-  </body>
+<body>
+  <header>
+    <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+    <button class="home-button" id="back">
+      Terug
+    </button>
+  </header>
+
+  <main>
+    <div id="file-details" class="details-container"></div>
+  </main>
+
+</body>
+
 </html>
