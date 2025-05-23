@@ -1,17 +1,17 @@
-import fitz, sys
+import fitz, sys, os
 from pathlib import Path
-from PIL import Image
-from termcolor import colored
 from multiprocessing import Pool, Manager, cpu_count
 
-# own python scripts
-from util import find_sequence, custom_print, extract_header_footer, log_messages, process_page
+# Extracted python logic
+from util import find_sequence, custom_print, log_messages, process_page
 
-# curr_dir = Path(__file__).parent.parent
-# files = curr_dir / "files"
-# filename = files / "DIGI_2007_000118_01.pdf"
+# Creates a directory in /files if one doesn't exist already.
+from datetime import date
+today = "-".join(date.today().isoformat().split("-")[::-1])
+log_directory = f"../files/{today}"
 
-# doc = fitz.open(filename)
+os.makedirs(log_directory, exist_ok=True)
+
 
 if len(sys.argv) < 2:
     print("Usage: python multi_main.py <path_to_pdf>")
@@ -23,7 +23,6 @@ if not filename.exists():
     sys.exit(1)
 
 doc = fitz.open(filename)
-
 
 #   All found numbers from header and footer scan
 found_numbers = []
@@ -141,7 +140,7 @@ def main():
         log_messages.append(f"\nTotal pages with numbers {len(found_numbers) - len(missing_numbers)}")
         log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
 
-        log_file_location = f"{filename}_LOG.txt"
+        log_file_location = f"{log_directory}/{filename.name}_LOG.txt"
 
         with open(log_file_location, "w") as file:
             file.writelines(log_messages)
