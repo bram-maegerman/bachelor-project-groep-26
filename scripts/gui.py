@@ -6,33 +6,33 @@ class API:
         self._files_dir = Path(__file__).parent.parent/"files"
         self._files = self.__init_files()
         self._window_loaded = threading.Event()
-        self._latest_run = []
+        self._latest_run = set()
 
     def page_loaded(self):
         self._window_loaded.set()
 
     def __init_files(self):
-        result = dict()
+        result = set()
         for sub_dir in os.listdir(self._files_dir):
             sub_dir_name = self._files_dir/sub_dir
             if os.path.isdir(sub_dir_name):
                 for file in os.listdir(sub_dir_name):
-                    if file.endswith("_LOG.txt"): 
+                    if file.endswith("_LOG.txt"):
                         file_name = f"{sub_dir_name}/{file.removesuffix('_LOG.txt')}"
-                        result[file_name] = file
+                        result.add(file_name)
         return result
-    
+
     def open_file_dialog(self):
         # Use the window created by webview
         window = webview.windows[0]
         result = window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=True)
         return result if result else []
-    
-    def get_run_files(self):
-        pass
 
     def run_overview(self):
-        webview.windows[0].evaluate_js(f"renderLastRun({self._latest_run})")
+        webview.windows[0].evaluate_js(f"renderOverview({self.get_files()})")
+
+    def run_last(self):
+        webview.windows[0].evaluate_js(f"renderLastRun({list(self._latest_run)})")
 
 
 
@@ -48,20 +48,17 @@ class API:
             if success:
                 if output.endswith("_LOG.txt"):
                     file_name = output.removesuffix("_LOG.txt")
-                    self._files[file_name] = output
-                    self._latest_run.append(file_name)
-
-        webview.windows[0].evaluate_js('window.location.href = "run-overview.html";')
-        self._window_loaded.wait()
-        webview.windows[0].evaluate_js(f"renderLastRun({self._latest_run})")
+                    self._files.add(file_name)
+                    self._latest_run.add(file_name)
+        return
 
     def get_files(self):
-        return list(self._files.keys())
+        return list(self._files)
 
     def get_log(self, key):
-        file_path = self._files_dir/self._files[key]
+        file_path = key+"_LOG.txt"
         with open(file_path, "r") as f:
-            return f.read() 
+            return f.read()
 
 api = API()
 
