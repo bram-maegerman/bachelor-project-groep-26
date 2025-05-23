@@ -16,11 +16,12 @@ class API:
     def run_script_on_files(self, files: list):
         results = []
 
-        webview.windows[0].evaluate_js('window.location.href = "processing.html";')
+        webview.windows[0].evaluate_js('window.location.href = "progress.html";')
         self.window_loaded.wait()
         webview.windows[0].evaluate_js(f"loadFilesInTable({files})")
 
         for file_path in files:
+            webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(file_path)})")
             result = subprocess.run(
                 ["python", "scripts/multi_main.py", file_path],
                 capture_output=True,
@@ -34,7 +35,7 @@ class API:
                 "returncode": result.returncode
             }
             results.append(result_object)
-            webview.windows[0].evaluate_js(f"updateResults({json.dumps(result_object)})")
+            webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
 
         return results
 
