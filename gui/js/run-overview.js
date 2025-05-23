@@ -1,9 +1,4 @@
-let filesList = [];
-
-function getFiles() {}
-
-function renderListPage(files) {
-  filesList = files;
+function renderLastRun(files) {
   const container = document.getElementById("file-list-container");
   container.innerHTML = "";
 
@@ -22,6 +17,6 @@ function renderListPage(files) {
 }
 document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("pywebviewready", () => {
-    window.pywebview.api.page_loaded();
+    window.pywebview.api.run_overview();
   });
 });

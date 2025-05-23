@@ -1,5 +1,13 @@
 const currentFiles = [];
 
+function showLoader() {
+  document.getElementById("loader").classList.remove("hidden");
+}
+
+function hideLoader() {
+  document.getElementById("loader").classList.add("hidden");
+}
+
 function pickFile() {
   if (!window.pywebview?.api?.open_file_dialog) {
     alert("Backend API not available");
@@ -29,12 +37,11 @@ async function checkFiles() {
   }
   const filePaths = currentFiles.map((file) => file.path);
 
-  const result = await window.pywebview.api.run_script_on_files(filePaths);
+  showLoader();
 
-  const outputPaths = result.map((item) => item.stdout);
+  await window.pywebview.api.run_script_on_files(filePaths);
 
-  console.log(outputPaths);
-  window.location.href = "overview.html";
+  hideLoader();
 }
 
 function updateFileList() {
