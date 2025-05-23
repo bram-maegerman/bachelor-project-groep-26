@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="style/nav.css" />
-    <link rel="stylesheet" href="style/overview.css" />
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="style/nav.css" />
+  <link rel="stylesheet" href="style/overview.css" />
+  <script src="js/run-overview.js" defer></script>
   </head>
   <body>
     <header>
@@ -16,11 +18,13 @@
       <button onclick="location.href='index.html'" class="home-button">
         Nieuwe controle
       </button>
+      <button class="home-button" id="fullOverview">
+        Volledige overview
+      </button>
     </header>
     <main>
       <div id="file-list-container" class="centered-list"></div>
       <div id="pagination" class="pagination-nav"></div>
     </main>
-    <script src="js/run-overview.js" defer></script>
   </body>
 </html>
