@@ -42,6 +42,8 @@ async function checkFiles() {
   await window.pywebview.api.run_script_on_files(filePaths);
 
   hideLoader();
+
+  window.location.href = "run-overview.html";
 }
 
 function updateFileList() {
