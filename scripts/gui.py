@@ -1,6 +1,12 @@
-import webview, subprocess
+import webview, subprocess, json, threading
 
 class API:
+    def __init__(self):
+        self.window_loaded = threading.Event()
+
+    def page_loaded(self):
+        self.window_loaded.set()
+
     def open_file_dialog(self):
         # Use the window created by webview
         window = webview.windows[0]
@@ -10,19 +16,25 @@ class API:
     def run_script_on_files(self, files: list):
         results = []
 
+        webview.windows[0].evaluate_js('window.location.href = "processing.html";')
+        self.window_loaded.wait()
+        webview.windows[0].evaluate_js(f"loadFilesInTable({files})")
+
         for file_path in files:
             result = subprocess.run(
                 ["python", "scripts/multi_main.py", file_path],
                 capture_output=True,
                 text=True
             )
-            results.append({
-            "file": file_path,
-            "success": result.returncode == 0,
-            "stdout": result.stdout.strip(),
-            "stderr": result.stderr.strip(),
-            "returncode": result.returncode
-            })
+            result_object = {
+                "file": file_path,
+                "success": result.returncode == 0,
+                "stdout": result.stdout.strip(),
+                "stderr": result.stderr.strip(),
+                "returncode": result.returncode
+            }
+            results.append(result_object)
+            webview.windows[0].evaluate_js(f"updateResults({json.dumps(result_object)})")
 
         return results
 

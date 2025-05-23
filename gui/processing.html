@@ -5,25 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="style/nav.css" />
+    <link rel="stylesheet" href="style/style.css" />
   </head>
   <body>
     <header>
       <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
     </header>
 
-    <button onclick="run()">Run Script</button>
-    <pre id="output">[Output will appear here]</pre>
-    <script>
-      function run() {
-        document.getElementById("output").textContent = "";
-        pywebview.api.run_script_live();
-      }
+    <main>
+      <div id="progress-list"></div>
+    </main>
 
-      function appendOutput(line) {
-        const pre = document.getElementById("output");
-        pre.textContent += line + "\n";
-        pre.scrollTop = pre.scrollHeight;
-      }
-    </script>
+    <script src="js/progress.js" defer></script>
   </body>
 </html>
