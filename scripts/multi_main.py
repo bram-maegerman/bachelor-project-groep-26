@@ -1,14 +1,14 @@
 import fitz, sys, os
 from pathlib import Path
 from multiprocessing import Pool, Manager, cpu_count
-
 # Extracted python logic
 from util import find_sequence, custom_print, log_messages, process_page
 
 # Creates a directory in /files if one doesn't exist already.
 from datetime import date
 today = "-".join(date.today().isoformat().split("-")[::-1])
-log_directory = f"../files/{today}"
+# log_directory = f"../files/{today}"
+log_directory = Path(__file__).parent.parent/"files"/today
 
 os.makedirs(log_directory, exist_ok=True)
 

@@ -3,13 +3,13 @@ from pathlib import Path
 
 class API:
     def __init__(self):
-        self.path = Path(__file__).parent.parent/"files"
+        self._files_dir = Path(__file__).parent.parent/"files"
         self._files = self.__init_files()
 
     def __init_files(self):
         result = dict()
-        for file in os.listdir(self.path):
-            if file is not os.path.isdir(self.path/file):
+        for file in os.listdir(self._files_dir):
+            if file is not os.path.isdir(self._files_dir/file):
                 if file.endswith("_LOG.txt"): 
                     file_name = file.removesuffix("_LOG.txt")
                     result[file_name] = file
@@ -51,7 +51,7 @@ class API:
         return list(self._files.keys())
 
     def get_log(self, key):
-        file_path = self.path/self._files[key]
+        file_path = self._files_dir/self._files[key]
         with open(file_path, "r") as f:
             return f.read() 
 
