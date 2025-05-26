@@ -1,25 +1,26 @@
-import webview, subprocess, os, threading
+import webview, subprocess, os, threading, json
 from pathlib import Path
 
 class API:
     def __init__(self):
         self._files_dir = Path(__file__).parent.parent/"files"
-        self._files = self.__init_files()
         self._window_loaded = threading.Event()
         self._latest_run = set()
 
     def page_loaded(self):
         self._window_loaded.set()
 
-    def __init_files(self):
-        result = set()
+    def get_all_files(self):
+        result = dict()
         for sub_dir in os.listdir(self._files_dir):
             sub_dir_name = self._files_dir/sub_dir
             if os.path.isdir(sub_dir_name):
+                sub_result = []
                 for file in os.listdir(sub_dir_name):
                     if file.endswith("_LOG.txt"):
                         file_name = f"{sub_dir_name}/{file.removesuffix('_LOG.txt')}"
-                        result.add(file_name)
+                        sub_result.append(file_name)
+                result [str(sub_dir_name)] = sub_result
         return result
 
     def open_file_dialog(self):
@@ -29,7 +30,7 @@ class API:
         return result if result else []
 
     def run_overview(self):
-        webview.windows[0].evaluate_js(f"renderOverview({self.get_files()})")
+        webview.windows[0].evaluate_js(f"renderOverview({json.dumps(self.get_all_files())})")
 
     def run_last(self):
         webview.windows[0].evaluate_js(f"renderLastRun({list(self._latest_run)})")
@@ -48,12 +49,8 @@ class API:
             if success:
                 if output.endswith("_LOG.txt"):
                     file_name = output.removesuffix("_LOG.txt")
-                    self._files.add(file_name)
                     self._latest_run.add(file_name)
         return
-
-    def get_files(self):
-        return list(self._files)
 
     def get_log(self, key):
         file_path = key+"_LOG.txt"

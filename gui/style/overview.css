@@ -2,56 +2,63 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 30px;
   }
   
-  .centered-list ul {
-    list-style: none;
-    padding: 0;
-    width: 100%;
-    max-width: 600px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    background-color: #f9f9f9;
-    overflow: hidden;
-  }
-  
-  .centered-list ul li {
-    padding: 15px 20px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    font-weight: 600;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #333;
-    cursor: pointer;
-    user-select: none;
-  }
-  
-  .centered-list ul li:hover {
-    color: #0056b3;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  
-  .pagination-nav {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .pagination-nav button {
-    background: none;
-    border: 1px solid #2596be;
-    margin: 0 5px;
-    cursor: pointer;
-    font-size: 16px;
-    color: #2596be;
-    padding: 10px;
-  }
-  
-  .pagination-nav button.active {
-    font-weight: bold;
-    text-decoration: underline;
-  }
-  
+.centered-list div ul {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: #f9f9f9;
+  overflow: hidden;
+}
+
+.centered-list div ul li {
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-weight: 600;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+}
+
+.centered-list div ul li:hover {
+  color: #0056b3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.pagination-nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination-nav button {
+  background: none;
+  border: 1px solid #2596be;
+  margin: 0 5px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #2596be;
+  padding: 10px;
+}
+
+.pagination-nav button.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.date-title {
+  width: 75%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.date-container {
+  min-width: 400px;
+}
