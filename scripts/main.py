@@ -39,6 +39,7 @@ def main():
     previous = None
     first_index = -1
     missing_numbers = set()
+    skipped_page = False
 
     with Manager() as manager:
         page_count = len(doc)
@@ -94,10 +95,16 @@ def main():
 
                             #   Check if numbers could be possible page numbers
                             if all(x > len(doc) - first_index or x < previous for x in parsed_numbers):
-                                custom_print(statement_type="INFO", statement=f"Found numbers are outside of range: {parsed_numbers}.")
-                                previous = find_sequence(found_numbers, page_index, previous)
-                                if previous is not None:
-                                    missing_numbers.remove(expected_num)
+                                if skipped_page: 
+                                    if previous - 1 in parsed_numbers:
+                                        custom_print(statement_type="WARNING", statement=f"Page {previous - 1} and {previous} have swapped.")
+                                    skipped_page = False
+
+                                else: 
+                                    custom_print(statement_type="INFO", statement=f"Found numbers are outside of range: {parsed_numbers}.")
+                                    previous = find_sequence(found_numbers, page_index, previous)
+                                    if previous is not None:
+                                        missing_numbers.remove(expected_num)
 
                             else:
 
@@ -118,6 +125,7 @@ def main():
                                         previous = first_found
 
                                     custom_print(statement_type="SUCCESS", statement=f"Found expected page number on page {previous}.")
+                                    skipped_page = True
 
                                 #   If there is no intersection between the sets of numbers, then too many pages are missing
                                 #   and we believe there is no use in continuing
