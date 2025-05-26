@@ -99,7 +99,6 @@ def find_sequence(found_numbers, current_index, previous=None):
 
     #   Returns -1 if the index of the first numbered page is not found
     #   If three consecutive page numbers are found, that means pagination has started
-    custom_print(statement_type="WARNING", statement=f"No page number found on PDF page {current_index + 1}.")
     return previous if previous else None
 
 def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], statement=None):
@@ -116,7 +115,8 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
 
     if statement_type == "INFO":
         # print(f"{colored('INFO', 'yellow')}:    {statement}")
-        log_messages.append(f"[INFO]:    {statement}\n")
+        # log_messages.append(f"[INFO]:    {statement}\n")
+        pass
 
     elif statement_type == "WARNING":
         # print(f"{colored('WARNING', 'red')}: {statement}")
@@ -124,7 +124,8 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
 
     elif statement_type == "SUCCESS":
         # print(f"{colored('SUCCESS', 'green')}: {statement}")
-        log_messages.append(f"[SUCCESS]: {statement}\n")
+        # log_messages.append(f"[SUCCESS]: {statement}\n")
+        pass
 
     return log_messages
 

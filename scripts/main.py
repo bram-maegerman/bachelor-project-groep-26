@@ -2,7 +2,7 @@ import fitz, sys, os
 from pathlib import Path
 from multiprocessing import Pool, Manager, cpu_count
 # Extracted python logic
-from util import find_sequence, custom_print, log_messages, process_page
+from util import find_sequence, custom_print, process_page, log_messages
 
 # Creates a directory in /files if one doesn't exist already.
 from datetime import date
@@ -39,6 +39,8 @@ def main():
     previous = None
     first_index = -1
     missing_numbers = set()
+
+    # Variable to check for swapped pages
     skipped_page = False
 
     with Manager() as manager:
@@ -70,10 +72,6 @@ def main():
                     missing_numbers.add(previous)
                     custom_print(statement_type="WARNING", statement=f"Expected to find {previous} but found nothing")
 
-                #   If pagination hasn't started
-                else:
-                    custom_print(statement_type="WARNING", statement=f"No page number found on PDF page {pdf_page_number}")
-
             #   If numbers have been found on current page
             else:
                 if page_index >= 2:
@@ -89,12 +87,13 @@ def main():
                         #   Expected page number is not found on current page
                         else:
                             expected_num = previous + 1
-
-                            custom_print(statement_type="WARNING", statement=f"Expected to find {expected_num} but found {parsed_numbers} instead.")
                             missing_numbers.add(expected_num)
 
                             #   Check if numbers could be possible page numbers
                             if all(x > len(doc) - first_index or x < previous for x in parsed_numbers):
+                                # When all numbers are out of range and the previous page was skipped,
+                                # check if the previous found number - 1 is in found numbers on current page.
+                                # When this is true, the pages are swapped.
                                 if skipped_page: 
                                     if previous - 1 in parsed_numbers:
                                         custom_print(statement_type="WARNING", statement=f"Page {previous - 1} and {previous} have swapped.")
@@ -107,6 +106,7 @@ def main():
                                         missing_numbers.remove(expected_num)
 
                             else:
+                                custom_print(statement_type="WARNING", statement=f"Expected to find {expected_num} but found {parsed_numbers} instead.")
 
                                 #   Check if found page numbers are between previous and previous+10
                                 cap_range = set(previous + i for i in range(2,12))
@@ -119,7 +119,6 @@ def main():
                                     first_found = min(common)
 
                                     #   Add all numbers between previous+1 and the smallest found number to missing_numbers
-                                    # print(first_found)
                                     if type(previous) == type(first_found):
                                         missing_numbers.update(x for x in range(int(previous) + 1, int(first_found)))
                                         previous = first_found
@@ -138,9 +137,7 @@ def main():
 
                     #   Detection of three consecutive page numbers
                         previous = find_sequence(found_numbers, page_index, previous)
-                else:
-                    custom_print(statement_type="WARNING", statement="No page number found on PDF page 1.")
-
+                        
         log_messages.append(f"\nMissing pages: {', '.join(str(x) for x in sorted(missing_numbers)) if len(missing_numbers) > 0 else 'None'}")
 
         # Show some stats
