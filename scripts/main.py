@@ -108,18 +108,22 @@ def main():
                                 # check if the previous found number - 1 is in found numbers on current page.
                                 # When this is true, the pages are swapped.
                                 if skipped_page: 
+                                    custom_print(statement_type="WARNING", statement=f"SKIPPED PAGE SET {skipped_page}.") 
+                                    skipped_page = False
                                     if previous - 1 in parsed_numbers:
                                         custom_print(statement_type="WARNING", statement=f"Page {previous - 1} and {previous} have swapped.")
                                         missing_numbers.remove(expected_num)
-                                    skipped_page = False
 
                                 else: 
+
                                     custom_print(statement_type="INFO", statement=f"Found numbers are outside of range: {parsed_numbers}.")
                                     previous = find_sequence(found_numbers, page_index, previous)
                                     if previous is not None:
                                         missing_numbers.remove(expected_num)
 
                             else:
+                                custom_print(statement_type="WARNING", statement=f"SKIPPED PAGE SET {skipped_page}. IS GOING TO BE SET FALSE") 
+                                skipped_page = False
                                 custom_print(statement_type="WARNING", statement=f"Expected to find {expected_num} but found {parsed_numbers} instead.")
 
                                 #   Check if found page numbers are between previous and previous+10
@@ -139,6 +143,7 @@ def main():
 
                                     custom_print(statement_type="SUCCESS", statement=f"Found expected page number on page {previous}.")
                                     skipped_page = True
+                                    custom_print(statement_type="WARNING", statement=f"SKIPPED PAGE SET {skipped_page}") 
 
                                 #   If there is no intersection between the sets of numbers, then too many pages are missing
                                 #   and we believe there is no use in continuing
