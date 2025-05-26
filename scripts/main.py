@@ -97,6 +97,7 @@ def main():
                                 if skipped_page: 
                                     if previous - 1 in parsed_numbers:
                                         custom_print(statement_type="WARNING", statement=f"Page {previous - 1} and {previous} have swapped.")
+                                        missing_numbers.remove(expected_num)
                                     skipped_page = False
 
                                 else: 
@@ -137,7 +138,7 @@ def main():
 
                     #   Detection of three consecutive page numbers
                         previous = find_sequence(found_numbers, page_index, previous)
-                        
+
         log_messages.append(f"\nMissing pages: {', '.join(str(x) for x in sorted(missing_numbers)) if len(missing_numbers) > 0 else 'None'}")
 
         # Show some stats
