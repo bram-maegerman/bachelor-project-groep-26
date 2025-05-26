@@ -39,6 +39,7 @@ def main():
     previous = None
     first_index = -1
     missing_numbers = set()
+    page_num_break = set()
 
     # Variable to check for swapped pages
     skipped_page = False
@@ -70,7 +71,10 @@ def main():
                 if previous is not None:
                     previous += 1
                     missing_numbers.add(previous)
-                    custom_print(statement_type="WARNING", statement=f"Expected to find {previous} but found nothing")
+
+                    page_num_break.add(previous)
+
+                    # custom_print(statement_type="WARNING", statement=f"Expected to find {previous} but found nothing")
 
             #   If numbers have been found on current page
             else:
@@ -81,8 +85,17 @@ def main():
                         #   i.e expected page number is previous page number+1
                         if previous+1 in parsed_numbers:
                             previous += 1
-                            custom_print(statement_type="SUCCESS", statement=f"Found expected page number {previous}")
 
+                            #   TODO Check 
+                            if len(page_num_break) > 0:
+                                if len(page_num_break) > 1:
+                                    custom_print(statement_type="WARNING", statement=f"No page number found between pages {min(page_num_break)} - {max(page_num_break)}.")
+                                else:
+                                    custom_print(statement_type="WARNING", statement=f"No page number found one page {page_num_break[0]}.")
+                                page_num_break = set()
+
+
+                            custom_print(statement_type="SUCCESS", statement=f"Found expected page number {previous}")
 
                         #   Expected page number is not found on current page
                         else:
