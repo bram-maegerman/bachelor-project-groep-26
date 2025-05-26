@@ -1,0 +1,60 @@
+.landing-title {
+    text-align: center;
+    color: #147FA1;
+}
+
+.landing-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.landing-box {
+    background-color: #147FA1;
+    margin-top: 2em;
+    max-width: 800px;
+    width: 100%;
+}
+
+.landing-box-title {
+    margin-top: 0;
+}
+
+.box-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    gap: 1em;
+}
+
+.box-content img {
+    flex-shrink: 0;
+    height: 200px;
+    width: 200px;
+}
+
+.box-padding {
+    padding: 1em 1em 1em 1em;
+}
+
+.lees-meer {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+h2, p, button {
+    color: white;
+}
+
+.landing-button {
+    border: 1px solid white;
+    border-radius: 2em;
+    background: transparent;
+    padding: 5px;
+}
+
+.p-margin {
+    margin: 0.2em 0.8em 0.2em 0.8em;
+}

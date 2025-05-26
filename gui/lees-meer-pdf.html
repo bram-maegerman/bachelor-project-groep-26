@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Voorcontrole PDF</title>
+    <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="style/lees-meer-pdf.css" />
+    <link rel="stylesheet" href="style/nav.css" />
+    <script src="js/script.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+      <button
+        class="home-button"
+        onclick="window.location.href='overview.html'"
+      >
+        Naar controle overzicht
+      </button>
+    </header>
+
+    <main>
+      <h1 class="landing-title">Voorcontrole pdf</h1>
+
+      <div class="column">
+        <div class="intro-text">
+          <p>
+            Het programma maakt gebruik van Tesseract om OCR uit te voeren op een afbeelding.
+            Dat is een open-source OCR systeem gemaakt door Google, dat net zoals Abby FineReader
+            met zekere nauwkeurigheid karakters kan detecteren in afbeeldingen.
+          </p>
+        </div>
+        <img src="assets/img/tesseractOCR.png" alt="Tesseract OCR Logo" width="180px"/>
+      </div>
+
+      <div class="content-columns">
+        <div class="column">
+          <img src="assets/img/voorcontrole-overlay.png" alt="Voorcontrole overlay voorbeeld" height="300px"/>
+          <div class="text-padding">
+            <p class="p-mw">
+              Om na te kijken waar we best zouden zoeken voor paginanummers,
+              selecteerden we tien willekeurige pagina’s uit verschillende pdf’s en legden deze op elkaar,
+              elk met een transparantie van tien procent. Op deze manier konden we op een visuele manier
+              identificeren waar tekst regelmatig voorkomt. We waren echter enkel benieuwd naar de paginanummers,
+              die zich meestal bevonden in de eerste of laatste regels van een pagina.
+            </p>
+            <p>
+              Om tijd en middelen te besparen besloten we dat het best was om enkel deze relevante zones
+              (hoofdstuk en voettekst) uit de afbeelding te knippen. Vervolgens voegden we deze samen,
+              met wat witruimte ertussen om de A4-structuur te behouden voor optimale OCR-werking.
+              Dit leverde vrij nauwkeurige resultaten op, die zelfs beter werden toen we de OCR-engine mode (OEM)
+              wijzigden van 3 naar 2.
+            </p>
+          </div>
+        </div>
+
+        <p>
+          Voor de detectie van dubbele scans voerden we een analyse uit op een verzameling van pdf’s,
+          en keken we telkens wat de gemiddelde grootte was (rekening houdend met outliers).
+        </p>
+
+        <div class="column">
+          <div>
+            <p style="margin-right: 1em;">
+              We gebruiken nu dit gemiddelde als een hardcoded waarde waar slechts licht (20%)
+              van afgeweken mag worden. Bij een te groot verschil wordt deze pagina geflagged met een waarschuwing
+              dat deze waarschijnlijk een dubbele scan is.
+            </p>
+          </div>
+          <img src="assets/img/statistics.png" alt="OCR statistieken" height="150px"/>
+        </div>
+      </div>
+        <button class="pdf-button" onclick="window.location.href='voorcontrole.html'">Pdf nakijken ></button>
+    </main>
+  </body>
+</html>

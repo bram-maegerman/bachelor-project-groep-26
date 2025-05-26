@@ -5,6 +5,10 @@ body {
   padding: 0;
 }
 
+button {
+  cursor: pointer;
+}
+
 .container{
   display: flex;
   align-items: flex-start;
