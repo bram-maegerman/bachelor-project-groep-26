@@ -1,8 +1,7 @@
-import re, fitz, io, os
+import re, fitz, io
 from typing import Literal
 import pytesseract
-from termcolor import colored
-from PIL import ImageEnhance, ImageOps, Image, ImageDraw, ImageFilter
+from PIL import ImageEnhance, Image, ImageFilter
 from roman_numeral import RomanNumeral
 
 log_messages = []

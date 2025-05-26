@@ -39,7 +39,7 @@ class API:
     def run_script_on_files(self, files: list):
         for file_path in files:
             result = subprocess.run(
-                ["python", "scripts/multi_main.py", file_path],
+                ["python", "scripts/main.py", file_path],
                 capture_output=True,
                 text=True
             )
