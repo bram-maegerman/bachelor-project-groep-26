@@ -19,19 +19,21 @@
     </header>
 
     <div class="center-container">
-      <div class="index-wrapper">
-        <div class="index-wrapper">
-          <button onclick="pickFile()" class="standard-btn">
-            Bestand kiezen
-          </button>
-          <button onclick="checkFiles()" class="standard-btn">
-            Controleren
-          </button>
-        </div>
-        <div id="file-section">
-          <div>Geen bestanden geselecteerd.</div>
+    <div class="drop-area">
+      <p>
+        <span onclick="pickFile()" style="color:#147FA1; text-decoration: underline; cursor: pointer;">Kies</span> of sleep bestanden naar hier om te uploaden
+      </p>
+    </div>
+
+      <div class="file-box">
+        <h3>Geselecteerde bestanden</h3>
+        <div class="file-list-display" id="file-list"></div>
+        <div class="file-actions">
+          <span id="file-count">0/20</span>
+          <button onclick="checkFiles()" class="check-btn">Controleer ></button>
         </div>
       </div>
+
       <div id="loader" class="loader hidden"></div>
     </div>
 
