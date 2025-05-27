@@ -6,17 +6,25 @@
     <link rel="stylesheet" href="style/style.css" />
     <link rel="stylesheet" href="style/nav.css" />
     <script src="js/script.js" defer></script>
+    <script src="js/global.js" defer></script>
   </head>
   <body>
-    <header>
-      <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
-      <button
-        class="home-button"
-        onclick="window.location.href='overview.html'"
-      >
-        Naar controle overzicht
-      </button>
-    </header>
+  <header>
+    <nav>
+      <a href="index.html">
+        <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+      </a>
+      <div class="nav-wrapper">
+        <button id="nav-dropdown">Controleer <span id="nav-arrow">&#x25BC;</span></button>
+        <ul id="options" class="nav-options hidden">
+          <li><a href="index.html">Startpagina</a></li>
+          <li><a href="run-overview.html">Laatste run</a></li>
+          <li><a href="overview.html">Alle runs</a></li>
+          <li><a href="settings.html">Instellingen</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
 
     <div class="center-container">
     <div class="drop-area">

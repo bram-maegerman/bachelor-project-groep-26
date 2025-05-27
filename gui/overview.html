@@ -2,22 +2,30 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Live Output</title>
+    <link rel="stylesheet" href="style/style.css" />
     <link rel="stylesheet" href="style/nav.css" />
     <link rel="stylesheet" href="style/overview.css" />
-    <script src="js/overview.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <script src="js/global.js" defer></script>
   </head>
   <body>
-    <header>
-      <img
-        src="assets/img/KULEUVEN_BIB_LOGO.png"
-        alt="Logo KULeuven Bibliotheken"
-      />
-      <button onclick="location.href='voorcontrole.html'" class="home-button">
-        Nieuwe controle
-      </button>
-    </header>
+  <header>
+    <nav>
+      <a href="index.html">
+        <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+      </a>
+      <div class="nav-wrapper">
+        <button id="nav-dropdown">Alle runs <span id="nav-arrow">&#x25BC;</span></button>
+        <ul id="options" class="nav-options hidden">
+          <li><a href="index.html">Startpagina</a></li>
+          <li><a href="run-overview.html">Controleer</a></li>
+          <li><a href="overview.html">Laatste run</a></li>
+          <li><a href="settings.html">Instellingen</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
     <main>
       
       <div id="file-list-container" class="centered-list">

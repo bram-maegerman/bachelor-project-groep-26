@@ -1,23 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <title>Live Output</title>
-    <link rel="stylesheet" href="style/style.css" />
-    <link rel="stylesheet" href="style/landing.css" />
-    <link rel="stylesheet" href="style/nav.css" />
-    <script src="js/script.js" defer></script>
-  </head>
-  <body>
-    <header>
-      <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
-      <button
-        class="home-button"
-        onclick="window.location.href='overview.html'"
-      >
-        Naar controle overzicht
-      </button>
-    </header>
+  <meta charset="UTF-8" />
+  <title>Live Output</title>
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="style/nav.css" />
+  <link rel="stylesheet" href="style/landing.css" />
+  <script src="js/script.js" defer></script>
+  <script src="js/global.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="index.html">
+        <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+      </a>
+      <div class="nav-wrapper">
+        <button id="nav-dropdown">Startpagina<span id="nav-arrow">&#x25BC;</span></button>
+        <ul id="options" class="nav-options hidden">
+          <li><a href="voorcontrole.html">Controleer</a></li>
+          <li><a href="run-overview.html">Laatste run</a></li>
+          <li><a href="overview.html">Alle runs</a></li>
+          <li><a href="settings.html">Instellingen</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
     <h1 class="landing-title">Hulptool Scanatelier</h1>
       <div class="landing-container">
         <div class="landing-box">
