@@ -24,40 +24,11 @@ if not filename.exists():
 
 doc = fitz.open(filename)
 
-# def find_next_sequence(all_found_numbers, current_key):
-#     if current_key + 2 > len(all_found_numbers): return None #TODO
-#     #   Check sequence for all found parsed numbers on current key
-#     for actual_page_num in all_found_numbers[current_key]:
-
-#         estimated_next_1 = actual_page_num + 1
-#         estimated_next_2 = actual_page_num + 2
-
-#         if estimated_next_1 in all_found_numbers[current_key + 1] and estimated_next_2 in all_found_numbers[current_key + 2]:
-#             #   Converts next numbers if actual page number of type roman numeral
-#             actual_next_1 = RomanNumeral(estimated_next_1) if type(actual_page_num) == RomanNumeral else estimated_next_1
-#             actual_next_2 = RomanNumeral(estimated_next_2) if type(actual_page_num) == RomanNumeral else estimated_next_2
-            
-#             custom_print(statement_type="INFO", statement=f"Found sequence on page {current_key} : {actual_page_num}, {actual_next_1}, {actual_next_2}")
-
-#             return actual_page_num
-        
-#     return None
-
 def find_next_sequence(all_found_numbers, current_key):
-    if current_key + 2 > len(all_found_numbers):
-        return None
-
     for actual_page_num in all_found_numbers[current_key]:
-        try:
-            # Convert to base_num
-            base_num = int(actual_page_num) if isinstance(actual_page_num, int) else int(RomanNumeral(actual_page_num))
-        except Exception:
-            continue  # Skip invalid inputs
+        estimated_next_1 = actual_page_num + 1
+        estimated_next_2 = actual_page_num + 2
 
-        estimated_next_1 = base_num + 1
-        estimated_next_2 = base_num + 2
-
-        # Skip if out of valid Roman numeral range
         if not (1 <= estimated_next_1 <= 3999 and 1 <= estimated_next_2 <= 3999):
             continue
 
@@ -66,27 +37,26 @@ def find_next_sequence(all_found_numbers, current_key):
 
         found_next_1 = (
             estimated_next_1 in next_page_1
+            or str(estimated_next_1) in next_page_1
             or RomanNumeral(estimated_next_1).roman_representation.lower() in next_page_1
         )
 
         found_next_2 = (
             estimated_next_2 in next_page_2
+            or str(estimated_next_2) in next_page_2
             or RomanNumeral(estimated_next_2).roman_representation.lower() in next_page_2
         )
 
+        # Convert to roman if initial value of sequence is roman
+        if type(actual_page_num) == RomanNumeral:
+            estimated_next_1 = RomanNumeral(estimated_next_1)
+            estimated_next_2 = RomanNumeral(estimated_next_2)
+
         if found_next_1 and found_next_2:
             custom_print(statement_type="INFO", statement=f"Found sequence on page {current_key} : {actual_page_num}, {estimated_next_1}, {estimated_next_2}")
-            return base_num
+            return actual_page_num
 
     return None
-
-
-
-#   Goes over all pages of the scanned pdf document
-#   Converts each page to an image
-#   Extract the header and footer from this image
-#   Scan these sections for numbers
-#   Adds those numbers to the found_numbers list
 
 def main():
     #   last found page number
@@ -107,7 +77,9 @@ def main():
             all_found_numbers_list = pool.map_async(process_page, args).get()
             all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list)}
 
-        #   loop over all found numbers
+        #   Loop over all found numbers
+        #   Every entry of all_found_numbers holds a set of numbers which are found a specific page
+        #   This page is represented by the key in this loop
         for key, parsed_numbers in all_found_numbers.items():
             if skip_next:
                 skip_next = False
@@ -162,7 +134,8 @@ def main():
                                for x in parsed_numbers):
                             sequence_start = find_next_sequence(all_found_numbers, key)
                             if sequence_start:
-                                last_found_number = sequence_start
+                                last_found_number = expected_number = sequence_start
+                                del missing_numbers[key]
                         else:
                             #   Check if found page numbers are between previous and previous+10
                             cap_range = set(last_found_number + i for i in range(2, 12))

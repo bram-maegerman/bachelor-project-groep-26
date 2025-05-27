@@ -124,7 +124,7 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
 
     elif statement_type == "SUCCESS":
         # print(f"{colored('SUCCESS', 'green')}: {statement}")
-        log_messages.append(f"[SUCCESS]: {statement}\n")
+        # # # log_messages.append(f"[SUCCESS]: {statement}\n")
         pass
 
     return log_messages
