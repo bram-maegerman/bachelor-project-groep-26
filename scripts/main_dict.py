@@ -22,8 +22,6 @@ if not filename.exists():
     print(f"File not found: {filename}")
     sys.exit(1)
 
-doc = fitz.open(filename)
-
 def find_next_sequence(all_found_numbers, current_key):
     for actual_page_num in all_found_numbers[current_key]:
         estimated_next_1 = actual_page_num + 1
@@ -68,11 +66,12 @@ def main():
     skip_next = False
 
     with Manager() as manager:
-        page_count = len(doc)
+        doc = fitz.open(filename)
+        doc_len = len(doc)
 
         # Multiprocessing
         progress_queue = manager.Queue()
-        args = [(i, str(filename), progress_queue, last_found_number) for i in range(page_count)]
+        args = [(doc.extract_image(doc[i].get_images()[0][0]), i, doc_len, progress_queue) for i in range(doc_len)]
         with Pool(processes=cpu_count()) as pool:
             all_found_numbers_list = pool.map_async(process_page, args).get()
             all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list)}
@@ -94,9 +93,6 @@ def main():
                 #   If pagination has started
                 if last_found_number and expected_number:
                     missing_numbers[key] = expected_number
-
-                    #TODO   Check if this is neccesary
-                    # # custom_print(statement_type="WARNING", statement=f"No page number has been found on page {key}.")
 
             #   If numbers are found on page
             else:
@@ -166,7 +162,7 @@ def main():
 
                             else:
                                 custom_print(statement_type="WARNING", statement=f"Too many pages are missing. Last found page number was {last_found_number}.")
-                                # quit()   
+                                continue
 
                 #   If pagination hasn't started, look for sequence
                 else:
