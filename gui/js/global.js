@@ -20,7 +20,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
-back.addEventListener("click", () => {
-  window.history.back();
-});

@@ -202,3 +202,46 @@ button {
 .hidden {
   display: none;
 }
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.progress-container {
+    flex-grow: 1;
+    max-width: 200px;
+    height: 20px;
+    background: #eee;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #147FA1;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 0.8em;
+    text-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #ff4444;
+    cursor: pointer;
+    font-size: 1.2em;
+}
