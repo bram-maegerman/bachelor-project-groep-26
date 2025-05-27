@@ -9,6 +9,11 @@ button {
   cursor: pointer;
 }
 
+.title {
+    text-align: center;
+    color: #147FA1;
+}
+
 .container{
   display: flex;
   align-items: flex-start;
@@ -126,7 +131,8 @@ button {
 .center-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
+  height: 70vh;
   flex-wrap: wrap;
   gap: 30px;
   padding: 1rem;
@@ -144,7 +150,6 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
   color: #777;
   font-size: 14px;
 }
