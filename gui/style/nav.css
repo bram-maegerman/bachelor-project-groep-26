@@ -93,20 +93,3 @@ nav ul.nav-options li:last-child {
   border-bottom: none;
   border-radius: 0 0 25px 25px;
 }
-
-nav ul.nav-options li a {
-  display: block;
-  padding: 1rem;
-  color: white;
-  text-decoration: none;
-}
-
-/* Wrapper for dropdown button and options */
-nav div.nav-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin: 1rem;
-  width: 150px;
-  box-sizing: border-box;
-}
