@@ -1,8 +1,30 @@
+import re
+
 class RomanNumeral:
 
     def __init__(self, val):
-        self.__representation = val if type(val) == str else self.__convert_to_roman(val)
-        self.__decimal_val = self.__calculate(self.__representation) if type(val) == str else val if type(val) == int else None
+        if isinstance(val, str):
+            if not self.is_valid_roman(val):
+                raise ValueError(f"Invalid Roman numeral format: {val}")
+            self.__representation = val
+            self.__decimal_val = self.__calculate(val)
+
+        elif isinstance(val, int):
+            self.__decimal_val = val
+            self.__representation = self.__convert_to_roman(val)
+        else:
+            raise TypeError(f"Unsupported type for RomanNumeral: {type(val)}")
+
+
+    def __roman_regex(self):
+        return re.compile(
+        r"^M{0,3}(CM|CD|D?C{0,3})"
+        r"(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$",
+        re.IGNORECASE
+        )
+
+    def is_valid_roman(self, s):
+        return bool(self.__roman_regex().fullmatch(s))
 
     ##calculate decimal value of a roman numeral string
     def __calculate(self, value):
@@ -131,7 +153,7 @@ class RomanNumeral:
         return int(self.__decimal_val)
 
     def __hash__(self):
-        return hash(self.decimal_value)
+        return hash(int(self))
 
     def __repr__(self):
         return str(self.__representation)
