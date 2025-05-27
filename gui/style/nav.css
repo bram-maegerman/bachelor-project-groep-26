@@ -60,6 +60,17 @@ nav button:hover {
 
 nav ul.nav-options li {
   text-align: center;
+
+  border-bottom: 1px solid white;
+
+  &:last-child {
+    border-bottom: none;
+    border-radius: 0 0 25px 25px;
+  }
+}
+
+nav ul.nav-options li:hover {
+  background-color: #70cdf5;
 }
 
 nav ul.nav-options li a {
@@ -70,10 +81,6 @@ nav ul.nav-options li a {
   display: block;
 
   padding: 1rem;
-}
-
-nav ul.nav-options li a:hover {
-  color: #004070;
 }
 
 nav ul.nav-options {
