@@ -113,7 +113,7 @@ def main():
                                 custom_print(statement_type="WARNING", 
                                              statement=f"No page number found between pages {first_missing + key_page_num_diff} and {last_missing + key_page_num_diff}. Missing page numbers are {first_missing} - {last_missing}.")
                             else:
-                                custom_print(statement_type="WARNING", statement=f"No page number found on page {key}. Missing page number is {last_missing}.")
+                                custom_print(statement_type="WARNING", statement=f"No page number found on page {key - 1}. Missing page number is {last_missing}.")
                     
                         last_found_number = expected_number
                         custom_print(statement_type="SUCCESS", statement=f"Found expected page number {last_found_number} on page {key}")
@@ -161,7 +161,6 @@ def main():
                                     last_found_number = expected_number = estimated_next_number
 
                             else:
-                                custom_print(statement_type="WARNING", statement=f"Too many pages are missing. Last found page number was {last_found_number}.")
                                 continue
 
                 #   If pagination hasn't started, look for sequence
