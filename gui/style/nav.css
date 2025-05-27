@@ -1,113 +1,89 @@
+header {
+  background-color: #52bdec;
+}
+
 /* Navigation */
 nav {
-  background-color: #52bdec;
-
   max-width: 1200px;
-
+  max-height: 80px;
   display: flex;
-
-  flex-direction: row;
   justify-content: space-between;
-
   margin: auto;
   padding: 0;
-
-  max-height: 80px;
 }
 
 nav a img {
   height: 80px;
-
   margin: 0;
   padding: 0;
 }
 
+/* Dropdown */
 nav button {
-  background-color: transparent;
+  background: transparent;
   color: white;
-
-  text-decoration: none;
-
   border: 2px solid white;
   border-radius: 25px;
-
-  height: min-content;
-
   padding: 1rem;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-
-  z-index: 100;
-
   width: 150px;
   height: 50px;
-  box-sizing: border-box;
-
+  display: flex;
+  justify-content: center;
   font-size: 1rem;
-
   cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
+  z-index: 100;
 }
 
+/* Arrow */
 nav button span {
   margin-left: 5px;
 }
 
-nav button:hover {
-  background-color: #70cdf5;
-}
-
-nav ul.nav-options li {
-  text-align: center;
-
-  border-bottom: 1px solid white;
-
-  &:last-child {
-    border-bottom: none;
-    border-radius: 0 0 25px 25px;
-  }
-}
-
+/* Hover effect on options */
+nav button:hover,
 nav ul.nav-options li:hover {
   background-color: #70cdf5;
 }
 
-nav ul.nav-options li a {
-  text-decoration: none;
-
-  color: white;
-
-  display: block;
-
-  padding: 1rem;
-}
-
+/* Options */
 nav ul.nav-options {
   background-color: #52bdec;
-
   border: 2px solid white;
   border-radius: 25px;
-
-  list-style-type: none;
-
-  padding: 3rem 0 0 0;
+  list-style: none;
+  padding: 3rem 0 0;
   margin: auto 0;
-
   width: 150px;
   box-sizing: border-box;
-
   position: absolute;
 }
 
+nav ul.nav-options li {
+  text-align: center;
+  border-bottom: 1px solid white;
+}
+
+/* Rounded border on last child */
+nav ul.nav-options li:last-child {
+  border-bottom: none;
+  border-radius: 0 0 25px 25px;
+}
+
+nav ul.nav-options li a {
+  display: block;
+  padding: 1rem;
+  color: white;
+  text-decoration: none;
+}
+
+/* Wrapper for dropdown button and options */
 nav div.nav-wrapper {
   display: flex;
-
   flex-direction: column;
-  justify-content: start;
-
+  justify-content: flex-start;
   margin: 1rem;
-
   width: 150px;
   box-sizing: border-box;
 }
