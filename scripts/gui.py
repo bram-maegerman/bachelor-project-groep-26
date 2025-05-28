@@ -1,11 +1,37 @@
 import webview, subprocess, os, threading, json
 from pathlib import Path
 
+CONFIG_FILE = Path(__file__).parent/"config.json"
+
 class API:
     def __init__(self):
         self._files_dir = Path(__file__).parent.parent/"files"
         self._window_loaded = threading.Event()
         self._latest_run = set()
+        self.export_path = self._load_export_path()
+
+    def _load_export_path(self):
+        if CONFIG_FILE.exists():
+            with open(CONFIG_FILE, "r") as f:
+                data = json.load(f)
+                return data.get("export_path", "")
+        return ""
+
+    def _save_export_path(self, path: str):
+        with open(CONFIG_FILE, "w") as f:
+            json.dump({"export_path": path}, f)
+
+    def choose_export_path(self):
+        window = webview.windows[0]
+        result = window.create_file_dialog(webview.FOLDER_DIALOG)
+        if result:
+            self.export_path = result[0]
+            self._save_export_path(self.export_path)
+            return self.export_path
+        return ""
+
+    def get_export_path(self):
+        return self.export_path
 
     def page_loaded(self):
         self._window_loaded.set()

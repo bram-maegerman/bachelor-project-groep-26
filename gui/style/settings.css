@@ -1,0 +1,76 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .settings-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .settings-container h2 {
+    color: #00407A;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .setting-item {
+    margin-bottom: 1.5rem;
+  }
+
+  .setting-item button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+  #export-path {
+    margin: 0;
+    margin-left: 10px;
+    font-style: italic;
+    color: #333;
+    max-width: 600px;          
+    white-space: nowrap;       
+    overflow-x: auto;          
+  }
+  
+  #export-path::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  #export-path::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 4px;
+  }
+
+  .export-path-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .export-path-row p {
+    margin: 0;
+    font-style: italic;
+    color: #333;
+  }
+  
+  .export-path-row button {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .export-path-row button img {
+    display: block;
+    width: 24px;
+    height: 24px;
+  }
+  
