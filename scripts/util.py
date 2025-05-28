@@ -122,12 +122,12 @@ def find_sequence(all_found_numbers, current_key):
             estimated_next_2 = RomanNumeral(estimated_next_2)
 
         if found_next_1 and found_next_2:
-            custom_print(statement_type="INFO", statement=f"Found sequence on page {current_key} : {actual_page_num}, {estimated_next_1}, {estimated_next_2}")
+            custom_print(pdf_page=current_key, statement_type="INFO", statement=f"Found sequence on page {current_key} : {actual_page_num}, {estimated_next_1}, {estimated_next_2}")
             return actual_page_num
 
     return None
 
-def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], statement=None):
+def custom_print(*, pdf_page=0, statement_type: Literal["INFO", "WARNING", "SUCCESS"], statement=None):
     """
     Given a statement and a statement_type, apply a custom style to it.
     Allowed types: INFO, WARNING, SUCCESS
@@ -141,16 +141,16 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
 
     if statement_type == "INFO":
         # print(f"{colored('INFO', 'yellow')}:    {statement}")
-        log_messages.append(f"[INFO]:    {statement}\n")
+        log_messages.append(f"({pdf_page})[INFO]:    {statement}\n")
         pass
 
     elif statement_type == "WARNING":
         # print(f"{colored('WARNING', 'red')}: {statement}")
-        log_messages.append(f"[WARNING]: {statement}\n")
+        log_messages.append(f"({pdf_page})[WARNING]: {statement}\n")
 
     elif statement_type == "SUCCESS":
         # print(f"{colored('SUCCESS', 'green')}: {statement}")
-        log_messages.append(f"[SUCCESS]: {statement}\n")
+        log_messages.append(f"({pdf_page})[SUCCESS]: {statement}\n")
         pass
 
     return log_messages
@@ -179,7 +179,7 @@ def process_page(args):
         image = Image.open(io.BytesIO(image_bytes))
 
         if double_scan(image):
-            custom_print(statement_type="WARNING", statement=f"Found a probable double print on pdf page {page_index + 1}")
+            custom_print(pdf_page=page_index + 1, statement_type="WARNING", statement=f"Found a probable double print on pdf page {page_index + 1}")
         #   Extract the numbers from the header and footer (defined by upper and lower)
         parsed_numbers = extract_header_footer(image, int(doc_len))
 
