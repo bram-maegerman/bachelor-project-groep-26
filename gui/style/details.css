@@ -1,33 +1,125 @@
+
+main {
+  display: flex; 
+  position: relative;
+}
+
+.details-container h2 {
+  color: #2596be;
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
+.details-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.details-container li {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.details-container li:last-child {
+  border-bottom: none;
+}
+
 .details-container {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 2rem;
-    background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1em 1em 1em 3em;
+  flex: 1; 
+  margin-top: 20px;
+}
+
+#pdf-preview {
+  width: 90%;
+  height: 70vh;
+  overflow: auto;
+}
+
+#page-control {
+  background: rgba(255,255,255,0.95); 
+  padding: 5px 10px; 
+  border-radius: 5px;
+}
+
+#pdf-container {
+   flex: 1; 
+   display: flex; 
+   flex-direction: column; 
+   justify-content: center; 
+   align-items: center; 
+   position: relative;
+}
+
+#pdf-preview {
+  margin-top: 2rem;
+  width: 90%; 
+  height: 75vh; 
+  overflow: auto;
+}
+
+#pdf-loading {
+  text-align: center; 
+  padding: 20px;
+}
+
+.log-box {
+  max-height: 400px;
+  max-width: 700px;
+  min-width: 550px;
+  overflow-y: auto;
+  background: #222;
+  color: white;
+  border-radius: 0.5rem;
+  font-family: monospace;
+  padding-right: 12px;
+  box-sizing: content-box;
+}
+
+.log-box::-webkit-scrollbar {
+  width: 8px;
+  background-color: #222;
+  border-radius: 10px;
+}
+
+.log-box::-webkit-scrollbar-thumb {
+    background-color: #615c5c;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    font-family: Arial, sans-serif;
+}
+
+.log-line {
+  margin: 0.25rem 0;
+  margin-left: 10px;
+}
+
+.log-line.warning {
+  color: #f87171;
+}
+
+.log-line.info {
+  color: #facc15;
+}
+
+.log-line.success {
+  color: #4ade80; 
+}
+
+.log-line:hover {
+  background-color: #424547;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+@media (max-width: 1200px) {
+  main {
+    display: flex;
+    flex-direction: column;
   }
-  
-  .details-container h2 {
-    color: #2596be;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  
-  .details-container ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .details-container li {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .details-container li:last-child {
-    border-bottom: none;
-  }
-  
+}
+
   .setting-item select {
     padding: 0.5rem 1rem;
     border-radius: 8px;

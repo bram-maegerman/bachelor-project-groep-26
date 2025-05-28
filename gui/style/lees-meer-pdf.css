@@ -1,0 +1,30 @@
+main {
+    padding: 2em 20em 2em 20em;
+}
+
+h1 {
+    color: #147FA1;
+}
+
+p {
+    font-size: larger;
+}
+
+.column {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.text-padding {
+    margin-left: 1em;
+}
+
+.pdf-button {
+    background-color: #147FA1;
+    padding: 0.5em 1em 0.5em 1em;
+    border: none;
+    border-radius: 2em;
+    color: white;
+    
+}

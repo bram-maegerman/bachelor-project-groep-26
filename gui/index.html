@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <title>Live Output</title>
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="style/nav.css" />
+  <link rel="stylesheet" href="style/landing.css" />
+  <script src="js/script.js" defer></script>
+  <script src="js/global.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="index.html">
+        <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+      </a>
+      <div class="nav-wrapper">
+        <button id="nav-dropdown">Startpagina<span id="nav-arrow">&#x25BC;</span></button>
+        <ul id="options" class="nav-options hidden">
+          <li><a href="voorcontrole.html">Voorcontrole</a></li>
+          <li><a href="run-overview.html">Laatste run</a></li>
+          <li><a href="overview.html">Alle runs</a></li>
+          <li><a href="settings.html">Instellingen</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+    <h1 class="title">Hulptool Scanatelier</h1>
+      <div class="landing-container">
+        <div class="landing-box">
+          <div class="box-content">
+            <div class="text-content">
+              <h2 class="landing-box-title">Voorcontrole pdf</h2>
+              <p>Een tool om een voorcontrole uit te voeren op pdf’s. Deze voorcontrole gaat op zoek naar afwezige pagina’s en dubbele scans. Eens compleet geeft het een duidelijk overzicht terug van de fouten die het heeft gevonden. </p>
+              <p class="lees-meer" onclick="window.location.href='lees-meer-pdf.html'">Lees meer...</p>
+              <button class="landing-button" onclick="window.location.href='voorcontrole.html'"><p class="p-margin">Pdf nakijken ></p></button>
+            </div>
+            <img src="assets/img/voorcontrole.png" alt="voorcontrole">
+          </div>
+        </div>
+
+        <div class="landing-box">
+          <div class="box-content">
+            <div class="text-content">
+              <h2 class="landing-box-title">DSL voor logs</h2>
+              <p>Deze tool laat toe om onze gecodeerde logbestanden uit te lezen. De string wordt hierbij ingelezen en vertaald naar een leesbare versie. </p>
+              <p class="lees-meer">Lees meer...</p>
+              <button class="landing-button"><p class="p-margin">Logs vertalen ></p></button>
+            </div>
+            <img src="assets/img/dsl.png" alt="dsl">
+          </div>
+        </div>
+
+      </div>
+  </body>

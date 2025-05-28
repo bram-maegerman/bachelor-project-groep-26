@@ -34,6 +34,11 @@ function pickFile() {
 async function checkFiles() {
   if (currentFiles.length === 0) {
     alert("Selecteer minimum 1 bestand!");
+    return;
+  }
+  if(currentFiles.length > 20) {
+    alert("Selecteer minder dan 20 bestanden!")
+    return;
   }
   const filePaths = currentFiles.map((file) => file.path);
 
@@ -47,40 +52,37 @@ async function checkFiles() {
 }
 
 function updateFileList() {
-  const fileSection = document.getElementById("file-section");
-  fileSection.innerHTML = "";
+  const fileListContainer = document.getElementById("file-list");
+  fileListContainer.innerHTML = "";
 
   if (currentFiles.length === 0) {
-    fileSection.textContent = "Geen bestanden geselecteerd.";
-    return;
-  }
+    fileListContainer.textContent = "Geen bestanden geselecteerd.";
+  } else {
+    const ul = document.createElement("ul");
 
-  const listWrapper = document.createElement("div");
-  listWrapper.className = "list-wrapper";
+    currentFiles.forEach((file, index) => {
+      const li = document.createElement("li");
+      li.textContent = file.name;
 
-  const title = document.createElement("h3");
-  title.textContent = "Geselecteerde bestanden";
-  listWrapper.appendChild(title);
+      const removeBtn = document.createElement("button");
+      removeBtn.className = "remove-btn";
+      removeBtn.textContent = "×";
+      removeBtn.title = "Verwijderen";
+      removeBtn.addEventListener("click", () => {
+        currentFiles.splice(index, 1);
+        updateFileList();
+      });
 
-  const ul = document.createElement("ul");
-
-  currentFiles.forEach((file, index) => {
-    const li = document.createElement("li");
-    li.textContent = file.name;
-    const removeBtn = document.createElement("button");
-    removeBtn.className = "remove-btn";
-    removeBtn.textContent = "×";
-    removeBtn.title = "Verwijderen";
-
-    removeBtn.addEventListener("click", () => {
-      currentFiles.splice(index, 1);
-      updateFileList();
+      li.appendChild(removeBtn);
+      ul.appendChild(li);
     });
 
-    li.appendChild(removeBtn);
-    ul.appendChild(li);
-  });
+    fileListContainer.appendChild(ul);
+  }
 
-  listWrapper.appendChild(ul);
-  fileSection.appendChild(listWrapper);
+  const countEl = document.getElementById("file-count");
+  countEl.style.color = currentFiles.length > 20 ? "red" : "white";
+
+  countEl.textContent = `${currentFiles.length}/20`;
 }
+

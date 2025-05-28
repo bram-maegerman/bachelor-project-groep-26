@@ -86,4 +86,11 @@ nav div.nav-wrapper {
   margin: 1rem;
   width: 150px;
   box-sizing: border-box;
+  z-index: 999;
+}
+
+/* Rounded border on last child */
+nav ul.nav-options li:last-child {
+  border-bottom: none;
+  border-radius: 0 0 25px 25px;
 }
