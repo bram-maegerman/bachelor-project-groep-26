@@ -24,6 +24,11 @@ if not filename.exists():
 
 def find_next_sequence(all_found_numbers, current_key):
     for actual_page_num in all_found_numbers[current_key]:
+
+        # Skips sequence check for this number if it is 0
+        if actual_page_num == 0:
+            continue
+
         estimated_next_1 = actual_page_num + 1
         estimated_next_2 = actual_page_num + 2
 
@@ -85,7 +90,8 @@ def main():
                 continue
 
             #   Increment expected number on each page if pagination has started
-            if expected_number: expected_number += 1
+            if expected_number: 
+                expected_number += 1
             
             #   If no numbers are found on page
             if len(parsed_numbers) == 0:
@@ -93,6 +99,8 @@ def main():
                 #   If pagination has started
                 if last_found_number and expected_number:
                     missing_numbers[key] = expected_number
+                    if key == max(all_found_numbers):
+                        custom_print(statement_type="WARNING", statement=f"No page number found on last page {key}. Manual check!")
 
             #   If numbers are found on page
             else:
@@ -116,14 +124,13 @@ def main():
                                 custom_print(statement_type="WARNING", statement=f"No page number found on page {key - 1}. Missing page number is {last_missing}.")
                     
                         last_found_number = expected_number
-                        custom_print(statement_type="SUCCESS", statement=f"Found expected page number {last_found_number} on page {key}")
+                        custom_print(statement_type="SUCCESS", statement=f"Found expected page number {last_found_number} on page {key}.")
 
                     #   Expected number is not in parsed numbers
                     else:
                         missing_numbers[key] = expected_number
                         if key == max(all_found_numbers):
                             custom_print(statement_type="WARNING", statement=f"No page number found on last page {key}. Manual check!")
-
 
                         #   Check if numbers could be possible page numbers
                         if all(x < last_found_number or x > len(all_found_numbers) 
@@ -132,6 +139,11 @@ def main():
                             if sequence_start:
                                 last_found_number = expected_number = sequence_start
                                 del missing_numbers[key]
+                            #  Print warning when all found numbers are out of range and no new sequence is found
+                            else:
+                                custom_print(statement_type="WARNING", statement=f"No page number found on page {key}. Missing page number is {expected_number}.")
+                                # Sets the last_found_number to the expected number so the print doesn't get shown in the next entry.
+                                last_found_number = expected_number
                         else:
                             #   Check if found page numbers are between previous and previous+10
                             cap_range = set(last_found_number + i for i in range(2, 12))
@@ -144,7 +156,7 @@ def main():
                                 #   Add all numbers between previous+1 and the smallest found number to missing_numbers
                                 if type(last_found_number) == type(estimated_next_number):
                                     #   All page numbers that have been skipped
-                                    skipped_page_numbers = {x for x in range(int(last_found_number) + 1, int(estimated_next_number))}
+                                    skipped_page_numbers = [x for x in range(int(last_found_number) + 1, int(estimated_next_number))]
                                     
                                     #   Check if only one page has been skipped & the next page is the expected (pages have swapped)
                                     if len(skipped_page_numbers) == 1 and estimated_next_number - 1 in all_found_numbers[key + 1]:
@@ -157,6 +169,11 @@ def main():
                                     #   If pages aren't swapped, add all skipped pages to missing numbers
                                     else:
                                         missing_numbers[key] = skipped_page_numbers
+                                        if len(skipped_page_numbers) == 1:
+                                            custom_print(statement_type="WARNING", statement=f"Page numbers {skipped_page_numbers[0]} was skipped on page {key}.")
+                                        else:
+                                            custom_print(statement_type="WARNING", statement=f"Page numbers {', '.join(str(x) for x in skipped_page_numbers)} were skipped on page {key}.")
+
 
                                     last_found_number = expected_number = estimated_next_number
 
@@ -180,7 +197,6 @@ def main():
         file.writelines(log_messages)
 
     print(log_file_location)
-    # # print(log_messages)
             
             
 if __name__ == "__main__":
