@@ -126,12 +126,11 @@ class API:
         with open(file_path, "r") as f:
             lines = f.readlines()
 
-        # Separate log lines from the summary block
         summary_index = len(lines)
         for i in reversed(range(len(lines))):
             if lines[i].startswith("["):
                 break
-            summary_index = i  # First non-[ line from the bottom
+            summary_index = i
 
         log_lines = lines[:summary_index]
         summary_block = lines[summary_index:]
