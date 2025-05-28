@@ -119,34 +119,37 @@ class API:
         return
 
     def get_log(self, key):
-        print(key)
         file_path = key + "_LOG.txt"
-        with open(file_path, "r") as f:
-            return f.read()
-
-    # def get_log(self, key):
-    #     file_path = key + "_LOG.txt"
-    #     if not os.path.exists(file_path):
-    #         return "Log file not found."
+        if not os.path.exists(file_path):
+            return "Log file not found."
         
-    #     with open(file_path, "r") as f:
-    #         lines = f.readlines()
+        with open(file_path, "r") as f:
+            lines = f.readlines()
 
-    #     filtered_lines = []
-    #     for line in lines:
-    #         if self.log_level == 1:
-    #             # Only WARNING
-    #             if line.startswith("[WARNING]"):
-    #                 filtered_lines.append(line)
-    #         elif self.log_level == 2:
-    #             # WARNING and INFO
-    #             if line.startswith("[WARNING]") or line.startswith("[INFO]"):
-    #                 filtered_lines.append(line)
-    #         else:
-    #             # log_level 3 or higher = all lines
-    #             filtered_lines.append(line)
+        # Separate log lines from the summary block
+        summary_index = len(lines)
+        for i in reversed(range(len(lines))):
+            if lines[i].startswith("["):
+                break
+            summary_index = i  # First non-[ line from the bottom
 
-    #     return "".join(filtered_lines)
+        log_lines = lines[:summary_index]
+        summary_block = lines[summary_index:]
+
+        # Filter log_lines based on log_level
+        filtered_logs = []
+        for line in log_lines:
+            if self.log_level == 1:
+                if line.startswith("[WARNING]"):
+                    filtered_logs.append(line)
+            elif self.log_level == 2:
+                if line.startswith("[WARNING]") or line.startswith("[INFO]"):
+                    filtered_logs.append(line)
+            else:  # log_level == 3 or higher
+                filtered_logs.append(line)
+
+        return "".join(filtered_logs + summary_block)
+
 
 
 api = API()
