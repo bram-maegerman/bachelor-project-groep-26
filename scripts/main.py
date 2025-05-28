@@ -61,7 +61,7 @@ def main():
                 if last_found_number and expected_number:
                     missing_numbers[key] = expected_number
                     if key == max(all_found_numbers):
-                        custom_print(statement_type="WARNING", statement=f"No page number found on last page {key}. Manual check!")
+                        custom_print(pdf_page=key, statement_type="WARNING", statement=f"No page number found on last page {key}. Manual check!")
 
             #   If numbers are found on page
             else:
@@ -79,19 +79,19 @@ def main():
                             key_page_num_diff = key - expected_number
 
                             if amt_consec_missing_numbers > 1:
-                                custom_print(statement_type="WARNING", 
+                                custom_print(pdf_page=key, statement_type="WARNING", 
                                              statement=f"No page number found between pages {first_missing + key_page_num_diff} and {last_missing + key_page_num_diff}. Missing page numbers are {first_missing} - {last_missing}.")
                             else:
-                                custom_print(statement_type="WARNING", statement=f"No page number found on page {key - 1}. Missing page number is {last_missing}.")
+                                custom_print(pdf_page=key, statement_type="WARNING", statement=f"No page number found on page {key - 1}. Missing page number is {last_missing}.")
                     
                         last_found_number = expected_number
-                        custom_print(statement_type="SUCCESS", statement=f"Found expected page number {last_found_number} on page {key}.")
+                        custom_print(pdf_page=key, statement_type="SUCCESS", statement=f"Found expected page number {last_found_number} on page {key}.")
 
                     #   Expected number is not in parsed numbers
                     else:
                         missing_numbers[key] = expected_number
                         if key == max(all_found_numbers):
-                            custom_print(statement_type="WARNING", statement=f"No page number found on last page {key}. Manual check!")
+                            custom_print(pdf_page=key, statement_type="WARNING", statement=f"No page number found on last page {key}. Manual check!")
 
                         #   Check if numbers could be possible page numbers
                         if all(x < last_found_number or x > len(all_found_numbers) 
@@ -102,7 +102,7 @@ def main():
                                 del missing_numbers[key]
                             #  Print warning when all found numbers are out of range and no new sequence is found
                             else:
-                                custom_print(statement_type="WARNING", statement=f"No page number found on page {key}. Missing page number is {expected_number}.")
+                                custom_print(pdf_page=key, statement_type="WARNING", statement=f"No page number found on page {key}. Missing page number is {expected_number}.")
                                 # Sets the last_found_number to the expected number so the print doesn't get shown in the next entry.
                                 last_found_number = expected_number
                         else:
@@ -125,15 +125,15 @@ def main():
                                         del missing_numbers[key]
                                         skip_next = True
 
-                                        custom_print(statement_type="WARNING", statement=f"Page {key} and {key + 1} have swapped.")
+                                        custom_print(pdf_page=key, statement_type="WARNING", statement=f"Page {key} and {key + 1} have swapped.")
 
                                     #   If pages aren't swapped, add all skipped pages to missing numbers
                                     else:
                                         missing_numbers[key] = skipped_page_numbers
                                         if len(skipped_page_numbers) == 1:
-                                            custom_print(statement_type="WARNING", statement=f"Page numbers {skipped_page_numbers[0]} was skipped on page {key}.")
+                                            custom_print(pdf_page=key, statement_type="WARNING", statement=f"Page numbers {skipped_page_numbers[0]} was skipped on page {key}.")
                                         else:
-                                            custom_print(statement_type="WARNING", statement=f"Page numbers {', '.join(str(x) for x in skipped_page_numbers)} were skipped on page {key}.")
+                                            custom_print(pdf_page=key, statement_type="WARNING", statement=f"Page numbers {', '.join(str(x) for x in skipped_page_numbers)} were skipped on page {key}.")
 
 
                                     last_found_number = expected_number = estimated_next_number
