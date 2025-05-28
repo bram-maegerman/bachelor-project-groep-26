@@ -34,7 +34,7 @@
         <h2>Instellingen</h2>
 
         <div class="setting-item">
-          <p>Export pad:</p>
+          <p>Export pad</p>
 
           <div class="export-path-row">
             <button onclick="chooseExportFolder()" aria-label="Kies exportmap">
@@ -43,8 +43,14 @@
             <p id="export-path">Geen map geselecteerd</p>
           </div>
         </div>
-
-        <!-- Add more .setting-item divs here for future settings -->
+        <div class="setting-item">
+          <p>Logniveau</p>
+          <select id="log-level" name="log-level">
+            <option value="1">Alleen waarschuwingen</option>
+            <option value="2">Waarschuwingen en info</option>
+            <option value="3">Alle logs (waarschuwingen, info, succes)</option>
+          </select>
+        </div>
       </div>
     </main>
   </body>

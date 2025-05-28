@@ -28,3 +28,21 @@
     border-bottom: none;
   }
   
+  .setting-item select {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: white;
+    color: #00407A;
+    min-width: 250px;
+    transition: border-color 0.3s;
+  }
+  
+  .setting-item select:hover,
+  .setting-item select:focus {
+    border-color: #00407A;
+    outline: none;
+  }
+  
