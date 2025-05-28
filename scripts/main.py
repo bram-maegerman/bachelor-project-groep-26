@@ -22,45 +22,6 @@ if not filename.exists():
     print(f"File not found: {filename}")
     sys.exit(1)
 
-def find_next_sequence(all_found_numbers, current_key):
-    for actual_page_num in all_found_numbers[current_key]:
-
-        # Skips sequence check for this number if it is 0
-        if actual_page_num == 0:
-            continue
-
-        estimated_next_1 = actual_page_num + 1
-        estimated_next_2 = actual_page_num + 2
-
-        if not (1 <= estimated_next_1 <= 3999 and 1 <= estimated_next_2 <= 3999):
-            continue
-
-        next_page_1 = all_found_numbers.get(current_key + 1, set())
-        next_page_2 = all_found_numbers.get(current_key + 2, set())
-
-        found_next_1 = (
-            estimated_next_1 in next_page_1
-            or str(estimated_next_1) in next_page_1
-            or RomanNumeral(estimated_next_1).roman_representation.lower() in next_page_1
-        )
-
-        found_next_2 = (
-            estimated_next_2 in next_page_2
-            or str(estimated_next_2) in next_page_2
-            or RomanNumeral(estimated_next_2).roman_representation.lower() in next_page_2
-        )
-
-        # Convert to roman if initial value of sequence is roman
-        if type(actual_page_num) == RomanNumeral:
-            estimated_next_1 = RomanNumeral(estimated_next_1)
-            estimated_next_2 = RomanNumeral(estimated_next_2)
-
-        if found_next_1 and found_next_2:
-            custom_print(statement_type="INFO", statement=f"Found sequence on page {current_key} : {actual_page_num}, {estimated_next_1}, {estimated_next_2}")
-            return actual_page_num
-
-    return None
-
 def main():
     #   last found page number
     last_found_number = None
@@ -135,7 +96,7 @@ def main():
                         #   Check if numbers could be possible page numbers
                         if all(x < last_found_number or x > len(all_found_numbers) 
                                for x in parsed_numbers):
-                            sequence_start = find_next_sequence(all_found_numbers, key)
+                            sequence_start = find_sequence(all_found_numbers, key)
                             if sequence_start:
                                 last_found_number = expected_number = sequence_start
                                 del missing_numbers[key]
@@ -182,7 +143,7 @@ def main():
 
                 #   If pagination hasn't started, look for sequence
                 else:
-                    last_found_number = expected_number = find_next_sequence(all_found_numbers, key)
+                    last_found_number = expected_number = find_sequence(all_found_numbers, key)
 
     log_messages.append(f"\nMissing pages: {', '.join(str(x) for x in sorted(missing_numbers)) if len(missing_numbers) > 0 else 'None'}")
 

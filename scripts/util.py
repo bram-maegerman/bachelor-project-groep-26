@@ -84,36 +84,44 @@ def extract_numbers(full_image, *, width, height, upper, lower):
     content = pytesseract.image_to_string(cropped, lang='eng', config=r'--psm 6')
     return re.findall(r'[-+]?\d+', content)
 
-def find_sequence(found_numbers, current_index, previous=None):
-    """
-        Given a list of found numbers for each page, \n
-        if there are three consecutive numbers in three consecutive lists \n
-        then we have found the starting page.
-    """
+def find_sequence(all_found_numbers, current_key):
+    for actual_page_num in all_found_numbers[current_key]:
 
-    #   Loop over the found numbers on current index
-    for actual_page_number in found_numbers[current_index]:
+        # Skips sequence check for this number if it is 0
+        if actual_page_num == 0:
+            continue
 
-        #   Check if the current number-1 appears in the found numbers on previous index (index-1)
-        #   and if the current number-2 appears in the found numbers on the one before the previous index (index-2)
-        estimated_previous_1 = actual_page_number - 1
-        estimated_previous_2 = actual_page_number - 2
+        estimated_next_1 = actual_page_num + 1
+        estimated_next_2 = actual_page_num + 2
 
-        if estimated_previous_1 in found_numbers[current_index - 1] and estimated_previous_2 in found_numbers[current_index - 2]:
+        if not (1 <= estimated_next_1 <= 3999 and 1 <= estimated_next_2 <= 3999):
+            continue
 
-            #   Returns the index of the first numbered page, along with the page number of the third page
-            next_index = current_index - 1
+        next_page_1 = all_found_numbers.get(current_key + 1, set())
+        next_page_2 = all_found_numbers.get(current_key + 2, set())
 
-            previous_1 = RomanNumeral(estimated_previous_1) if type(actual_page_number) == RomanNumeral else estimated_previous_1
-            previous_2 = RomanNumeral(estimated_previous_2) if type(actual_page_number) == RomanNumeral else estimated_previous_2
+        found_next_1 = (
+            estimated_next_1 in next_page_1
+            or str(estimated_next_1) in next_page_1
+            or RomanNumeral(estimated_next_1).roman_representation.lower() in next_page_1
+        )
 
-            custom_print(statement_type="INFO", statement=f"The first page with a page number is {next_index}.")
-            custom_print(statement_type="SUCCESS", statement=f"Found first three pages in order ({previous_2}, {previous_1}, {actual_page_number}).")
-            return actual_page_number
+        found_next_2 = (
+            estimated_next_2 in next_page_2
+            or str(estimated_next_2) in next_page_2
+            or RomanNumeral(estimated_next_2).roman_representation.lower() in next_page_2
+        )
 
-    #   Returns -1 if the index of the first numbered page is not found
-    #   If three consecutive page numbers are found, that means pagination has started
-    return previous if previous else None
+        # Convert to roman if initial value of sequence is roman
+        if type(actual_page_num) == RomanNumeral:
+            estimated_next_1 = RomanNumeral(estimated_next_1)
+            estimated_next_2 = RomanNumeral(estimated_next_2)
+
+        if found_next_1 and found_next_2:
+            custom_print(statement_type="INFO", statement=f"Found sequence on page {current_key} : {actual_page_num}, {estimated_next_1}, {estimated_next_2}")
+            return actual_page_num
+
+    return None
 
 def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], statement=None):
     """
@@ -138,7 +146,7 @@ def custom_print(*, statement_type: Literal["INFO", "WARNING", "SUCCESS"], state
 
     elif statement_type == "SUCCESS":
         # print(f"{colored('SUCCESS', 'green')}: {statement}")
-        # log_messages.append(f"[SUCCESS]: {statement}\n")
+        log_messages.append(f"[SUCCESS]: {statement}\n")
         pass
 
     return log_messages
