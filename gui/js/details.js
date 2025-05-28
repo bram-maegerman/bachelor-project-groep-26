@@ -5,16 +5,15 @@ const path = params.get("path");
 const container = document.getElementById("file-details");
 
 function extractStats(log) {
-  const missingPages = log.match(/Missing pages?: (.*)/);
-  const totalPages = log.match(/Total pages in document (\d+)/);
-  const totalWithNumbers = log.match(/Total pages with numbers (\d+)/);
-  const totalMissingPages = log.match(/Total pages with missing numbers (\d+)/);
+  let [missing, total, withNumbers, withMissing] = log.split(/\r?\n/);
 
   return {
-    missing: missingPages ? missingPages[1] : "",
-    total: totalPages ? totalPages[1] : "",
-    withNumbers: totalWithNumbers ? totalWithNumbers[1] : "",
-    withMissing: totalMissingPages ? totalMissingPages[1] : "",
+    missing: missing.match(/Missing pages?: (.*)/)?.[1] || "0",
+    total: total.match(/Total pages in document (\d+)/)?.[1] || "0",
+    withNumbers:
+      withNumbers.match(/Total pages with numbers (\d+)/)?.[1] || "0",
+    withMissing:
+      withMissing.match(/Total pages with missing numbers (\d+)/)?.[1] || "0",
   };
 }
 
@@ -25,149 +24,146 @@ function classifyLogLine(line) {
   return "log";
 }
 
-window.addEventListener("pywebviewready", async () => {
-  if (!filename || !path) {
-    container.innerHTML = "<p>Geen bestand opgegeven.</p>";
-    return;
-  }
-
-  const title = document.createElement("h2");
-  title.textContent = filename;
-  container.appendChild(title);
-
-  const file = await window.pywebview.api.get_log(path);
-  const lines = file.split(/\r?\n/);
-  const stats = extractStats(file);
-
+function createStatsBox(stats) {
   const statsBox = document.createElement("div");
-  statsBox.classList.add("stats-box");
+  statsBox.className = "stats-box";
   statsBox.innerHTML = `
     <p><strong>Missing page numbers:</strong><br>${stats.missing}</p>
     <p><strong>Total pages:</strong><br>${stats.total}</p>
     <p><strong>Total pages with numbers:</strong><br>${stats.withNumbers}</p>
     <p><strong>Total pages with missing numbers:</strong><br>${stats.withMissing}</p>
   `;
-  container.appendChild(statsBox);
+  return statsBox;
+}
 
+function createLogBox(logText) {
   const logBox = document.createElement("div");
-  logBox.classList.add("log-box");
+  logBox.className = "log-box";
 
-  lines.forEach((line) => {
-    if (/^(Missing pages?:|Total pages)/.test(line)) return;
+  const lines = logText.split(/\r?\n/);
+  for (const line of lines) {
+    if (/^(Missing pages?:|Total pages)/.test(line)) continue;
 
     const match = line.match(/^\((\d+)\)(.*)$/);
-    let pageNumber = null;
-    let displayText = line;
-
-    if (match) {
-      pageNumber = parseInt(match[1], 10);
-      displayText = match[2].trim();
-    }
+    const pageNumber = match ? parseInt(match[1], 10) : null;
+    const displayText = match ? match[2].trim() : line;
 
     const p = document.createElement("p");
     p.textContent = displayText;
-    p.classList.add("log-line", classifyLogLine(displayText));
+    p.className = `log-line ${classifyLogLine(displayText)}`;
 
     if (pageNumber !== null) {
       p.style.cursor = "pointer";
       p.addEventListener("click", () => {
-        const inputPage = document.getElementById("current-page");
-        inputPage.value = pageNumber;
-        inputPage.dispatchEvent(new Event("change"));
+        const input = document.getElementById("current-page");
+        input.value = pageNumber;
+        input.dispatchEvent(new Event("change"));
       });
     }
 
     logBox.appendChild(p);
-  });
+  }
 
-  container.appendChild(logBox);
-
-  const pdf_path = lines[lines.length - 1]
-  await loadPdf(pdf_path)
-});
+  return logBox;
+}
 
 async function loadPdf(path) {
-  const loadingDiv = document.getElementById("pdf-loading");
-  const previewDiv = document.getElementById("pdf-preview");
+  const loading = document.getElementById("pdf-loading");
+  const preview = document.getElementById("pdf-preview");
   const pageControl = document.getElementById("page-control");
+  const pageInput = document.getElementById("current-page");
+
+  loading.style.display = "block";
+  preview.innerHTML = "";
   pageControl.style.display = "none";
 
-  const progressText = document.createElement("p");
-  progressText.innerHTML = "Getting your PDF...";
-
-  loadingDiv.style.display = "block";
-  previewDiv.innerHTML = "";
-  loadingDiv.appendChild(progressText);
+  const status = document.createElement("p");
+  status.textContent = "Getting your PDF...";
+  loading.appendChild(status);
 
   const dataUrl = await window.pywebview.api.read_pdf_as_data_url(path);
   if (!dataUrl) {
-    console.error("Could not read PDF as data URL:", path);
-    loadingDiv.textContent = "Failed to load PDF.";
+    console.error("Failed to load PDF:", path);
+    loading.textContent = "Failed to load PDF.";
     return;
   }
 
   const pdf = await pdfjsLib.getDocument(dataUrl).promise;
   const totalPages = pdf.numPages;
-
   document.getElementById("total-pages").textContent = totalPages;
+  status.textContent = "";
 
-  const canvasElements = [];
-  progressText.innerHTML = "";
+  const canvases = [];
 
-  for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-    const percent = ((pageNum - 1) / totalPages) * 100;
-    progressText.textContent = `Loading... ${percent.toFixed(0)}%`;
+  for (let i = 1; i <= totalPages; i++) {
+    status.textContent = `Loading... ${((100 * (i - 1)) / totalPages).toFixed(
+      0
+    )}%`;
 
-    const page = await pdf.getPage(pageNum);
+    const page = await pdf.getPage(i);
     const viewport = page.getViewport({ scale: 1.2 });
 
     const canvas = document.createElement("canvas");
-    canvas.setAttribute("data-page", pageNum);
+    canvas.dataset.page = i;
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
     canvas.style.display = "block";
     canvas.style.marginBottom = "20px";
 
-    const context = canvas.getContext("2d");
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport })
+      .promise;
 
-    const renderContext = {
-      canvasContext: context,
-      viewport: viewport,
-    };
-
-    await page.render(renderContext).promise;
-    previewDiv.appendChild(canvas);
-    canvasElements.push(canvas);
+    preview.appendChild(canvas);
+    canvases.push(canvas);
   }
 
-  loadingDiv.style.display = "none";
-  pageControl.style.display = "";
+  loading.style.display = "none";
+  pageControl.style.display = "block";
 
-  const inputPage = document.getElementById("current-page");
-
-  inputPage.addEventListener("change", () => {
-    let pageNum = parseInt(inputPage.value);
+  pageInput.addEventListener("change", () => {
+    let pageNum = parseInt(pageInput.value);
     if (isNaN(pageNum) || pageNum < 1) pageNum = 1;
     if (pageNum > totalPages) pageNum = totalPages;
 
-    const canvas = previewDiv.querySelector(`canvas[data-page="${pageNum}"]`);
-    if (canvas) {
-      canvas.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    const canvas = preview.querySelector(`canvas[data-page="${pageNum}"]`);
+    canvas?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const page = entry.target.getAttribute("data-page");
-        inputPage.value = page;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          pageInput.value = entry.target.dataset.page;
+        }
       }
-    });
-  }, {
-    root: previewDiv,
-    threshold: 0.6
-  });
+    },
+    {
+      root: preview,
+      threshold: 0.6,
+    }
+  );
 
-  canvasElements.forEach(canvas => observer.observe(canvas));
+  canvases.forEach((canvas) => observer.observe(canvas));
 }
 
+window.addEventListener("pywebviewready", async () => {
+  if (!filename || !path) {
+    container.innerHTML = "<p>Geen bestand opgegeven.</p>";
+    return;
+  }
+
+  container.appendChild(
+    Object.assign(document.createElement("h2"), { textContent: filename })
+  );
+
+  const file = await window.pywebview.api.get_log(path);
+  const [logText, statistics, rawPdfPath] = file.split(/\r?\n\r?\n/);
+
+  const stats = extractStats(statistics.trim().trim("\n"));
+  container.appendChild(createStatsBox(stats));
+  container.appendChild(createLogBox(logText));
+
+  const pdfPath = rawPdfPath.replace("Path to original pdf: \n", "").trim();
+  console.log("PDF Path:", pdfPath);
+  await loadPdf(pdfPath);
+});
