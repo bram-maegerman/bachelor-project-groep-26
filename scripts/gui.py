@@ -1,4 +1,4 @@
-import webview, subprocess, os, threading, json, sys
+import webview, subprocess, os, threading, json, base64, sys
 from pathlib import Path
 import pytesseract
 
@@ -136,32 +136,40 @@ class API:
             return "Log file not found."
         
         with open(file_path, "r") as f:
-            lines = f.readlines()
+            text = f.read()
 
-        summary_index = len(lines)
-        for i in reversed(range(len(lines))):
-            if lines[i].startswith("["):
-                break
-            summary_index = i
+        summary_index = text.find("\n\n")
 
-        log_lines = lines[:summary_index]
-        summary_block = lines[summary_index:]
+
+        log_lines = text[:summary_index]
+        summary_block = text[summary_index:].split("\n")
 
         # Filter log_lines based on log_level
         filtered_logs = []
-        for line in log_lines:
-            if self.log_level == 1:
-                if line.startswith("[WARNING]"):
-                    filtered_logs.append(line)
-            elif self.log_level == 2:
-                if line.startswith("[WARNING]") or line.startswith("[INFO]"):
-                    filtered_logs.append(line)
-            else:  # log_level == 3 or higher
+        for line in log_lines.split("\n"):
+            if ")[W" in line:
                 filtered_logs.append(line)
+            if self.log_level == 2:
+                if ")[I" in line:
+                    filtered_logs.append(line)
+            if self.log_level == 3:
+                if ")[S" in line:
+                    filtered_logs.append(line)
 
-        return "".join(filtered_logs + summary_block)
+        filtered_logs.extend(summary_block)
+        return "\n".join(filtered_logs)
 
 
+        
+    def read_pdf_as_data_url(self, path):
+        path = Path(path.replace("/", os.sep)).resolve()
+
+        if not path.exists():
+            return None
+
+        with open(path, 'rb') as f:
+            encoded = base64.b64encode(f.read()).decode('utf-8')
+            return f'data:application/pdf;base64,{encoded}'
 
 api = API()
 
