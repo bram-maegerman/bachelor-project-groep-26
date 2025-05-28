@@ -2,12 +2,12 @@ import fitz, sys, os
 from pathlib import Path
 from multiprocessing import Pool, Manager, cpu_count
 # Extracted python logic
-from util import find_sequence, custom_print, log_messages, process_page
+from util import find_sequence, custom_print, process_page, log_messages
+from roman_numeral import RomanNumeral
 
 # Creates a directory in /files if one doesn't exist already.
 from datetime import date
 today = "-".join(date.today().isoformat().split("-")[::-1])
-# log_directory = f"../files/{today}"
 log_directory = Path(__file__).parent.parent/"files"/today
 
 os.makedirs(log_directory, exist_ok=True)
@@ -22,130 +22,145 @@ if not filename.exists():
     print(f"File not found: {filename}")
     sys.exit(1)
 
-doc = fitz.open(filename)
-
-#   All found numbers from header and footer scan
-found_numbers = []
-avg_height = 3520
-avg_width = 2375
-
-#   Goes over all pages of the scanned pdf document
-#   Converts each page to an image
-#   Extract the header and footer from this image
-#   Scan these sections for numbers
-#   Adds those numbers to the found_numbers list
-
 def main():
-    previous = None
-    first_index = -1
-    missing_numbers = set()
+    #   last found page number
+    last_found_number = None
+    #   expected number to find on current page
+    expected_number = None
+    #   dict of missing numbers, containing pdf page as key & expected page number as value
+    missing_numbers = dict()
+    skip_next = False
 
     with Manager() as manager:
-        page_count = len(doc)
+        doc = fitz.open(filename)
+        doc_len = len(doc)
 
+        # Multiprocessing
         progress_queue = manager.Queue()
-        args = [(i, str(filename), progress_queue, previous) for i in range(page_count)]
-        # print("Processing...")
+        args = [(doc.extract_image(doc[i].get_images()[0][0]), i, doc_len, progress_queue) for i in range(doc_len)]
         with Pool(processes=cpu_count()) as pool:
-            found_numbers_result = pool.map_async(process_page, args)
+            all_found_numbers_list = pool.map_async(process_page, args).get()
+            all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list)}
 
-            completed = 0
-            while completed < page_count:
-                progress_queue.get()
-                completed += 1
-                # print(f"\rProgress: {completed}/{page_count} ({(completed/page_count)*100:.1f}%)", end='')
-            found_numbers_result = found_numbers_result.get()
+        #   Loop over all found numbers
+        #   Every entry of all_found_numbers holds a set of numbers which are found a specific page
+        #   This page is represented by the key in this loop
+        for key, parsed_numbers in all_found_numbers.items():
+            if skip_next:
+                skip_next = False
+                continue
 
-        for page_index, parsed_numbers in enumerate(found_numbers_result):
-            pdf_page_number = page_index
-            found_numbers.append(parsed_numbers)
-
-            #   If no numbers found on page
+            #   Increment expected number on each page if pagination has started
+            if expected_number: 
+                expected_number += 1
+            
+            #   If no numbers are found on page
             if len(parsed_numbers) == 0:
-
+                
                 #   If pagination has started
-                if previous is not None:
-                    previous += 1
-                    missing_numbers.add(previous)
-                    custom_print(statement_type="WARNING", statement=f"Expected to find {previous} but found nothing")
+                if last_found_number and expected_number:
+                    missing_numbers[key] = expected_number
+                    if key == max(all_found_numbers):
+                        custom_print(statement_type="WARNING", statement=f"No page number found on last page {key}. Manual check!")
 
-                #   If pagination hasn't started
-                else:
-                    custom_print(statement_type="WARNING", statement=f"No page number found on PDF page {pdf_page_number}")
-
-            #   If numbers have been found on current page
+            #   If numbers are found on page
             else:
-                if page_index >= 2:
-                    if previous is not None:
+                if last_found_number:
+                    if expected_number in parsed_numbers:
+                        #   amount of consecutive missing numbers
+                        amt_consec_missing_numbers = expected_number - 1 - int(last_found_number)
 
-                        #   If an increment of previous is on current page
-                        #   i.e expected page number is previous page number+1
-                        if previous+1 in parsed_numbers:
-                            previous += 1
-                            custom_print(statement_type="SUCCESS", statement=f"Found expected page number {previous}")
+                        if amt_consec_missing_numbers > 0:
+                            #   find the first & last missing number in amt_consec_missing_numbers
+                            first_missing = expected_number - amt_consec_missing_numbers
+                            last_missing = expected_number - 1
 
+                            #   Difference between PDF page & page number
+                            key_page_num_diff = key - expected_number
 
-                        #   Expected page number is not found on current page
+                            if amt_consec_missing_numbers > 1:
+                                custom_print(statement_type="WARNING", 
+                                             statement=f"No page number found between pages {first_missing + key_page_num_diff} and {last_missing + key_page_num_diff}. Missing page numbers are {first_missing} - {last_missing}.")
+                            else:
+                                custom_print(statement_type="WARNING", statement=f"No page number found on page {key - 1}. Missing page number is {last_missing}.")
+                    
+                        last_found_number = expected_number
+                        custom_print(statement_type="SUCCESS", statement=f"Found expected page number {last_found_number} on page {key}.")
+
+                    #   Expected number is not in parsed numbers
+                    else:
+                        missing_numbers[key] = expected_number
+                        if key == max(all_found_numbers):
+                            custom_print(statement_type="WARNING", statement=f"No page number found on last page {key}. Manual check!")
+
+                        #   Check if numbers could be possible page numbers
+                        if all(x < last_found_number or x > len(all_found_numbers) 
+                               for x in parsed_numbers):
+                            sequence_start = find_sequence(all_found_numbers, key)
+                            if sequence_start:
+                                last_found_number = expected_number = sequence_start
+                                del missing_numbers[key]
+                            #  Print warning when all found numbers are out of range and no new sequence is found
+                            else:
+                                custom_print(statement_type="WARNING", statement=f"No page number found on page {key}. Missing page number is {expected_number}.")
+                                # Sets the last_found_number to the expected number so the print doesn't get shown in the next entry.
+                                last_found_number = expected_number
                         else:
-                            expected_num = previous + 1
+                            #   Check if found page numbers are between previous and previous+10
+                            cap_range = set(last_found_number + i for i in range(2, 12))
+                            common = cap_range & parsed_numbers
 
-                            custom_print(statement_type="WARNING", statement=f"Expected to find {expected_num} but found {parsed_numbers} instead.")
-                            missing_numbers.add(expected_num)
+                            if len(common) > 0:
+                                #   Lowest found number in intersection is **most likely** the next page number
+                                estimated_next_number = min(common)
+                                
+                                #   Add all numbers between previous+1 and the smallest found number to missing_numbers
+                                if type(last_found_number) == type(estimated_next_number):
+                                    #   All page numbers that have been skipped
+                                    skipped_page_numbers = [x for x in range(int(last_found_number) + 1, int(estimated_next_number))]
+                                    
+                                    #   Check if only one page has been skipped & the next page is the expected (pages have swapped)
+                                    if len(skipped_page_numbers) == 1 and estimated_next_number - 1 in all_found_numbers[key + 1]:
+                                        #   remove swapped page from missing numbers
+                                        del missing_numbers[key]
+                                        skip_next = True
 
-                            #   Check if numbers could be possible page numbers
-                            if all(x > len(doc) - first_index or x < previous for x in parsed_numbers):
-                                custom_print(statement_type="INFO", statement=f"Found numbers are outside of range: {parsed_numbers}.")
-                                previous = find_sequence(found_numbers, page_index, previous)
-                                if previous is not None:
-                                    missing_numbers.remove(expected_num)
+                                        custom_print(statement_type="WARNING", statement=f"Page {key} and {key + 1} have swapped.")
+
+                                    #   If pages aren't swapped, add all skipped pages to missing numbers
+                                    else:
+                                        missing_numbers[key] = skipped_page_numbers
+                                        if len(skipped_page_numbers) == 1:
+                                            custom_print(statement_type="WARNING", statement=f"Page numbers {skipped_page_numbers[0]} was skipped on page {key}.")
+                                        else:
+                                            custom_print(statement_type="WARNING", statement=f"Page numbers {', '.join(str(x) for x in skipped_page_numbers)} were skipped on page {key}.")
+
+
+                                    last_found_number = expected_number = estimated_next_number
 
                             else:
+                                continue
 
-                                #   Check if found page numbers are between previous and previous+10
-                                cap_range = set(previous + i for i in range(2,12))
-                                common = cap_range & parsed_numbers
-
-                                #   If the intersection of both sets of numbers contains at least one number
-                                if len(common) > 0:
-
-                                    #   Lowest found number in intersection is **most likely** the next page number
-                                    first_found = min(common)
-
-                                    #   Add all numbers between previous+1 and the smallest found number to missing_numbers
-                                    # print(first_found)
-                                    if type(previous) == type(first_found):
-                                        missing_numbers.update(x for x in range(int(previous) + 1, int(first_found)))
-                                        previous = first_found
-
-                                    custom_print(statement_type="SUCCESS", statement=f"Found expected page number on page {previous}.")
-
-                                #   If there is no intersection between the sets of numbers, then too many pages are missing
-                                #   and we believe there is no use in continuing
-                                else:
-                                    custom_print(statement_type="WARNING", statement=f"Too many pages are missing. Last found page number was {previous}.")
-                                    quit()
-
-                    #   If starting index (for page numbers) hasn't been found
-                    else:
-
-                    #   Detection of three consecutive page numbers
-                        previous = find_sequence(found_numbers, page_index, previous)
+                #   If pagination hasn't started, look for sequence
                 else:
-                    custom_print(statement_type="WARNING", statement="No page number found on PDF page 1.")
+                    last_found_number = expected_number = find_sequence(all_found_numbers, key)
 
-        log_messages.append(f"\nMissing pages: {', '.join(str(x) for x in sorted(missing_numbers)) if len(missing_numbers) > 0 else 'None'}")
+    log_messages.append(f"\nMissing pages: {', '.join(str(x) for x in sorted(missing_numbers)) if len(missing_numbers) > 0 else 'None'}")
 
-        # Show some stats
-        log_messages.append(f"\nTotal pages in document {len(doc)}")
-        log_messages.append(f"\nTotal pages with numbers {len(found_numbers) - len(missing_numbers)}")
-        log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
+    # Show some stats
+    log_messages.append(f"\nTotal pages in document {len(doc)}")
+    log_messages.append(f"\nTotal pages with numbers {len(all_found_numbers) - len(missing_numbers)}")
+    log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
 
-        log_file_location = f"{log_directory}/{filename.name}_LOG.txt"
+    log_messages.append(f"\n\nPath to original pdf: \n{filename}")
 
-        with open(log_file_location, "w") as file:
-            file.writelines(log_messages)
+    log_file_location = f"{log_directory}/{filename.name}_LOG.txt"
 
-        print(log_file_location)
+    with open(log_file_location, "w") as file:
+        file.writelines(log_messages)
 
+    print(log_file_location)
+            
+            
 if __name__ == "__main__":
     main()
