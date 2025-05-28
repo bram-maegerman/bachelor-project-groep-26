@@ -119,9 +119,35 @@ class API:
         return
 
     def get_log(self, key):
+        print(key)
         file_path = key + "_LOG.txt"
         with open(file_path, "r") as f:
             return f.read()
+
+    # def get_log(self, key):
+    #     file_path = key + "_LOG.txt"
+    #     if not os.path.exists(file_path):
+    #         return "Log file not found."
+        
+    #     with open(file_path, "r") as f:
+    #         lines = f.readlines()
+
+    #     filtered_lines = []
+    #     for line in lines:
+    #         if self.log_level == 1:
+    #             # Only WARNING
+    #             if line.startswith("[WARNING]"):
+    #                 filtered_lines.append(line)
+    #         elif self.log_level == 2:
+    #             # WARNING and INFO
+    #             if line.startswith("[WARNING]") or line.startswith("[INFO]"):
+    #                 filtered_lines.append(line)
+    #         else:
+    #             # log_level 3 or higher = all lines
+    #             filtered_lines.append(line)
+
+    #     return "".join(filtered_lines)
+
 
 api = API()
 
@@ -130,5 +156,5 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-webview.create_window("Scan-Checker", "../gui/index.html", js_api=api)
+webview.create_window("Scan-Checker", "../gui/voorcontrole.html", js_api=api)
 webview.start(maximize_window, debug=True)
