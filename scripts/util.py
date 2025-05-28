@@ -58,8 +58,14 @@ def to_string(image, psm=None, whitelist=None, doc_len=1000):
         # Extract numbers and Roman numerals
         found_numbers = set(int(x) for x in re.findall(r'[-+]?\d+', content) if int(x) < doc_len)
 
-        found_romans = set(RomanNumeral(str(x).lower()) for x in re.findall(r'[ivx]+', content, re.IGNORECASE))
-        found_romans = set(x for x in found_romans if x.decimal_value < doc_len)
+        found_romans = set()
+        for x in re.findall(r'[ivx]+', content, re.IGNORECASE):
+            try:
+                roman = RomanNumeral(str(x).lower())
+                if roman.decimal_value < doc_len:
+                    found_romans.add(roman)
+            except ValueError:
+                pass
 
         return found_numbers.union(found_romans)
 
