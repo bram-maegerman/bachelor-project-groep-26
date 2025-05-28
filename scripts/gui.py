@@ -1,5 +1,17 @@
-import webview, subprocess, os, threading, json
+import webview, subprocess, os, threading, json, sys
 from pathlib import Path
+import pytesseract
+
+if getattr(sys, 'frozen', False):
+    base_path = sys._MEIPASS
+    pytesseract.pytesseract.tesseract_cmd = os.path.join(base_path, "bin", "tesseract.exe")
+else:
+    pytesseract.pytesseract.tesseract_cmd = os.path.join("bin", "tesseract.exe")
+
+def get_resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 CONFIG_FILE = Path(__file__).parent / "config.json"
 
@@ -158,5 +170,6 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-webview.create_window("Scan-Checker", "../gui/voorcontrole.html", js_api=api)
+html_path = get_resource_path("gui/voorcontrole.html")
+webview.create_window("Scan-Checker", html_path, js_api=api)
 webview.start(maximize_window, debug=True)

@@ -1,4 +1,6 @@
 files/*
+build/*
+dist/*
 scripts/__pycache__
 .vscode
 scripts/config.json
