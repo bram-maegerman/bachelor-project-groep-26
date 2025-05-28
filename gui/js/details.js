@@ -71,7 +71,6 @@ window.addEventListener("pywebviewready", async () => {
     if (pageNumber !== null) {
       p.style.cursor = "pointer";
       p.addEventListener("click", () => {
-        console.log("Clicked line for page:", pageNumber);
         const inputPage = document.getElementById("current-page");
         inputPage.value = pageNumber;
         inputPage.dispatchEvent(new Event("change"));

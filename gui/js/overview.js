@@ -135,11 +135,7 @@ function parseErrorCount(log) {
   
   const lastLine = lines[lines.length - 3];
   const parts = lastLine.split(' ');
-  const count = parseInt(parts[parts.length - 1], 10);
-  console.log(lines)
-  console.log(lastLine)
-  console.log(parts)
-  
+  const count = parseInt(parts[parts.length - 1], 10);  
   return count;
 }
 

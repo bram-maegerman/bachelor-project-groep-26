@@ -59,10 +59,8 @@ class API:
         
     def read_pdf_as_data_url(self, path):
         path = Path(path.replace("/", os.sep)).resolve()
-        print(f"Resolved path: {path}")
 
         if not path.exists():
-            print("PDF not found!")
             return None
 
         with open(path, 'rb') as f:
