@@ -80,9 +80,10 @@ window.addEventListener("pywebviewready", async () => {
     logBox.appendChild(p);
   });
 
-
   container.appendChild(logBox);
-  await loadPdf('files/'+filename)
+
+  const pdf_path = lines[lines.length - 1]
+  await loadPdf(pdf_path)
 });
 
 async function loadPdf(path) {
