@@ -124,30 +124,28 @@ class API:
             return "Log file not found."
         
         with open(file_path, "r") as f:
-            lines = f.readlines()
+            text = f.read()
 
-        summary_index = len(lines)
-        for i in reversed(range(len(lines))):
-            if lines[i].startswith("["):
-                break
-            summary_index = i
+        summary_index = text.find("\n\n")
 
-        log_lines = lines[:summary_index]
-        summary_block = lines[summary_index:]
+
+        log_lines = text[:summary_index]
+        summary_block = text[summary_index:].split("\n")
 
         # Filter log_lines based on log_level
         filtered_logs = []
-        for line in log_lines:
-            if self.log_level == 1:
-                if line.startswith("[WARNING]"):
-                    filtered_logs.append(line)
-            elif self.log_level == 2:
-                if line.startswith("[WARNING]") or line.startswith("[INFO]"):
-                    filtered_logs.append(line)
-            else:  # log_level == 3 or higher
+        for line in log_lines.split("\n"):
+            if ")[W" in line:
                 filtered_logs.append(line)
+            if self.log_level == 2:
+                if ")[I" in line:
+                    filtered_logs.append(line)
+            if self.log_level == 3:
+                if ")[S" in line:
+                    filtered_logs.append(line)
 
-        return "".join(filtered_logs + summary_block)
+        filtered_logs.extend(summary_block)
+        return "\n".join(filtered_logs)
 
 
         
@@ -168,5 +166,5 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-webview.create_window("Scan-Checker", "../gui/voorcontrole.html", js_api=api)
+webview.create_window("Scan-Checker", "../gui/index.html", js_api=api)
 webview.start(maximize_window, debug=True)

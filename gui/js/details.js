@@ -170,8 +170,3 @@ async function loadPdf(path) {
   canvasElements.forEach(canvas => observer.observe(canvas));
 }
 
-
-
-
-
-

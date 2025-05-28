@@ -75,10 +75,24 @@ main {
   color: white;
   border-radius: 0.5rem;
   font-family: monospace;
+  padding-right: 12px;
+  box-sizing: content-box;
+}
+
+.log-box ::-webkit-scrollbar {
+  width: 8px;
+  background-color: #222;
+  border-radius: 10px;
+}
+
+.log-box ::-webkit-scrollbar-thumb {
+    background-color: #615c5c;
+    border-radius: 10px;
 }
 
 .log-line {
   margin: 0.25rem 0;
+  margin-left: 10px;
 }
 
 .log-line.warning {
