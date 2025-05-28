@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Live Output</title>
-    <link rel="stylesheet" href="style/style.css" />
-    <link rel="stylesheet" href="style/nav.css" />
-    <script src="js/script.js" defer></script>
-    <script src="js/global.js" defer></script>
-  </head>
-  <body>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="style/nav.css" />
+  <script src="js/script.js" defer></script>
+  <script src="js/global.js" defer></script>
+</head>
+
+<body>
   <header>
     <nav>
       <a href="index.html">
@@ -18,33 +19,34 @@
         <button id="nav-dropdown">Voorcontrole<span id="nav-arrow">&#x25BC;</span></button>
         <ul id="options" class="nav-options hidden">
           <li><a href="index.html">Startpagina</a></li>
-          <li><a href="run-overview.html">Laatste run</a></li>
-          <li><a href="overview.html">Alle runs</a></li>
-          <li><a href="settings.html">Instellingen</a></li>
+          <li><a href="laatste-run.html">Laatste run</a></li>
+          <li><a href="alle-runs.html">Alle runs</a></li>
+          <li><a href="instellingen.html">Instellingen</a></li>
         </ul>
       </div>
     </nav>
   </header>
-    <h1 class="title">Voorcontrole</h1>
+  <h1 class="title">Voorcontrole</h1>
 
-    <div class="center-container">
+  <div class="center-container">
     <div class="drop-area">
       <p>
-        <span onclick="pickFile()" style="color:#147FA1; text-decoration: underline; cursor: pointer;">Kies</span> of sleep bestanden naar hier om te uploaden
+        <span onclick="pickFile()" style="color:#147FA1; text-decoration: underline; cursor: pointer;">Kies</span> of
+        sleep bestanden naar hier om te uploaden
       </p>
     </div>
 
-      <div class="file-box">
-        <h3>Geselecteerde bestanden</h3>
-        <div class="file-list-display" id="file-list"></div>
-        <div class="file-actions">
-          <span id="file-count">0/20</span>
-          <button onclick="checkFiles()" class="check-btn">Controleer ></button>
-        </div>
+    <div class="file-box">
+      <h3>Geselecteerde bestanden</h3>
+      <div class="file-list-display" id="file-list"></div>
+      <div class="file-actions">
+        <span id="file-count">0/20</span>
+        <button onclick="checkFiles()" class="check-btn">Controleer ></button>
       </div>
-
-      <div id="loader" class="loader hidden"></div>
     </div>
+
+    <div id="loader" class="loader hidden"></div>
+  </div>
 
 </body>
 
