@@ -5,8 +5,6 @@ from PIL import ImageEnhance, Image, ImageFilter
 from roman_numeral import RomanNumeral
 
 log_messages = []
-avg_height = 3520 * 1.2
-avg_width = 2375 * 1.2
 
 def extract_header_footer(full_image, doc_len=None):
     # Crop header and footer
