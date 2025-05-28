@@ -5,6 +5,7 @@ from PIL import ImageEnhance, Image, ImageFilter
 from roman_numeral import RomanNumeral
 
 log_messages = []
+all_found_letters = []
 avg_height = 3520 * 1.2
 avg_width = 2375 * 1.2
 
@@ -43,9 +44,8 @@ def to_string(image, psm=None, whitelist=None, doc_len=1000):
     custom_psm = psm or 6
     if custom_psm < 0 or custom_psm > 13:
         raise "psm must be between 0 and 13"
-    custom_whitelist = whitelist or "0123456789ivx"
+    custom_whitelist = whitelist or "0123456789ivxabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     custom_config = f"--oem 2 --psm {custom_psm} -c tessedit_char_whitelist={custom_whitelist}"
-    # OCR with contrast already handled by binarization
     content = pytesseract.image_to_string(image, config=custom_config)
 
     if not content: 
@@ -66,6 +66,10 @@ def to_string(image, psm=None, whitelist=None, doc_len=1000):
                     found_romans.add(roman)
             except ValueError:
                 pass
+
+        found_letters = re.findall(r'\b[a-zA-Z]\b', content)
+        print(found_letters)
+        all_found_letters.append(set(ord(letter) for letter in found_letters))
 
         return found_numbers.union(found_romans)
 

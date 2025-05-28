@@ -2,7 +2,7 @@ import fitz, sys, os
 from pathlib import Path
 from multiprocessing import Pool, Manager, cpu_count
 # Extracted python logic
-from util import find_sequence, custom_print, process_page, log_messages
+from util import find_sequence, custom_print, process_page, log_messages, all_found_letters
 from roman_numeral import RomanNumeral
 
 # Creates a directory in /files if one doesn't exist already.
@@ -41,6 +41,12 @@ def main():
         with Pool(processes=cpu_count()) as pool:
             all_found_numbers_list = pool.map_async(process_page, args).get()
             all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list)}
+
+        for index, ord_letters in enumerate(all_found_letters):
+            key = index + 1
+            for ord_letter in ord_letters:
+                if ord_letter + 1 in all_found_letters[key + 1] and ord_letter + 2 in all_found_letters[key + 2]:
+                    custom_print(pdf_page=key, statement_type="INFO", statement=f"Found sequence of letters on page {key}. Manual check needed!")
 
         #   Loop over all found numbers
         #   Every entry of all_found_numbers holds a set of numbers which are found a specific page
