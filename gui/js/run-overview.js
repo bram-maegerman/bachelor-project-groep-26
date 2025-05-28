@@ -7,14 +7,15 @@ function renderLastRun(files) {
   const ul = document.createElement("ul");
   files.forEach((file) => {
     const li = document.createElement("li");
-    const cutPath = file.split('/').at(-1)
+    const cutPath = file.split("/").at(-1);
     li.textContent = cutPath;
     li.classList.add("clickable-li");
     li.addEventListener("click", () => {
-      window.location.href = `details.html?file=${encodeURIComponent(cutPath)}&path=${encodeURIComponent(file)}`;
+      window.location.href = `details.html?file=${encodeURIComponent(
+        cutPath
+      )}&path=${encodeURIComponent(file)}`;
     });
     ul.appendChild(li);
-
   });
   container.appendChild(ul);
 }
@@ -25,6 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   fullOverview.addEventListener("click", () => {
-    window.location.href = "overview.html";
+    window.location.href = "alle-runs.html";
   });
 });

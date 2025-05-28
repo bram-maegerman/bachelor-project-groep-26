@@ -36,8 +36,8 @@ async function checkFiles() {
     alert("Selecteer minimum 1 bestand!");
     return;
   }
-  if(currentFiles.length > 20) {
-    alert("Selecteer minder dan 20 bestanden!")
+  if (currentFiles.length > 20) {
+    alert("Selecteer minder dan 20 bestanden!");
     return;
   }
   const filePaths = currentFiles.map((file) => file.path);
@@ -48,7 +48,7 @@ async function checkFiles() {
 
   hideLoader();
 
-  window.location.href = "run-overview.html";
+  window.location.href = "laatste-run.html";
 }
 
 function updateFileList() {
@@ -85,4 +85,3 @@ function updateFileList() {
 
   countEl.textContent = `${currentFiles.length}/20`;
 }
-
