@@ -55,11 +55,32 @@ window.addEventListener("pywebviewready", async () => {
   lines.forEach((line) => {
     if (/^(Missing pages?:|Total pages)/.test(line)) return;
 
+    const match = line.match(/^\((\d+)\)(.*)$/);
+    let pageNumber = null;
+    let displayText = line;
+
+    if (match) {
+      pageNumber = parseInt(match[1], 10);
+      displayText = match[2].trim();
+    }
+
     const p = document.createElement("p");
-    p.textContent = line;
-    p.classList.add("log-line", classifyLogLine(line));
+    p.textContent = displayText;
+    p.classList.add("log-line", classifyLogLine(displayText));
+
+    if (pageNumber !== null) {
+      p.style.cursor = "pointer";
+      p.addEventListener("click", () => {
+        console.log("Clicked line for page:", pageNumber);
+        const inputPage = document.getElementById("current-page");
+        inputPage.value = pageNumber;
+        inputPage.dispatchEvent(new Event("change"));
+      });
+    }
+
     logBox.appendChild(p);
   });
+
 
   container.appendChild(logBox);
   await loadPdf('files/'+filename)
