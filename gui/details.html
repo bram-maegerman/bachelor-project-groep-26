@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <head>
     <meta charset="UTF-8" />
     <title>Live Output</title>
@@ -27,11 +28,18 @@
       </div>
     </nav>
   </header>
-
   <main>
     <div id="file-details" class="details-container"></div>
-  </main>
+    <div id="pdf-container">
+      <div id="pdf-loading"></div>
+      <div id="pdf-preview"></div>
 
+      <div id="page-control">
+        <input id="current-page" type="number" min="1" value="1" style="width: 50px;" />
+        / <span id="total-pages">0</span>
+      </div>
+    </div>
+  </main>
 </body>
 
 </html>

@@ -6,7 +6,6 @@ async function renderOverview(files) {
   const container = document.getElementById("file-list-container");
   container.innerHTML = "<h1 class='title'>Alle runs</h1>";
 
-  // Flatten all files into a single array
   allFiles = [];
   Object.keys(files).forEach(date => {
     const splitDate = date.split('\\').at(-1);
@@ -33,11 +32,9 @@ async function renderPage(page) {
   const container = document.getElementById("file-list-container");
   container.innerHTML = "<h1 class='title'>Alle runs</h1>";
 
-  // Create table structure
   const table = document.createElement("table");
   table.className = "file-table";
-  
-  // Table headers
+
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
   ["Name", "Fouten", "Status", "Datum"].forEach(headerText => {
@@ -48,7 +45,6 @@ async function renderPage(page) {
   thead.appendChild(headerRow);
   table.appendChild(thead);
 
-  // Table body
   const tbody = document.createElement("tbody");
   
   for (const fileData of pageFiles) {
@@ -61,26 +57,21 @@ async function renderPage(page) {
     }
 
     const row = document.createElement("tr");
-    
-    // Name column
+
     const nameCell = document.createElement("td");
     nameCell.textContent = fileData.fileName;
-    
-    // Fouten column
+
     const foutenCell = document.createElement("td");
     foutenCell.textContent = errorCount;
     
-    // Status column
     const statusCell = document.createElement("td");
     const statusIndicator = document.createElement("div");
     statusIndicator.className = `status-circle ${errorCount > 0 ? 'red' : 'green'}`;
     statusCell.appendChild(statusIndicator);
     
-    // Datum column
     const datumCell = document.createElement("td");
     datumCell.textContent = fileData.date;
     
-    // Click handler
     row.classList.add("clickable-row");
     row.addEventListener("click", () => {
       window.location.href = `details.html?file=${encodeURIComponent(fileData.fileName)}&path=${encodeURIComponent(fileData.file)}`;
@@ -95,6 +86,7 @@ async function renderPage(page) {
 
   table.appendChild(tbody);
   container.appendChild(table);
+  
   createPagination();
 }
 
@@ -105,7 +97,6 @@ function createPagination() {
   const paginationContainer = document.createElement("div");
   paginationContainer.className = "pagination-container";
 
-  // Previous button
   const prevButton = document.createElement("button");
   prevButton.className = "pagination-button";
   prevButton.textContent = "◄";
@@ -114,7 +105,6 @@ function createPagination() {
     if (currentPage > 1) renderPage(currentPage - 1);
   });
 
-  // Page numbers
   const pageNumbers = document.createElement("div");
   pageNumbers.className = "page-numbers";
   
@@ -126,7 +116,6 @@ function createPagination() {
     pageNumbers.appendChild(pageButton);
   }
 
-  // Next button
   const nextButton = document.createElement("button");
   nextButton.className = "pagination-button";
   nextButton.textContent = "►";

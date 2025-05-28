@@ -1,4 +1,4 @@
-import webview, subprocess, os, threading, json
+import webview, subprocess, os, threading, json, base64
 from pathlib import Path
 
 class API:
@@ -56,6 +56,18 @@ class API:
         file_path = key+"_LOG.txt"
         with open(file_path, "r") as f:
             return f.read()
+        
+    def read_pdf_as_data_url(self, path):
+        path = Path(path.replace("/", os.sep)).resolve()
+        print(f"Resolved path: {path}")
+
+        if not path.exists():
+            print("PDF not found!")
+            return None
+
+        with open(path, 'rb') as f:
+            encoded = base64.b64encode(f.read()).decode('utf-8')
+            return f'data:application/pdf;base64,{encoded}'
 
 api = API()
 
