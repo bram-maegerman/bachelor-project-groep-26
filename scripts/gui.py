@@ -61,10 +61,21 @@ class API:
         window = webview.windows[0]
         result = window.create_file_dialog(webview.FOLDER_DIALOG)
         if result:
-            self.export_path = result[0]
-            self._save_export_path(self.export_path)
+            return result[0]
+        else:
             return self.export_path
-        return ""
+
+    def set_settings(self, export_path: str, log_level: int):
+        self.export_path = export_path
+        self.log_level = log_level
+        self._save_export_path(export_path)
+        self._save_log_level(log_level)
+
+    def get_settings(self):
+        return {
+            "export_path": self.export_path,
+            "log_level": self.log_level
+        }
 
     def get_export_path(self):
         return self.export_path
@@ -122,7 +133,7 @@ class API:
         file_path = key + "_LOG.txt"
         if not os.path.exists(file_path):
             return "Log file not found."
-        
+
         with open(file_path, "r") as f:
             text = f.read()
 
@@ -148,7 +159,7 @@ class API:
         return "\n".join(filtered_logs)
 
 
-        
+
     def read_pdf_as_data_url(self, path):
         path = Path(path.replace("/", os.sep)).resolve()
 

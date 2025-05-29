@@ -39,19 +39,26 @@
         <p>Export pad</p>
 
         <div class="export-path-row">
-          <button onclick="chooseExportFolder()" aria-label="Kies exportmap">
+          <button aria-label="Kies exportmap" id="choose-export-folder">
             <img src="assets/img/edit-btn.svg" width="25" alt="Bewerken" />
           </button>
-          <p id="export-path">Geen map geselecteerd</p>
+          <p id="export-path">Aan het laden...</p>
         </div>
       </div>
       <div class="setting-item">
         <p>Logniveau</p>
-        <select id="log-level" name="log-level">
-          <option value="1">Alleen waarschuwingen</option>
-          <option value="2">Waarschuwingen en info</option>
-          <option value="3">Alle logs (waarschuwingen, info, succes)</option>
-        </select>
+        <div class="options">
+          <button class="option option-1" id="log-level-1">1</button>
+          <button class="option option-2" id="log-level-2">2</button>
+          <button class="option option-3" id="log-level-3">3</button>
+        </div>
+        <p class="option-description" id="log-level-description">
+          Enkel waarschuwingen- en info-berichten worden getoond
+        </p>
+      </div>
+      <div class="bottom-buttons">
+        <button class="bottom save" id="save-button">Opslaan</button>
+        <button class="bottom reset" id="reset-button">Reset</button>
       </div>
     </div>
   </main>
