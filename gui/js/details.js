@@ -26,7 +26,6 @@ function classifyLogLine(line) {
 
 function createStatsBox(stats) {
   const statsBox = document.createElement("div");
-  statsBox.className = "stats-box";
   statsBox.innerHTML = `
     <p><strong>Missing page numbers:</strong><br>${stats.missing}</p>
     <p><strong>Total pages:</strong><br>${stats.total}</p>
