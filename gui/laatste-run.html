@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style/style.css" />
-  <link rel="stylesheet" href="style/nav.css" />
-  <link rel="stylesheet" href="style/overview.css" />
-  <script src="js/script.js" defer></script>
-  <script src="js/global.js" defer></script>
-  <script src="js/run-overview.js" defer></script>
-</head>
-
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Live Output</title>
+    <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="style/nav.css" />
+    <link rel="stylesheet" href="style/overview.css" />
+    <script src="js/script.js" defer></script>
+    <script src="js/global.js" defer></script>
+    <script src="js/run-overview.js" defer></script>
+  </head>
+  <body>
   <header>
     <nav>
       <a href="index.html">
@@ -23,20 +22,18 @@
         <ul id="options" class="nav-options hidden">
           <li><a href="index.html">Startpagina</a></li>
           <li><a href="voorcontrole.html">Voorcontrole</a></li>
-          <li><a href="alle-runs.html">Alle runs</a></li>
-          <li><a href="instellingen.html">Instellingen</a></li>
+          <li><a href="overview.html">Alle runs</a></li>
+          <li><a href="settings.html">Instellingen</a></li>
         </ul>
       </div>
     </nav>
   </header>
-  <main>
-    <div class="centered-list">
-      <h1 class="title">Laatste run</h1>
-      <div id="file-list-container" class="date-container"></div>
-    </div>
-
-    <div id="pagination" class="pagination-nav"></div>
-  </main>
-</body>
-
+    <main>
+      
+      <div id="file-list-container" class="centered-list">
+        <h1 class="title">Laatste run</h1>
+      </div>
+      <div id="no-files" style="display: flex; justify-content: center; color: red;"></div>
+    </main>
+  </body>
 </html>
