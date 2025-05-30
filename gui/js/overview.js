@@ -7,14 +7,14 @@ async function renderOverview(files) {
   container.innerHTML = "<h1 class='title'>Alle runs</h1>";
 
   allFiles = [];
-  Object.keys(files).forEach(date => {
-    const splitDate = date.split('\\').at(-1);
-    
-    files[date].forEach(file => {
+  Object.keys(files).forEach((date) => {
+    const splitDate = date.split("\\").at(-1);
+
+    files[date].forEach((file) => {
       allFiles.push({
         file: file,
-        fileName: file.split('/').at(-1),
-        date: splitDate
+        fileName: file.split("/").at(-1),
+        date: splitDate,
       });
     });
   });
@@ -37,7 +37,7 @@ async function renderPage(page) {
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Name", "Fouten", "Status", "Datum"].forEach(headerText => {
+  ["Naam", "Fouten", "Status", "Datum"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);
@@ -46,14 +46,14 @@ async function renderPage(page) {
   table.appendChild(thead);
 
   const tbody = document.createElement("tbody");
-  
+
   for (const fileData of pageFiles) {
     let errorCount = 0;
     try {
       const log = await window.pywebview.api.get_log(fileData.file);
       errorCount = parseErrorCount(log);
     } catch (error) {
-      console.error('Error loading log:', error);
+      console.error("Error loading log:", error);
     }
 
     const row = document.createElement("tr");
@@ -63,18 +63,22 @@ async function renderPage(page) {
 
     const foutenCell = document.createElement("td");
     foutenCell.textContent = errorCount;
-    
+
     const statusCell = document.createElement("td");
     const statusIndicator = document.createElement("div");
-    statusIndicator.className = `status-circle ${errorCount > 0 ? 'red' : 'green'}`;
+    statusIndicator.className = `status-circle ${
+      errorCount > 0 ? "red" : "green"
+    }`;
     statusCell.appendChild(statusIndicator);
-    
+
     const datumCell = document.createElement("td");
     datumCell.textContent = fileData.date;
-    
+
     row.classList.add("clickable-row");
     row.addEventListener("click", () => {
-      window.location.href = `details.html?file=${encodeURIComponent(fileData.fileName)}&path=${encodeURIComponent(fileData.file)}`;
+      window.location.href = `details.html?file=${encodeURIComponent(
+        fileData.fileName
+      )}&path=${encodeURIComponent(fileData.file)}`;
     });
 
     row.appendChild(nameCell);
@@ -86,13 +90,13 @@ async function renderPage(page) {
 
   table.appendChild(tbody);
   container.appendChild(table);
-  
+
   createPagination();
 }
 
 function createPagination() {
   const pagination = document.getElementById("pagination");
-  pagination.innerHTML = '';
+  pagination.innerHTML = "";
 
   const paginationContainer = document.createElement("div");
   paginationContainer.className = "pagination-container";
@@ -107,10 +111,12 @@ function createPagination() {
 
   const pageNumbers = document.createElement("div");
   pageNumbers.className = "page-numbers";
-  
+
   for (let i = 1; i <= totalPages; i++) {
     const pageButton = document.createElement("button");
-    pageButton.className = `pagination-button ${i === currentPage ? 'active' : ''}`;
+    pageButton.className = `pagination-button ${
+      i === currentPage ? "active" : ""
+    }`;
     pageButton.textContent = i;
     pageButton.addEventListener("click", () => renderPage(i));
     pageNumbers.appendChild(pageButton);
@@ -131,11 +137,11 @@ function createPagination() {
 }
 
 function parseErrorCount(log) {
-  const lines = log.split('\n').filter(line => line.trim());
-  
+  const lines = log.split("\n").filter((line) => line.trim());
+
   const lastLine = lines[lines.length - 3];
-  const parts = lastLine.split(' ');
-  const count = parseInt(parts[parts.length - 1], 10);  
+  const parts = lastLine.split(" ");
+  const count = parseInt(parts[parts.length - 1], 10);
   return count;
 }
 
