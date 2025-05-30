@@ -1,7 +1,5 @@
-
 main {
-  display: flex; 
-  position: relative;
+  display: flex;
 }
 
 .details-container h2 {
@@ -28,42 +26,38 @@ main {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 1em 1em 1em 3em;
-  flex: 1; 
-  margin-top: 20px;
-}
-
-#pdf-preview {
-  width: 90%;
-  height: 70vh;
-  overflow: auto;
+  padding: 1em 0 0 3em;
+  width: 50%;
 }
 
 #page-control {
-  background: rgba(255,255,255,0.95); 
-  padding: 5px 10px; 
+  background: rgba(255, 255, 255, 0.95);
+  padding: 5px 10px;
   border-radius: 5px;
 }
 
 #pdf-container {
-   flex: 1; 
-   display: flex; 
-   flex-direction: column; 
-   justify-content: center; 
-   align-items: center; 
-   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  width: 100%;
 }
 
 #pdf-preview {
   margin-top: 2rem;
-  width: 90%; 
-  height: 75vh; 
-  overflow: auto;
+  height: 75vh;
+  overflow-y: auto;
+
+  /* Scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #615c5c transparent;
 }
 
 #pdf-loading {
-  text-align: center; 
-  padding: 20px;
+  text-align: center;
+  align-self: center;
 }
 
 .log-box {
@@ -86,8 +80,8 @@ main {
 }
 
 .log-box::-webkit-scrollbar-thumb {
-    background-color: #615c5c;
-    border-radius: 10px;
+  background-color: #615c5c;
+  border-radius: 10px;
 }
 
 .log-line {
@@ -104,7 +98,7 @@ main {
 }
 
 .log-line.success {
-  color: #4ade80; 
+  color: #4ade80;
 }
 
 .log-line:hover {
@@ -120,21 +114,20 @@ main {
   }
 }
 
-  .setting-item select {
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-    cursor: pointer;
-    background-color: white;
-    color: #00407A;
-    min-width: 250px;
-    transition: border-color 0.3s;
-  }
-  
-  .setting-item select:hover,
-  .setting-item select:focus {
-    border-color: #00407A;
-    outline: none;
-  }
-  
+.setting-item select {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: white;
+  color: #00407a;
+  min-width: 250px;
+  transition: border-color 0.3s;
+}
+
+.setting-item select:hover,
+.setting-item select:focus {
+  border-color: #00407a;
+  outline: none;
+}

@@ -10,11 +10,11 @@ button {
 }
 
 .title {
-    text-align: center;
-    color: #147FA1;
+  text-align: center;
+  color: #147fa1;
 }
 
-.container{
+.container {
   display: flex;
   align-items: flex-start;
   gap: 260px;
@@ -22,13 +22,13 @@ button {
 
 .list-wrapper {
   width: 80%;
-  background-color: #147FA1;
+  background-color: #147fa1;
 }
 
 .list-wrapper h3 {
   margin-bottom: 10px;
 }
-  
+
 .list-wrapper ul {
   height: 415px;
   overflow-y: scroll;
@@ -56,7 +56,7 @@ button {
   margin-bottom: 4px;
 }
 
-#file-section{
+#file-section {
   text-align: center;
 }
 
@@ -65,7 +65,7 @@ button {
   min-width: 300px;
   max-width: 600px;
   height: 450px;
-  background-color: #147FA1;
+  background-color: #147fa1;
   color: white;
   padding: 16px;
   border-radius: 4px;
@@ -180,10 +180,10 @@ button {
   color: white;
   text-decoration: none;
 }
-  
+
 .loader {
   border: 8px solid #f3f3f3;
-  border-top: 8px solid #00407A;
+  border-top: 8px solid #00407a;
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -192,8 +192,12 @@ button {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .hidden {
@@ -201,44 +205,44 @@ button {
 }
 
 .file-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.5rem;
-    border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
 }
 
 .progress-container {
-    flex-grow: 1;
-    max-width: 200px;
-    height: 20px;
-    background: #eee;
-    border-radius: 10px;
-    position: relative;
-    overflow: hidden;
+  flex-grow: 1;
+  max-width: 200px;
+  height: 20px;
+  background: #eee;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
 }
 
 .progress-bar {
-    height: 100%;
-    background: #147FA1;
-    width: 0%;
-    transition: width 0.3s ease;
+  height: 100%;
+  background: #147fa1;
+  width: 0%;
+  transition: width 0.3s ease;
 }
 
 .progress-text {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: white;
-    font-size: 0.8em;
-    text-shadow: 0 0 2px rgba(0,0,0,0.5);
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 0.8em;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
 .remove-btn {
-    background: none;
-    border: none;
-    color: #ff4444;
-    cursor: pointer;
-    font-size: 1.2em;
+  background: none;
+  border: none;
+  color: #ff4444;
+  cursor: pointer;
+  font-size: 1.2em;
 }
