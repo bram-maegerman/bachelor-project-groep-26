@@ -1,34 +1,26 @@
 const currentFiles = [];
 
-function showLoader() {
-  document.getElementById("loader").classList.remove("hidden");
-}
-
-function hideLoader() {
-  document.getElementById("loader").classList.add("hidden");
-}
-
-function pickFile() {
+async function pickFile() {
   if (!window.pywebview?.api?.open_file_dialog) {
     alert("Backend API not available");
     return;
   }
+  currentFiles.length = 0;
+  const paths = await window.pywebview.api.open_file_dialog();
 
-  window.pywebview.api.open_file_dialog().then((paths) => {
-    if (paths && paths.length > 0) {
-      currentFiles.length = 0;
-      paths.forEach((path) => {
-        currentFiles.push({
-          name: path.split(/[/\\]/).pop(),
-          path: path,
-        });
+  if (paths && paths.length > 0) {
+    currentFiles.length = 0;
+    paths.forEach((path) => {
+      currentFiles.push({
+        name: path.split(/[/\\]/).pop(),
+        path: path,
       });
-      updateFileList();
-    } else {
-      currentFiles.length = 0;
-      updateFileList();
-    }
-  });
+    });
+    updateFileList();
+  } else {
+    currentFiles.length = 0;
+    updateFileList();
+  }
 }
 
 async function checkFiles() {
@@ -42,13 +34,9 @@ async function checkFiles() {
   }
   const filePaths = currentFiles.map((file) => file.path);
 
-  showLoader();
+  await window.pywebview.api.set_next(filePaths);
 
-  await window.pywebview.api.run_script_on_files(filePaths);
-
-  hideLoader();
-
-  window.location.href = "laatste-run.html";
+  window.location.href = "vooruitgang.html";
 }
 
 function updateFileList() {

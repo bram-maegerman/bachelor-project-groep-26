@@ -11,6 +11,7 @@ class API:
         self._init_config()  # Ensure config file exists with defaults
         self.export_path = self._load_export_path()
         self.log_level = self._load_log_level()
+        self.next_run = []
 
     def _init_config(self):
         if not CONFIG_FILE.exists():
@@ -87,9 +88,6 @@ class API:
     def get_log_level(self):
         return self.log_level
 
-    def page_loaded(self):
-        self._window_loaded.set()
-
     def get_all_files(self):
         result = dict()
         for sub_dir in os.listdir(self._files_dir):
@@ -114,14 +112,16 @@ class API:
     def run_last(self):
         webview.windows[0].evaluate_js(f"renderLastRun({list(self._latest_run)})")
 
-    def run_script_on_files(self, files: list):
-        # Goes to progress page and waits till the page is loaded before continuing
-        webview.windows[0].evaluate_js('window.location.href = "progress.html";')
-        self._window_loaded.wait()
-        # Load all files from current run in a table
-        webview.windows[0].evaluate_js(f"loadFilesInTable({files})")
+    def set_next(self, files: list):
+        self.next_run = files
 
-        for file_path in files:
+    def run_script_on_files(self):
+        # Load all files from current run in a table
+        webview.windows[0].evaluate_js(f"loadFilesInTable({self.next_run})")
+
+        self._latest_run = set()
+
+        for file_path in self.next_run:
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(file_path)})")
 
@@ -196,5 +196,5 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-webview.create_window("Scan-Checker", "../gui/index.html", js_api=api)
+webview.create_window("Scan-Checker", "../gui/startpagina.html", js_api=api)
 webview.start(maximize_window, debug=True)
