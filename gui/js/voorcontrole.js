@@ -44,7 +44,7 @@ function updateFileList() {
   fileListContainer.innerHTML = "";
 
   if (currentFiles.length === 0) {
-    fileListContainer.textContent = "Geen bestanden geselecteerd.";
+    fileListContainer.textContent = "";
   } else {
     const ul = document.createElement("ul");
 
