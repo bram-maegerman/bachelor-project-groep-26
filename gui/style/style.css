@@ -20,12 +20,6 @@ button {
   color: #147fa1;
 }
 
-.container {
-  display: flex;
-  align-items: flex-start;
-  gap: 260px;
-}
-
 .list-wrapper {
   width: 80%;
   background-color: #147fa1;
