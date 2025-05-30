@@ -115,7 +115,6 @@ class API:
         webview.windows[0].evaluate_js(f"renderLastRun({list(self._latest_run)})")
 
     def run_script_on_files(self, files: list):
-
         # Goes to progress page and waits till the page is loaded before continuing
         webview.windows[0].evaluate_js('window.location.href = "progress.html";')
         self._window_loaded.wait()
@@ -131,16 +130,16 @@ class API:
                 capture_output=True,
                 text=True
             )
+            success = result.returncode == 0
 
             # Updates table with the result of the current file
             result_object = {
                 "file": file_path,
-                "success": result.returncode == 0,
+                "success": success,
             }
             webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
 
             output = result.stdout.strip()
-            success = result.returncode == 0
             if success:
                 if output.endswith("_LOG.txt"):
                     file_name = output.removesuffix("_LOG.txt")
