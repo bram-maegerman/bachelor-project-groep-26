@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="nl">
+
+<head>
   <meta charset="UTF-8" />
-  <title>Live Output</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style/style.css" />
   <link rel="stylesheet" href="style/nav.css" />
-  <link rel="stylesheet" href="style/landing.css" />
+  <link rel="stylesheet" href="style/index.css" />
   <script src="js/script.js" defer></script>
   <script src="js/global.js" defer></script>
 </head>
@@ -20,38 +21,41 @@
         <button id="nav-dropdown">Startpagina<span id="nav-arrow">&#x25BC;</span></button>
         <ul id="options" class="nav-options hidden">
           <li><a href="voorcontrole.html">Voorcontrole</a></li>
-          <li><a href="run-overview.html">Laatste run</a></li>
-          <li><a href="overview.html">Alle runs</a></li>
-          <li><a href="settings.html">Instellingen</a></li>
+          <li><a href="laatste-run.html">Laatste run</a></li>
+          <li><a href="alle-runs.html">Alle runs</a></li>
+          <li><a href="instellingen.html">Instellingen</a></li>
         </ul>
       </div>
     </nav>
   </header>
-    <h1 class="title">Hulptool Scanatelier</h1>
-      <div class="landing-container">
-        <div class="landing-box">
-          <div class="box-content">
-            <div class="text-content">
-              <h2 class="landing-box-title">Voorcontrole pdf</h2>
-              <p>Een tool om een voorcontrole uit te voeren op pdf’s. Deze voorcontrole gaat op zoek naar afwezige pagina’s en dubbele scans. Eens compleet geeft het een duidelijk overzicht terug van de fouten die het heeft gevonden. </p>
-              <p class="lees-meer" onclick="window.location.href='lees-meer-pdf.html'">Lees meer...</p>
-              <button class="landing-button" onclick="window.location.href='voorcontrole.html'"><p class="p-margin">Pdf nakijken ></p></button>
-            </div>
-            <img src="assets/img/voorcontrole.png" alt="voorcontrole">
-          </div>
+  <h1 class="title">Hulptool Scanatelier</h1>
+  <div class="landing-container">
+    <div class="landing-box">
+      <div class="box-content">
+        <div class="text-content">
+          <h2 class="landing-box-title">Voorcontrole pdf</h2>
+          <p>Een tool om een voorcontrole uit te voeren op pdf's. Deze voorcontrole gaat op zoek naar afwezige pagina's
+            en dubbele scans. Eens compleet geeft het een duidelijk overzicht terug van de fouten die het heeft
+            gevonden. </p>
+          <a class="lees-meer" href="lees-meer-pdf.html">Lees meer...</a>
+          <a class="landing-button p-margin" href="voorcontrole.html">Pdf nakijken &gt;</a>
         </div>
-
-        <div class="landing-box">
-          <div class="box-content">
-            <div class="text-content">
-              <h2 class="landing-box-title">DSL voor logs</h2>
-              <p>Deze tool laat toe om onze gecodeerde logbestanden uit te lezen. De string wordt hierbij ingelezen en vertaald naar een leesbare versie. </p>
-              <p class="lees-meer">Lees meer...</p>
-              <button class="landing-button"><p class="p-margin">Logs vertalen ></p></button>
-            </div>
-            <img src="assets/img/dsl.png" alt="dsl">
-          </div>
-        </div>
-
+        <img src="assets/img/voorcontrole.png" alt="voorcontrole">
       </div>
-  </body>
+    </div>
+
+    <div class="landing-box">
+      <div class="box-content">
+        <div class="text-content">
+          <h2 class="landing-box-title">DSL voor logs</h2>
+          <p>Deze tool laat toe om onze gecodeerde logbestanden uit te lezen. De string wordt hierbij ingelezen en
+            vertaald naar een leesbare versie. </p>
+          <a class="lees-meer" href="#">Lees meer...</a>
+          <a class="landing-button p-margin" href="#">Logs vertalen &gt;</a>
+        </div>
+        <img src="assets/img/dsl.png" alt="dsl">
+      </div>
+    </div>
+
+  </div>
+</body>

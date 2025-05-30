@@ -1,76 +1,159 @@
 /* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .settings-container {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .settings-container h2 {
-    color: #00407A;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .setting-item {
-    margin-bottom: 1.5rem;
-  }
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+  padding: 0;
+}
 
-  .setting-item button {
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-  }
-  #export-path {
-    margin: 0;
-    margin-left: 10px;
-    font-style: italic;
-    color: #333;
-    max-width: 600px;          
-    white-space: nowrap;       
-    overflow-x: auto;          
-  }
-  
-  #export-path::-webkit-scrollbar {
-    height: 4px;
-  }
-  
-  #export-path::-webkit-scrollbar-thumb {
-    background-color: #aaa;
-    border-radius: 4px;
-  }
+.settings-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-  .export-path-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .export-path-row p {
-    margin: 0;
-    font-style: italic;
-    color: #333;
-  }
-  
-  .export-path-row button {
-    border: none;
-    background-color: transparent;
-    padding: 0;
-    cursor: pointer;
-  }
-  
-  .export-path-row button img {
-    display: block;
-    width: 24px;
-    height: 24px;
-  }
-  
+.settings-container h2 {
+  color: #00407a;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.setting-item {
+  color: #00407a;
+  margin-bottom: 1.5rem;
+}
+
+.options {
+  /* background-color: #00407a; */
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.option {
+  display: block;
+  text-align: center;
+  width: 100%;
+  background-color: white;
+  color: #00407a;
+  padding: 1rem;
+  box-sizing: border-box;
+  border: none;
+  border: 2px solid #333;
+}
+
+.option-description {
+  color: #333;
+  max-width: 600px;
+  white-space: nowrap;
+  overflow-x: auto;
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.selected {
+  background-color: #00407a;
+  color: white;
+}
+
+.option-1 {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+
+.option-2 {
+  border-left: none;
+  border-right: none;
+}
+
+.option-3 {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.bottom-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
+  padding: 1rem;
+  border-radius: 50px;
+  width: 200px;
+  background-color: white;
+}
+
+.save {
+  border: 2px solid #00407a;
+  background-color: #00407a;
+  color: white;
+}
+
+.successs {
+  background-color: white;
+  color: #00407a;
+}
+
+.reset {
+  border: 2px solid #cb0000;
+  color: #cb0000;
+}
+
+.reset:hover {
+  background-color: #cb0000;
+  color: white;
+}
+
+#export-path {
+  margin: 0;
+  margin-left: 10px;
+  font-style: italic;
+  color: #333;
+  max-width: 600px;
+  white-space: nowrap;
+  overflow-x: auto;
+  font-weight: normal;
+}
+
+#export-path::-webkit-scrollbar {
+  height: 4px;
+}
+
+#export-path::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 4px;
+}
+
+.export-path-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.export-path-row p {
+  margin: 0;
+  font-style: italic;
+  color: #333;
+}
+
+.export-path-row button {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.export-path-row button img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}

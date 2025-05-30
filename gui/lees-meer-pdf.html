@@ -1,27 +1,41 @@
 <!DOCTYPE html>
 <html lang="nl">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Live Output</title>
-    <link rel="stylesheet" href="style/style.css" />
-    <link rel="stylesheet" href="style/nav.css" />
-    <link rel="stylesheet" href="style/lees-meer-pdf.css" />
-    <script src="js/script.js" defer></script>
-    <script src="js/global.js" defer></script>
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="style/nav.css" />
+  <link rel="stylesheet" href="style/lees-meer-pdf.css" />
+  <script src="js/script.js" defer></script>
+  <script src="js/global.js" defer></script>
+</head>
+
+<body>
   <header>
     <nav>
       <a href="index.html">
         <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
       </a>
-      <button style="margin-top: 1em;">Terug</button>
+      <div class="nav-wrapper">
+        <button id="nav-dropdown">Startpagina <span id="nav-arrow">&#x25BC;</span></button>
+        <ul id="options" class="nav-options hidden">
+          <li><a href="voorcontrole.html">Voorcontrole</a></li>
+          <li><a href="laatste-run.html">Laatste run</a></li>
+          <li><a href="alle-runs.html">Alle runs</a></li>
+          <li><a href="instellingen.html">Instellingen</a></li>
+        </ul>
+      </div>
     </nav>
   </header>
 
-    <main>
+  <main>
+    <div class="row">
+      <a class="pdf-button" href="index.html">&lt; Terug</a>
       <h1 class="landing-title">Voorcontrole pdf</h1>
+    </div>
 
+    <div class="content-columns">
       <div class="column">
         <div class="intro-text">
           <p>
@@ -30,47 +44,49 @@
             met zekere nauwkeurigheid karakters kan detecteren in afbeeldingen.
           </p>
         </div>
-        <img src="assets/img/tesseractOCR.png" alt="Tesseract OCR Logo" width="180px"/>
+        <img src="assets/img/tesseractOCR.png" alt="Tesseract OCR Logo" width="180px" />
       </div>
 
-      <div class="content-columns">
-        <div class="column">
-          <img src="assets/img/voorcontrole-overlay.png" alt="Voorcontrole overlay voorbeeld" height="300px"/>
-          <div class="text-padding">
-            <p class="p-mw">
-              Om na te kijken waar we best zouden zoeken voor paginanummers,
-              selecteerden we tien willekeurige pagina’s uit verschillende pdf’s en legden deze op elkaar,
-              elk met een transparantie van tien procent. Op deze manier konden we op een visuele manier
-              identificeren waar tekst regelmatig voorkomt. We waren echter enkel benieuwd naar de paginanummers,
-              die zich meestal bevonden in de eerste of laatste regels van een pagina.
-            </p>
-            <p>
-              Om tijd en middelen te besparen besloten we dat het best was om enkel deze relevante zones
-              (hoofdstuk en voettekst) uit de afbeelding te knippen. Vervolgens voegden we deze samen,
-              met wat witruimte ertussen om de A4-structuur te behouden voor optimale OCR-werking.
-              Dit leverde vrij nauwkeurige resultaten op, die zelfs beter werden toen we de OCR-engine mode (OEM)
-              wijzigden van 3 naar 2.
-            </p>
-          </div>
-        </div>
-
-        <p>
-          Voor de detectie van dubbele scans voerden we een analyse uit op een verzameling van pdf’s,
-          en keken we telkens wat de gemiddelde grootte was (rekening houdend met outliers).
-        </p>
-
-        <div class="column">
-          <div>
-            <p style="margin-right: 1em;">
-              We gebruiken nu dit gemiddelde als een hardcoded waarde waar slechts licht (20%)
-              van afgeweken mag worden. Bij een te groot verschil wordt deze pagina geflagged met een waarschuwing
-              dat deze waarschijnlijk een dubbele scan is.
-            </p>
-          </div>
-          <img src="assets/img/statistics.png" alt="OCR statistieken" height="150px"/>
+      <div class="column">
+        <img src="assets/img/voorcontrole-overlay.png" alt="Voorcontrole overlay voorbeeld" height="300px" />
+        <div class="text-padding">
+          <p class="p-mw">
+            Om na te kijken waar we best zouden zoeken voor paginanummers,
+            selecteerden we tien willekeurige pagina's uit verschillende pdf's en legden deze op elkaar,
+            elk met een transparantie van tien procent. Op deze manier konden we op een visuele manier
+            identificeren waar tekst regelmatig voorkomt. We waren echter enkel benieuwd naar de paginanummers,
+            die zich meestal bevonden in de eerste of laatste regels van een pagina.
+          </p>
+          <p>
+            Om tijd en middelen te besparen besloten we dat het best was om enkel deze relevante zones
+            (hoofdstuk en voettekst) uit de afbeelding te knippen. Vervolgens voegden we deze samen,
+            met wat witruimte ertussen om de A4-structuur te behouden voor optimale OCR-werking.
+            Dit leverde vrij nauwkeurige resultaten op, die zelfs beter werden toen we de OCR-engine mode (OEM)
+            wijzigden van 3 naar 2.
+          </p>
         </div>
       </div>
-        <button class="pdf-button" onclick="window.location.href='voorcontrole.html'">Pdf nakijken ></button>
-    </main>
-  </body>
+
+      <p>
+        Voor de detectie van dubbele scans voerden we een analyse uit op een verzameling van pdf's,
+        en keken we telkens wat de gemiddelde grootte was (rekening houdend met outliers).
+      </p>
+
+      <div class="column">
+        <div>
+          <p style="margin-right: 1em;">
+            We gebruiken nu dit gemiddelde als een hardcoded waarde waar slechts licht (20%)
+            van afgeweken mag worden. Bij een te groot verschil wordt deze pagina geflagged met een waarschuwing
+            dat deze waarschijnlijk een dubbele scan is.
+          </p>
+        </div>
+        <img src="assets/img/statistics.png" alt="OCR statistieken" height="150px" />
+      </div>
+    </div>
+    <div class="row">
+      <a class="pdf-button bottom" href="voorcontrole.html">Pdf nakijken &gt;</a>
+    </div>
+  </main>
+</body>
+
 </html>

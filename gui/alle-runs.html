@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style/style.css" />
   <link rel="stylesheet" href="style/nav.css" />
-  <link rel="stylesheet" href="style/details.css" />
+  <link rel="stylesheet" href="style/overview.css" />
   <script src="js/script.js" defer></script>
   <script src="js/global.js" defer></script>
-  <script src="js/details.js" defer></script>
+  <script src="js/overview.js" defer></script>
 </head>
 
 <body>
@@ -19,28 +19,23 @@
         <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
       </a>
       <div class="nav-wrapper">
-        <button id="nav-dropdown">Details <span id="nav-arrow">&#x25BC;</span></button>
+        <button id="nav-dropdown">Alle runs <span id="nav-arrow">&#x25BC;</span></button>
         <ul id="options" class="nav-options hidden">
           <li><a href="index.html">Startpagina</a></li>
           <li><a href="voorcontrole.html">Voorcontrole</a></li>
           <li><a href="laatste-run.html">Laatste run</a></li>
-          <li><a href="alle-runs.html">Alle runs</a></li>
           <li><a href="instellingen.html">Instellingen</a></li>
         </ul>
       </div>
     </nav>
   </header>
   <main>
-    <div id="file-details" class="details-container"></div>
-    <div id="pdf-container">
-      <div id="pdf-loading"></div>
-      <div id="page-control">
-        <input id="current-page" type="number" min="1" value="1" style="width: 50px;" />
-        / <span id="total-pages">0</span>
-      </div>
-      <div id="pdf-preview"></div>
 
+    <div id="file-list-container" class="centered-list">
+      <h1 class="title">Alle runs</h1>
     </div>
+
+    <div id="pagination" class="pagination-nav"></div>
   </main>
 </body>
 

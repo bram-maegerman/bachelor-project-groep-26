@@ -1,17 +1,15 @@
 import fitz, sys, os
 from pathlib import Path
 from multiprocessing import Pool, Manager, cpu_count
+from datetime import date
+
 # Extracted python logic
 from util import find_sequence, custom_print, process_page, log_messages
-from roman_numeral import RomanNumeral
 
 # Creates a directory in /files if one doesn't exist already.
-from datetime import date
-today = "-".join(date.today().isoformat().split("-")[::-1])
+today = date.today().strftime("%d-%m-%Y")
 log_directory = Path(__file__).parent.parent/"files"/today
-
 os.makedirs(log_directory, exist_ok=True)
-
 
 if len(sys.argv) < 2:
     print("Usage: python multi_main.py <path_to_pdf>")
@@ -131,7 +129,7 @@ def main():
                                     else:
                                         missing_numbers[key] = skipped_page_numbers
                                         if len(skipped_page_numbers) == 1:
-                                            custom_print(pdf_page=key, statement_type="WARNING", statement=f"Page numbers {skipped_page_numbers[0]} was skipped on page {key}.")
+                                            custom_print(pdf_page=key, statement_type="WARNING", statement=f"Page number {skipped_page_numbers[0]} was skipped on page {key}.")
                                         else:
                                             custom_print(pdf_page=key, statement_type="WARNING", statement=f"Page numbers {', '.join(str(x) for x in skipped_page_numbers)} were skipped on page {key}.")
 

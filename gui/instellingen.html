@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="style/nav.css" />
+  <link rel="stylesheet" href="style/settings.css" />
+  <script src="js/script.js" defer></script>
+  <script src="js/global.js" defer></script>
+  <script src="js/settings.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="index.html">
+        <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+      </a>
+      <div class="nav-wrapper">
+        <button id="nav-dropdown">
+          Instellingen <span id="nav-arrow">&#x25BC;</span>
+        </button>
+        <ul id="options" class="nav-options hidden">
+          <li><a href="index.html">Startpagina</a></li>
+          <li><a href="voorcontrole.html">Voorcontrole</a></li>
+          <li><a href="laatste-run.html">Laatste run</a></li>
+          <li><a href="alle-runs.html">Alle runs</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <div class="settings-container">
+      <h2>Instellingen</h2>
+
+      <div class="setting-item">
+        <p>Export pad</p>
+
+        <div class="export-path-row">
+          <button aria-label="Kies exportmap" id="choose-export-folder">
+            <img src="assets/img/edit-btn.svg" width="25" alt="Bewerken" />
+          </button>
+          <p id="export-path">Aan het laden...</p>
+        </div>
+      </div>
+      <div class="setting-item">
+        <p>Logniveau</p>
+        <div class="options">
+          <button class="option option-1" id="log-level-1">1</button>
+          <button class="option option-2" id="log-level-2">2</button>
+          <button class="option option-3" id="log-level-3">3</button>
+        </div>
+        <p class="option-description" id="log-level-description">
+          Enkel waarschuwingen- en info-berichten worden getoond
+        </p>
+      </div>
+      <div class="bottom-buttons">
+        <button class="bottom save" id="save-button">Opslaan</button>
+        <button class="bottom reset" id="reset-button">Reset</button>
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>
