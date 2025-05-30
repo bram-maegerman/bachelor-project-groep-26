@@ -110,7 +110,6 @@ function createPagination() {
   });
 
   const pageNumbers = document.createElement("div");
-  pageNumbers.className = "page-numbers";
 
   for (let i = 1; i <= totalPages; i++) {
     const pageButton = document.createElement("button");
