@@ -5,6 +5,12 @@ body {
   padding: 0;
 }
 
+.centered-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 button {
   cursor: pointer;
 }
@@ -60,47 +66,10 @@ button {
   text-align: center;
 }
 
-.file-box {
-  flex: 1 1 350px;
-  min-width: 300px;
-  max-width: 600px;
-  height: 450px;
-  background-color: #147fa1;
-  color: white;
-  padding: 16px;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
 .file-box h3 {
   margin-top: 0;
   font-size: 16px;
   font-weight: bold;
-}
-
-.file-list-display {
-  background-color: white;
-  height: 300px;
-  border-radius: 6px;
-  overflow-y: auto;
-  padding: 8px;
-  color: #000;
-  margin-bottom: 16px;
-  box-sizing: border-box;
-}
-
-.file-list-display ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
-
-.file-list-display li {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ccc;
-  padding: 4px;
-  word-break: break-word;
 }
 
 .remove-btn {
@@ -112,12 +81,6 @@ button {
   font-weight: bold;
 }
 
-.file-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .check-btn {
   background-color: #003c78;
   color: white;
@@ -126,32 +89,6 @@ button {
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
-}
-
-.center-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 70vh;
-  flex-wrap: wrap;
-  gap: 30px;
-  padding: 1rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.drop-area {
-  flex: 1 1 300px;
-  min-width: 260px;
-  max-width: 500px;
-  height: 450px;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #777;
-  font-size: 14px;
 }
 
 .index-wrapper {

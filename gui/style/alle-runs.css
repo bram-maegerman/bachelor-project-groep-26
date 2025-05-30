@@ -1,9 +1,3 @@
-.centered-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
 .centered-list div ul {
   list-style: none;
   padding: 0;
@@ -82,15 +76,6 @@
 .pagination-nav button.active {
   font-weight: bold;
   text-decoration: underline;
-}
-
-.date-title {
-  width: 75%;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.date-container {
-  min-width: 400px;
 }
 
 .file-table {
