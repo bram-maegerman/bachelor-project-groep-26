@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="style/voorcontrole.css" />
   <link rel="stylesheet" href="style/nav.css" />
-  <script src="js/script.js" defer></script>
+  <script src="js/voorcontrole.js" defer></script>
   <script src="js/global.js" defer></script>
 </head>
 
@@ -29,11 +30,8 @@
   <h1 class="title">Voorcontrole</h1>
 
   <div class="center-container">
-    <div class="drop-area">
-      <p>
-        <span onclick="pickFile()" style="color:#147FA1; text-decoration: underline; cursor: pointer;">Kies</span> of
-        sleep bestanden naar hier om te uploaden
-      </p>
+    <div class="drop-area" onclick="pickFile()">
+      <p>Klik hier om bestanden te uploaden</p>
     </div>
 
     <div class="file-box">
