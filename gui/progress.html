@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style/nav.css" />
+    <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="style/progress.css" />
+    <link rel="stylesheet" href="style/settings.css" />
+    <script src="js/global.js" defer></script>
+    <script src="js/progress.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="index.html">
+          <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+        </a>
+        <div class="nav-wrapper">
+          <button id="nav-dropdown">Startpagina <span id="nav-arrow">&#x25BC;</span></button>
+          <ul id="options" class="nav-options hidden">
+            <li><a href="voorcontrole.html">Voorcontrole</a></li>
+            <li><a href="laatste-run.html">Laatste run</a></li>
+            <li><a href="alle-runs.html">Alle runs</a></li>
+            <li><a href="instellingen.html">Instellingen</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <h3 style="width: 100%; text-align: center;">Progress</h3>
+      <div class="progress-page">
+        <div id="progress-list"></div>
+        <div id="to-overview">
+          <div id="loader" class="loader"></div>
+          <a href="laatste-run.html" id="overzicht" class="standard-btn hidden">
+            Overzicht
+          </a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
