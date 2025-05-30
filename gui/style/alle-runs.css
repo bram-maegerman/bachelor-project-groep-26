@@ -4,7 +4,7 @@
   width: 100%;
   max-width: 600px;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   background-color: #f9f9f9;
   overflow: hidden;
 }
@@ -82,17 +82,18 @@
   width: 60%;
   border-collapse: collapse;
   margin-top: 20px;
-  border: 1px solid #147FA1;
+  border: 1px solid #147fa1;
 }
 
-.file-table th, .file-table td {
+.file-table th,
+.file-table td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
 .file-table th {
-  background-color: #147FA1;
+  background-color: #147fa1;
   text-align: center;
   color: white;
 }
@@ -125,4 +126,10 @@
 .file-table td {
   padding: 8px 12px;
   text-align: center;
+}
+
+.no-files {
+  display: flex;
+  justify-content: center;
+  color: red;
 }
