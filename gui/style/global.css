@@ -1,0 +1,60 @@
+body {
+  font-family: sans-serif;
+  padding: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.centered-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button {
+  cursor: pointer;
+}
+
+.title {
+  text-align: center;
+  color: #147fa1;
+}
+
+.remove-btn {
+  margin-left: 10px;
+  cursor: pointer;
+  color: red;
+  /* There were two remove-btn classes and the only big difference was the color and the font-size */
+  /* color: #ff4444; */
+  /* font-size: 1.2em; */
+  border: none;
+  background: transparent;
+  font-weight: bold;
+}
+
+.check-btn {
+  background-color: #003c78;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.standard-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
+  padding: 1rem;
+  border-radius: 50px;
+  width: 200px;
+  background-color: #00407a;
+  color: white;
+  text-decoration: none;
+}
+
+.hidden {
+  display: none;
+}
