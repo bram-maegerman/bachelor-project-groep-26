@@ -10,6 +10,18 @@
   margin: 0 auto;
 }
 
+.file-box {
+  flex: 1 1 350px;
+  min-width: 300px;
+  max-width: 600px;
+  height: 450px;
+  background-color: #147fa1;
+  color: white;
+  padding: 16px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
 .file-box h3 {
   margin-top: 0;
   font-size: 16px;
@@ -28,18 +40,6 @@
   justify-content: center;
   color: #777;
   font-size: 14px;
-}
-
-.file-box {
-  flex: 1 1 350px;
-  min-width: 300px;
-  max-width: 600px;
-  height: 450px;
-  background-color: #147fa1;
-  color: white;
-  padding: 16px;
-  border-radius: 4px;
-  box-sizing: border-box;
 }
 
 .file-list-display {
