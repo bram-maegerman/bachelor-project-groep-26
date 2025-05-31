@@ -5,12 +5,6 @@ body {
   padding: 0;
 }
 
-.centered-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 button {
   cursor: pointer;
 }
@@ -24,9 +18,7 @@ button {
   margin-left: 10px;
   cursor: pointer;
   color: red;
-  /* There were two remove-btn classes and the only big difference was the color and the font-size */
-  /* color: #ff4444; */
-  /* font-size: 1.2em; */
+  font-size: 1.2em;
   border: none;
   background: transparent;
   font-weight: bold;
