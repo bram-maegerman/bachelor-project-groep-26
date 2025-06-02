@@ -1,13 +1,36 @@
+let ascNameSorting = true;
+
+async function sortFilesByName(files) {
+  if (ascNameSorting) {
+    files.sort((a, b) => b.localeCompare(a));
+  } else {
+    files.sort((a, b) => a.localeCompare(b));
+  }
+  renderLastRun(files);
+}
+
 function renderLastRun(files) {
   const container = document.getElementById("file-list-container");
+  container.innerHTML = "<h1 class='title'>All runs</h1>";
   const noFilesContainer = document.getElementById("no-files");
+  noFilesContainer.innerHTML = "<h1 class'title'>All runs</h1>";
 
   const table = document.createElement("table");
   table.className = "file-table";
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Name", "Errors", "Status", "Date"].forEach((headerText) => {
+
+  const nameHeader = document.createElement("th");
+  nameHeader.textContent = `Name ${ascNameSorting ? '▲' : '▼'}`;
+  nameHeader.className = "sortable-header"
+  nameHeader.addEventListener("click", () => {
+    ascNameSorting = !ascNameSorting;
+    sortFilesByName(files);
+  });
+  headerRow.appendChild(nameHeader);
+
+  ["Errors", "Status", "Date"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);

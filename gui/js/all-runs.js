@@ -2,6 +2,8 @@ let currentPage = 1;
 let allFiles = [];
 let totalPages = 1;
 
+let ascNameSorting = true;
+
 async function renderOverview(files) {
   const container = document.getElementById("file-list-container");
   container.innerHTML = "<h1 class='title'>All runs</h1>";
@@ -23,6 +25,15 @@ async function renderOverview(files) {
   await renderPage(currentPage);
 }
 
+async function sortAllFilesByName() {
+  if (ascNameSorting) {
+    allFiles.sort((a, b) => b.fileName.localeCompare(a.fileName));
+  } else {
+    allFiles.sort((a, b) => a.fileName.localeCompare(b.fileName));
+  }
+  await renderPage(currentPage);
+}
+
 async function renderPage(page) {
   currentPage = page;
   const start = (page - 1) * 10;
@@ -37,7 +48,17 @@ async function renderPage(page) {
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Name", "Errors", "Status", "Date"].forEach((headerText) => {
+
+  const nameHeader = document.createElement("th");
+  nameHeader.textContent = `Name ${ascNameSorting ? '▲' : '▼'}`;
+  nameHeader.className = "sortable-header"
+  nameHeader.addEventListener("click", () => {
+    ascNameSorting = !ascNameSorting;
+    sortAllFilesByName();
+  });
+  headerRow.appendChild(nameHeader);
+
+  ["Errors", "Status", "Date"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);

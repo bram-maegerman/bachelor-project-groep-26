@@ -139,3 +139,15 @@
   justify-content: center;
   color: red;
 }
+
+.sortable-header {
+  cursor: default;
+  color: white;
+  transition-duration: 200ms;
+}
+
+.sortable-header:hover {
+  cursor: pointer;
+  color: lightgrey;
+  transition-duration: 200ms;
+}
