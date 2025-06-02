@@ -11,9 +11,9 @@ async function sortFilesByName(files) {
 
 function renderLastRun(files) {
   const container = document.getElementById("file-list-container");
-  container.innerHTML = "<h1 class='title'>All runs</h1>";
+  container.innerHTML = "";
   const noFilesContainer = document.getElementById("no-files");
-  noFilesContainer.innerHTML = "<h1 class'title'>All runs</h1>";
+  noFilesContainer.innerHTML = "";
 
   const table = document.createElement("table");
   table.className = "file-table";

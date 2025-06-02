@@ -6,7 +6,7 @@ let ascNameSorting = true;
 
 async function renderOverview(files) {
   const container = document.getElementById("file-list-container");
-  container.innerHTML = "<h1 class='title'>All runs</h1>";
+  container.innerHTML = "";
 
   allFiles = [];
   Object.keys(files).forEach((date) => {
@@ -41,7 +41,7 @@ async function renderPage(page) {
   const pageFiles = allFiles.slice(start, end);
 
   const container = document.getElementById("file-list-container");
-  container.innerHTML = "<h1 class='title'>All runs</h1>";
+  container.innerHTML = "";
 
   const table = document.createElement("table");
   table.className = "file-table";
