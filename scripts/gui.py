@@ -1,4 +1,4 @@
-import webview, subprocess, os, threading, json, base64
+import webview, subprocess, os, threading, json, base64, webbrowser
 from pathlib import Path
 
 CONFIG_FILE = Path(__file__).parent / "config.json"
@@ -105,6 +105,9 @@ class API:
         window = webview.windows[0]
         result = window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=True)
         return result if result else []
+    
+    def open_file(self, path):
+        webbrowser.open(path)
 
     def run_overview(self):
         webview.windows[0].evaluate_js(f"renderOverview({json.dumps(self.get_all_files())})")
@@ -176,8 +179,6 @@ class API:
 
         filtered_logs.extend(summary_block)
         return "\n".join(filtered_logs)
-
-
 
     def read_pdf_as_data_url(self, path):
         path = Path(path.replace("/", os.sep)).resolve()

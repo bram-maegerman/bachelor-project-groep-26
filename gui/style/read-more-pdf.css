@@ -32,16 +32,6 @@ p {
   margin-left: 1em;
 }
 
-.pdf-button {
-  background-color: #147fa1;
-  padding: 0.5em 1em 0.5em 1em;
-  border: none;
-  border-radius: 2em;
-  color: white;
-  text-decoration: none;
-  width: max-content;
-}
-
 .bottom {
   text-align: center;
   align-self: center;
