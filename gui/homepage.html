@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style/global.css" />
+  <link rel="stylesheet" href="style/nav.css" />
+  <link rel="stylesheet" href="style/homepage.css" />
+  <script src="js/global.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="homepage.html">
+        <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+      </a>
+      <div class="nav-wrapper">
+        <button id="nav-dropdown">Home<span id="nav-arrow">&#x25BC;</span></button>
+        <ul id="options" class="nav-options hidden">
+          <li><a href="precheck.html">Precheck</a></li>
+          <li><a href="last-run.html">Last run</a></li>
+          <li><a href="all-runs.html">All runs</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <h1 class="title">Hulptool Scanatelier</h1>
+  <div class="landing-container">
+    <div class="landing-box">
+      <div class="box-content">
+        <div class="text-content">
+          <h2 class="landing-box-title">Precheck pdf</h2>
+          <p>
+            A tool to perform a precheck on PDFs. This precheck looks for missing pages and duplicate scans. 
+            Once complete, it returns a clear overview of the errors it has found.
+          </p>
+          <a class="lees-meer" href="read-more-pdf.html">Read more...</a>
+          <a class="landing-button p-margin" href="precheck.html">Check PDF &gt;</a>
+        </div>
+        <img src="assets/img/voorcontrole.png" alt="precheck">
+      </div>
+    </div>
+
+    <div class="landing-box">
+      <div class="box-content">
+        <div class="text-content">
+          <h2 class="landing-box-title">Project analysis</h2>
+          <p>
+            This tool allows you to perform an analysis on multiple log files, customized to your needs. You are able to
+            indicate an array of statistics that you would like to see and can compare different logs
+            with each other.
+          </p>
+          <a class="landing-button p-margin" href="#">Coming soon?</a>
+        </div>
+        <img src="assets/img/data-analysis.jpeg" alt="dsl">
+      </div>
+    </div>
+
+  </div>
+</body>

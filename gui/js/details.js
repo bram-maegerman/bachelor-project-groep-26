@@ -147,7 +147,7 @@ async function loadPdf(path) {
 
 window.addEventListener("pywebviewready", async () => {
   if (!filename || !path) {
-    container.innerHTML = "<p>Geen bestand opgegeven.</p>";
+    container.innerHTML = "<p>No files selected.</p>";
     return;
   }
 

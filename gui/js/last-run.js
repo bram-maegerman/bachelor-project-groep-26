@@ -7,7 +7,7 @@ function renderLastRun(files) {
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Naam", "Fouten", "Status", "Datum"].forEach((headerText) => {
+  ["Name", "Errors", "Status", "Date"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);
@@ -19,7 +19,7 @@ function renderLastRun(files) {
 
   if (files.length == 0) {
     const noFiles = document.createElement("p");
-    noFiles.innerHTML = "Nog geen run uitgevoerd in deze sessie";
+    noFiles.innerHTML = "No runs performed yet during this session.";
     noFilesContainer.appendChild(noFiles);
   }
 

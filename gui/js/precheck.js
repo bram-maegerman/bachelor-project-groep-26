@@ -25,18 +25,18 @@ async function pickFile() {
 
 async function checkFiles() {
   if (currentFiles.length === 0) {
-    alert("Selecteer minimum 1 bestand!");
+    alert("Select a mininum of 1 file!");
     return;
   }
   if (currentFiles.length > 20) {
-    alert("Selecteer minder dan 20 bestanden!");
+    alert("Select fewer than 20 files!");
     return;
   }
   const filePaths = currentFiles.map((file) => file.path);
 
   await window.pywebview.api.set_next(filePaths);
 
-  window.location.href = "vooruitgang.html";
+  window.location.href = "progress.html";
 }
 
 function updateFileList() {
