@@ -1,4 +1,4 @@
-import webview, subprocess, os, threading, json, base64, webbrowser
+import webview, subprocess, os, threading, json, base64
 from pathlib import Path
 
 CONFIG_FILE = Path(__file__).parent / "config.json"
@@ -9,14 +9,14 @@ class API:
         self._window_loaded = threading.Event()
         self._latest_run = set()
         self._init_config()  # Ensure config file exists with defaults
-        self.export_path = self._load_export_path()
+        self.export_paths = self._load_export_paths()
         self.log_level = self._load_log_level()
         self.next_run = []
 
     def _init_config(self):
         if not CONFIG_FILE.exists():
             default_config = {
-                "export_path": "",
+                "export_paths": [],
                 "log_level": 1
             }
             with open(CONFIG_FILE, "w") as f:
@@ -31,22 +31,22 @@ class API:
                 except json.JSONDecodeError:
                     # In case of corrupted JSON, reset to default
                     self._init_config()
-                    return {"export_path": "", "log_level": 1}
+                    return {"export_paths": [], "log_level": 1}
         else:
             self._init_config()
-            return {"export_path": "", "log_level": 1}
+            return {"export_paths": [], "log_level": 1}
 
     def _save_config(self, data):
         with open(CONFIG_FILE, "w") as f:
             json.dump(data, f, indent=2)
 
-    def _load_export_path(self):
+    def _load_export_paths(self):
         data = self._load_config()
-        return data.get("export_path", "")
+        return data.get("export_paths", [])
 
-    def _save_export_path(self, path: str):
+    def _save_export_paths(self, paths: list):
         data = self._load_config()
-        data["export_path"] = path
+        data["export_paths"] = paths
         self._save_config(data)
 
     def _load_log_level(self):
@@ -64,22 +64,32 @@ class API:
         if result:
             return result[0]
         else:
-            return self.export_path
+            return self.export_paths
 
-    def set_settings(self, export_path: str, log_level: int):
-        self.export_path = export_path
+    def set_settings(self, export_paths: list, log_level: int):
+        self.export_paths = export_paths
         self.log_level = log_level
-        self._save_export_path(export_path)
+        self._save_export_paths(export_paths)
         self._save_log_level(log_level)
 
     def get_settings(self):
         return {
-            "export_path": self.export_path,
-            "log_level": self.log_level
+            "export_paths": self._load_export_paths(),
+            "log_level": self._load_log_level()
         }
 
-    def get_export_path(self):
-        return self.export_path
+    def add_export_path(self, name: str, path: str):
+        paths = self._load_export_paths()
+        paths.append({"name": name, "path": path})
+        self._save_export_paths(paths)
+
+    def remove_export_path(self, name: str):
+        paths = self._load_export_paths()
+        paths = [p for p in paths if p["name"] != name]
+        self._save_export_paths(paths)
+
+    def get_export_paths(self):
+        return self._load_export_paths()
 
     def set_log_level(self, level: int):
         self.log_level = level
@@ -105,9 +115,6 @@ class API:
         window = webview.windows[0]
         result = window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=True)
         return result if result else []
-    
-    def open_file(self, path):
-        webbrowser.open(path)
 
     def run_overview(self):
         webview.windows[0].evaluate_js(f"renderOverview({json.dumps(self.get_all_files())})")
@@ -179,6 +186,8 @@ class API:
 
         filtered_logs.extend(summary_block)
         return "\n".join(filtered_logs)
+
+
 
     def read_pdf_as_data_url(self, path):
         path = Path(path.replace("/", os.sep)).resolve()
