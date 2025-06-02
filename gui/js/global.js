@@ -8,6 +8,9 @@ function toggleArrow(currentArrow) {
 const navDropdown = document.getElementById("nav-dropdown");
 const navArrow = document.getElementById("nav-arrow");
 const options = document.getElementById("options");
+const projectDropDown = document.getElementById("project-dropdown");
+const projectOptions = document.getElementById("project-options");
+const projectArrow = document.getElementById("project-arrow");
 
 document.addEventListener("DOMContentLoaded", () => {
   if (navDropdown && navArrow && options) {
@@ -19,4 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
         : "25px 25px 0 0";
     });
   }
+  projectDropDown.addEventListener("click", () => {
+    projectArrow.textContent = toggleArrow(projectArrow.textContent.trim());
+    projectOptions.classList.toggle("hidden");
+    projectDropDown.style.borderRadius = projectOptions.classList.contains("hidden")
+      ? "25px"
+      : "25px 25px 0 0";
+  });
 });

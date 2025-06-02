@@ -79,3 +79,71 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.project-dropdown-button {
+  background-color: #70cdf5;
+  color: white;
+  border: 2px solid white;
+  border-radius: 25px;
+  padding: 1rem;
+  width: 150px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+button span {
+  margin-left: 5px;
+}
+
+button:hover,
+ul.project-options li:hover {
+  background-color: #70cdf5;
+}
+
+ul.project-options {
+  background-color: #52bdec;
+  border: 2px solid white;
+  border-radius: 25px;
+  list-style: none;
+  padding: 3rem 0 0;
+  margin: auto 0;
+  width: 150px;
+  box-sizing: border-box;
+  position: absolute;
+}
+
+ul.project-options li {
+  text-align: center;
+  border-bottom: 1px solid white;
+  display: block;
+  padding: 1rem;
+  color: white;
+  text-decoration: none;
+}
+
+ul.nav-options li:last-child {
+  border-bottom: none;
+  border-radius: 0 0 25px 25px;
+}
+
+div.project-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 1rem;
+  width: 150px;
+  box-sizing: border-box;
+  z-index: 999;
+}
+
+ul.project-options li:last-child {
+  border-bottom: none;
+  border-radius: 0 0 25px 25px;
+}

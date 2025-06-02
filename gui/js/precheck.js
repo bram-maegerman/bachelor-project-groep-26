@@ -1,4 +1,5 @@
 const currentFiles = [];
+let exportPaths = [];
 
 async function pickFile() {
   if (!window.pywebview?.api?.open_file_dialog) {
@@ -73,3 +74,28 @@ function updateFileList() {
 
   countEl.textContent = `${currentFiles.length}/20`;
 }
+
+function renderProjects() {
+  const options = document.getElementById("project-options");
+  options.innerHTML = ""; // clear old items
+
+  exportPaths.forEach((entry) => {
+    const option = document.createElement("li");
+    option.textContent = entry.name;
+    option.addEventListener("click", async () => {
+      document.getElementById("project-dropdown").textContent = entry.name;
+      await window.pywebview.api.set_export_path(entry.path);  // ⬅️ New function
+    });
+    options.appendChild(option);
+  });
+}
+
+window.addEventListener("pywebviewready", async () => {
+  try {
+    const { export_paths, log_level } = await window.pywebview.api.get_settings();
+    exportPaths = export_paths || [];
+    renderProjects();
+  } catch (err) {
+    console.error("Failed to initialize settings:", err);
+  }
+})

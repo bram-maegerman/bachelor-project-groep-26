@@ -90,6 +90,9 @@ class API:
 
     def get_export_paths(self):
         return self._load_export_paths()
+    
+    def set_export_path(self, path: str):
+        self._selected_export_path = path
 
     def set_log_level(self, level: int):
         self.log_level = level
@@ -132,7 +135,7 @@ class API:
         self._latest_run = set()
 
         # Load latest settings from json file
-        export_path = self._load_export_path()
+        export_path = self._selected_export_path or self._load_export_path()
 
         for file_path in self.next_run:
             # Updates table of files to see which one is processing a.t.m.
