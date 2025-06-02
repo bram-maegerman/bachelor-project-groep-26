@@ -4,7 +4,7 @@ from multiprocessing import Pool, Manager, cpu_count
 from datetime import date
 
 # Extracted python logic
-from util import find_sequence, custom_print, process_page, log_messages
+from util import find_sequence, custom_print, process_page, log_messages, compress_pdf
 
 # Creates a directory in /files if one doesn't exist already.
 today = date.today().strftime("%d-%m-%Y")
@@ -150,7 +150,9 @@ def main():
     log_messages.append(f"\nTotal pages with numbers {len(all_found_numbers) - len(missing_numbers)}")
     log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
 
-    log_messages.append(f"\n\nPath to original pdf: \n{filename}")
+    compressed_output_file = compress_pdf(filename, f"{log_directory}/{filename.name}_compressed")
+
+    log_messages.append(f"\n\nPath to original pdf: \n{compressed_output_file}")
 
     log_file_location = f"{log_directory}/{filename.name}_LOG.txt"
 
