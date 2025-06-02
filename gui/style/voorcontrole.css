@@ -40,6 +40,13 @@
   justify-content: center;
   color: #777;
   font-size: 14px;
+  transition-duration: 200ms;
+}
+
+.drop-area:hover {
+  color: #147fa1;
+  border-color: #147fa1;
+  transition-duration: 200ms;
 }
 
 .file-list-display {
