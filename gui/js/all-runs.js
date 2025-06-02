@@ -1,5 +1,6 @@
 let currentPage = 1;
 let allFiles = [];
+let allFilteredFiles = [];
 let totalPages = 1;
 
 let ascNameSorting = true;
@@ -21,15 +22,28 @@ async function renderOverview(files) {
     });
   });
 
+  allFilteredFiles = allFiles;
+
   totalPages = Math.ceil(allFiles.length / 10);
   await renderPage(currentPage);
 }
 
 async function sortAllFilesByName() {
   if (ascNameSorting) {
-    allFiles.sort((a, b) => b.fileName.localeCompare(a.fileName));
+    allFilteredFiles.sort((a, b) => b.fileName.localeCompare(a.fileName));
   } else {
-    allFiles.sort((a, b) => a.fileName.localeCompare(b.fileName));
+    allFilteredFiles.sort((a, b) => a.fileName.localeCompare(b.fileName));
+  }
+  await renderPage(currentPage);
+}
+
+async function filterAllFilesByName(filterValue) {
+  if (filterValue.length === 0) {
+    allFilteredFiles = allFiles;
+  } else {
+    allFilteredFiles = allFiles.filter(file => 
+      file.fileName.toLowerCase().includes(filterValue.toLowerCase())
+    );
   }
   await renderPage(currentPage);
 }
@@ -38,7 +52,7 @@ async function renderPage(page) {
   currentPage = page;
   const start = (page - 1) * 10;
   const end = start + 10;
-  const pageFiles = allFiles.slice(start, end);
+  const pageFiles = allFilteredFiles.slice(start, end);
 
   const container = document.getElementById("file-list-container");
   container.innerHTML = "";
@@ -164,6 +178,13 @@ function parseErrorCount(log) {
   const count = parseInt(parts[parts.length - 1], 10);
   return count;
 }
+
+
+const nameFilterInput = document.getElementById("name-filter");
+
+nameFilterInput.addEventListener("input", () => {
+  filterAllFilesByName(nameFilterInput.value.trim());
+})
 
 document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("pywebviewready", () => {

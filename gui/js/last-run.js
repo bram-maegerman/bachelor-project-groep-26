@@ -1,10 +1,21 @@
 let ascNameSorting = true;
 
-async function sortFilesByName(files) {
+function sortFilesByName(files) {
   if (ascNameSorting) {
     files.sort((a, b) => b.localeCompare(a));
   } else {
     files.sort((a, b) => a.localeCompare(b));
+  }
+  renderLastRun(files);
+}
+
+function filterFilesByName(files, filterValue) {
+  if (filterValue.length === 0) {
+    allFilteredFiles = allFiles;
+  } else {
+    allFilteredFiles = allFiles.filter(file => 
+      file.fileName.toLowerCase().includes(filterValue.toLowerCase())
+    );
   }
   renderLastRun(files);
 }
