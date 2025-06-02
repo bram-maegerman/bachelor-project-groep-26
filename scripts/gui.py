@@ -121,12 +121,15 @@ class API:
 
         self._latest_run = set()
 
+        # Load latest settings from json file
+        export_path = self._load_export_path()
+
         for file_path in self.next_run:
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(file_path)})")
 
             result = subprocess.run(
-                ["python", "scripts/main.py", file_path],
+                ["python", "scripts/main.py", file_path, export_path],
                 capture_output=True,
                 text=True
             )
