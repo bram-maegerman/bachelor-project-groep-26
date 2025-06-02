@@ -8,15 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const logOptions = {
     1: {
       id: "log-level-1",
-      description: "Enkel waarschuwingen worden getoond",
+      description: "Only warnings are shown",
     },
     2: {
       id: "log-level-2",
-      description: "Waarschuwingen en infoberichten worden getoond",
+      description: "Warnings and info messages are shown",
     },
     3: {
       id: "log-level-3",
-      description: "Alle logs worden getoond",
+      description: "All logs are shown",
     },
   };
 
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setExportPath(path) {
-    exportPathElement.textContent = path || "Geen map geselecteerd";
+    exportPathElement.textContent = path || "No file selected";
     exportPath = path; // Update global export path variable
     removeSuccesssClass();
   }
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function chooseExportFolder() {
     const selectedPath = await window.pywebview.api.choose_export_path();
     document.getElementById("export-path").textContent =
-      selectedPath || "Geen map geselecteerd";
+      selectedPath || "No file selected";
     setExportPath(selectedPath);
   }
 
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function reset() {
     try {
       let confirmation = confirm(
-        "Weet je zeker dat je de settings wilt resetten?"
+        "Are you sure you want to reset the settings?"
       );
       if (!confirmation) {
         return;

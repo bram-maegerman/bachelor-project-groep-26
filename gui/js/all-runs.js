@@ -4,7 +4,7 @@ let totalPages = 1;
 
 async function renderOverview(files) {
   const container = document.getElementById("file-list-container");
-  container.innerHTML = "<h1 class='title'>Alle runs</h1>";
+  container.innerHTML = "<h1 class='title'>All runs</h1>";
 
   allFiles = [];
   Object.keys(files).forEach((date) => {
@@ -30,14 +30,14 @@ async function renderPage(page) {
   const pageFiles = allFiles.slice(start, end);
 
   const container = document.getElementById("file-list-container");
-  container.innerHTML = "<h1 class='title'>Alle runs</h1>";
+  container.innerHTML = "<h1 class='title'>All runs</h1>";
 
   const table = document.createElement("table");
   table.className = "file-table";
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Naam", "Fouten", "Status", "Datum"].forEach((headerText) => {
+  ["Name", "Errors", "Status", "Date"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);

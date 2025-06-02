@@ -6,19 +6,24 @@ from datetime import date
 # Extracted python logic
 from util import find_sequence, custom_print, process_page, log_messages, compress_pdf
 
-# Creates a directory in /files if one doesn't exist already.
-today = date.today().strftime("%d-%m-%Y")
-log_directory = Path(__file__).parent.parent/"files"/today
-os.makedirs(log_directory, exist_ok=True)
-
-if len(sys.argv) < 2:
-    print("Usage: python multi_main.py <path_to_pdf>")
+if len(sys.argv) < 3:
+    print("Usage: python multi_main.py <path_to_pdf> <log_files_export_path")
     sys.exit(1)
 
 filename = Path(sys.argv[1])
 if not filename.exists():
     print(f"File not found: {filename}")
     sys.exit(1)
+
+export_directory = Path(sys.argv[2])
+if not export_directory.exists():
+    print(f"Directory not found: {export_directory}")
+    sys.exit(1)
+
+# Creates a directory in /files if one doesn't exist already.
+today = date.today().strftime("%d-%m-%Y")
+log_directory = export_directory / today
+os.makedirs(log_directory, exist_ok=True)
 
 def main():
     #   last found page number
@@ -30,15 +35,20 @@ def main():
     skip_next = False
 
     with Manager() as manager:
+        # This list shared among processes and gets passed to the process_page method, so that process errors also get added to log_messages
+        process_messages = manager.list()
+
         doc = fitz.open(filename)
         doc_len = len(doc)
 
         # Multiprocessing
         progress_queue = manager.Queue()
-        args = [(doc.extract_image(doc[i].get_images()[0][0]), i, doc_len, progress_queue) for i in range(doc_len)]
+        args = [(doc.extract_image(doc[i].get_images()[0][0]), i, doc_len, progress_queue, process_messages) for i in range(doc_len)]
         with Pool(processes=cpu_count()) as pool:
             all_found_numbers_list = pool.map_async(process_page, args).get()
             all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list)}
+        
+        log_messages.extend(process_messages)
 
         #   Loop over all found numbers
         #   Every entry of all_found_numbers holds a set of numbers which are found a specific page
