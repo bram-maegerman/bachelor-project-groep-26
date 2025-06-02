@@ -169,7 +169,7 @@ def double_scan(image: Image):
 
 def process_page(args):
     try:
-        base_image, page_index, doc_len, progress_queue = args
+        base_image, page_index, doc_len, progress_queue, process_messages = args
         # print(f"Start processing page {page_index} - PID: {os.getpid()}")  
 
         #   Reads out the bytes of the image
@@ -184,6 +184,10 @@ def process_page(args):
         parsed_numbers = extract_header_footer(image, int(doc_len))
 
         progress_queue.put(1)
+
+        # All log messages during processing get added to the shared memory list, so they don't get lost in seperate mutliprocessing memory
+        if len(log_messages) > 0:
+            process_messages.extend(log_messages)
 
         return parsed_numbers
 

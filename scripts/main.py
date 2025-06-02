@@ -30,15 +30,20 @@ def main():
     skip_next = False
 
     with Manager() as manager:
+        # This list shared among processes and gets passed to the process_page method, so that process errors also get added to log_messages
+        process_messages = manager.list()
+
         doc = fitz.open(filename)
         doc_len = len(doc)
 
         # Multiprocessing
         progress_queue = manager.Queue()
-        args = [(doc.extract_image(doc[i].get_images()[0][0]), i, doc_len, progress_queue) for i in range(doc_len)]
+        args = [(doc.extract_image(doc[i].get_images()[0][0]), i, doc_len, progress_queue, process_messages) for i in range(doc_len)]
         with Pool(processes=cpu_count()) as pool:
             all_found_numbers_list = pool.map_async(process_page, args).get()
             all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list)}
+        
+        log_messages.extend(process_messages)
 
         #   Loop over all found numbers
         #   Every entry of all_found_numbers holds a set of numbers which are found a specific page
