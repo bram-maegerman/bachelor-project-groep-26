@@ -17,12 +17,13 @@
         <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
       </a>
       <div class="nav-wrapper">
-        <button id="nav-dropdown">homepage <span id="nav-arrow">&#x25BC;</span></button>
+        <button id="nav-dropdown">Read more <span id="nav-arrow">&#x25BC;</span></button>
         <ul id="options" class="nav-options hidden">
-          <li><a href="precheck.html">precheck</a></li>
-          <li><a href="last-run.html">Laatste run</a></li>
-          <li><a href="all-runs.html">Alle runs</a></li>
-          <li><a href="settings.html">settings</a></li>
+          <li><a href="homepage.html">Home</a></li>
+          <li><a href="precheck.html">Precheck</a></li>
+          <li><a href="last-run.html">Last run</a></li>
+          <li><a href="all-runs.html">All runs</a></li>
+          <li><a href="settings.html">Settings</a></li>
         </ul>
       </div>
     </nav>
@@ -30,60 +31,60 @@
 
   <main>
     <div class="row">
-      <a class="pdf-button" href="homepage.html">&lt; Terug</a>
-      <h1 class="landing-title">precheck pdf</h1>
+      <a class="pdf-button" href="homepage.html">&lt; Back</a>
+      <h1 class="landing-title">Precheck pdf</h1>
     </div>
 
     <div class="content-columns">
       <div class="column">
         <div class="intro-text">
           <p>
-            Het programma maakt gebruik van Tesseract om OCR uit te voeren op een afbeelding.
-            Dat is een open-source OCR systeem gemaakt door Google, dat net zoals Abby FineReader
-            met zekere nauwkeurigheid karakters kan detecteren in afbeeldingen.
+            The program uses Tesseract to perform OCR on an image.
+            That is an open-source OCR system created by Google, which, like Abby FineReader,
+            can detect characters in images with a certain accuracy.
           </p>
         </div>
         <img src="assets/img/tesseractOCR.png" alt="Tesseract OCR Logo" width="180px" />
       </div>
 
       <div class="column">
-        <img src="assets/img/precheck-overlay.png" alt="precheck overlay voorbeeld" height="300px" />
+        <img src="assets/img/voorcontrole-overlay.png" alt="precheck overlay voorbeeld" height="300px" />
         <div class="text-padding">
           <p class="p-mw">
-            Om na te kijken waar we best zouden zoeken voor paginanummers,
-            selecteerden we tien willekeurige pagina's uit verschillende pdf's en legden deze op elkaar,
-            elk met een transparantie van tien procent. Op deze manier konden we op een visuele manier
-            identificeren waar tekst regelmatig voorkomt. We waren echter enkel benieuwd naar de paginanummers,
-            die zich meestal bevonden in de eerste of laatste regels van een pagina.
+            To see where we should look for page numbers,
+            we selected ten random pages from different PDFs and stacked them on top of each other,
+            each with a transparency of ten percent. This way we could visually
+            identify where text appears frequently. However, we were only interested in the page numbers,
+            which were usually located in the first or last lines of a page.
           </p>
           <p>
-            Om tijd en middelen te besparen besloten we dat het best was om enkel deze relevante zones
-            (hoofdstuk en voettekst) uit de afbeelding te knippen. Vervolgens voegden we deze samen,
-            met wat witruimte ertussen om de A4-structuur te behouden voor optimale OCR-werking.
-            Dit leverde vrij nauwkeurige resultaten op, die zelfs beter werden toen we de OCR-engine mode (OEM)
-            wijzigden van 3 naar 2.
+            To save time and resources, we decided it was best to only scan these relevant areas
+            (header and footer) from the image. We then merged them,
+            with some white space in between to maintain the A4 structure for optimal OCR performance.
+            This gave us fairly accurate results, which further improved when we changed the OCR engine mode (OEM)
+            from 3 to 2.
           </p>
         </div>
       </div>
 
       <p>
-        Voor de detectie van dubbele scans voerden we een analyse uit op een verzameling van pdf's,
-        en keken we telkens wat de gemiddelde grootte was (rekening houdend met outliers).
+        For the detection of dubble scans, we performed an analysis on multiple PDFs and looked for an average height and width of the pages.
+        We then use these values to detect outliers so we can accurately find these dubble scans.
       </p>
 
       <div class="column">
         <div>
           <p style="margin-right: 1em;">
-            We gebruiken nu dit gemiddelde als een hardcoded waarde waar slechts licht (20%)
-            van afgeweken mag worden. Bij een te groot verschil wordt deze pagina geflagged met een waarschuwing
-            dat deze waarschijnlijk een dubbele scan is.
+            We now use this average as a hardcoded value from which only a slight deviation (20%)
+            may be made. If the difference is too great, this page will be flagged with a warning
+            that this is probably a double scan.
           </p>
         </div>
         <img src="assets/img/statistics.png" alt="OCR statistieken" height="150px" />
       </div>
     </div>
     <div class="row">
-      <a class="pdf-button bottom" href="precheck.html">Pdf nakijken &gt;</a>
+      <a class="pdf-button bottom" href="precheck.html">Check PDF &gt;</a>
     </div>
   </main>
 </body>
