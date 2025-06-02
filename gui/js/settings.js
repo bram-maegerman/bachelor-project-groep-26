@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function reset() {
     try {
       let confirmation = confirm(
-        "Weet je zeker dat je de instellingen wilt resetten?"
+        "Weet je zeker dat je de settings wilt resetten?"
       );
       if (!confirmation) {
         return;

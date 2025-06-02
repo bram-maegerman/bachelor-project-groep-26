@@ -36,7 +36,7 @@ async function checkFiles() {
 
   await window.pywebview.api.set_next(filePaths);
 
-  window.location.href = "vooruitgang.html";
+  window.location.href = "progress.html";
 }
 
 function updateFileList() {
