@@ -54,9 +54,6 @@ async function renderPage(page) {
   const end = start + 10;
   const pageFiles = allFilteredFiles.slice(start, end);
 
-  const container = document.getElementById("file-list-container");
-  container.innerHTML = "";
-
   const table = document.createElement("table");
   table.className = "file-table";
 
@@ -124,6 +121,9 @@ async function renderPage(page) {
   }
 
   table.appendChild(tbody);
+
+  const container = document.getElementById("file-list-container");
+  container.innerHTML = "";
   container.appendChild(table);
 
   createPagination();

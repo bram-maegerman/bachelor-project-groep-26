@@ -15,7 +15,6 @@ function filterFilesByName(filterValue) {
   if (filterValue.length === 0) {
     allFilteredFiles = allFiles;
   } else {
-    console.log(allFiles)
     allFilteredFiles = allFiles.filter(file => 
       file.toLowerCase().includes(filterValue.toLowerCase())
     );
@@ -24,12 +23,6 @@ function filterFilesByName(filterValue) {
 }
 
 function renderLastRun(files) {
-  console.log(files);
-  const container = document.getElementById("file-list-container");
-  container.innerHTML = "";
-  const noFilesContainer = document.getElementById("no-files");
-  noFilesContainer.innerHTML = "";
-
   const table = document.createElement("table");
   table.className = "file-table";
 
@@ -55,7 +48,10 @@ function renderLastRun(files) {
 
   const tbody = document.createElement("tbody");
 
-  if (files.length == 0) {
+  const noFilesContainer = document.getElementById("no-files");
+  noFilesContainer.innerHTML = "";
+
+  if (allFiles.length == 0) {
     const noFiles = document.createElement("p");
     noFiles.innerHTML = "No runs performed yet during this session.";
     noFilesContainer.appendChild(noFiles);
@@ -106,6 +102,9 @@ function renderLastRun(files) {
   });
 
   table.appendChild(tbody);
+
+  const container = document.getElementById("file-list-container");
+  container.innerHTML = "";
   container.appendChild(table);
 }
 
