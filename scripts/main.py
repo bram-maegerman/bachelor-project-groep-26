@@ -4,7 +4,7 @@ from multiprocessing import Pool, Manager, cpu_count
 from datetime import date
 
 # Extracted python logic
-from util import find_sequence, custom_print, process_page, log_messages, compress_pdf
+from util import find_sequence, custom_print, process_page, log_messages
 
 if len(sys.argv) < 3:
     print("Usage: python multi_main.py <path_to_pdf> <log_files_export_path")
@@ -159,10 +159,6 @@ def main():
     log_messages.append(f"\nTotal pages in document {len(doc)}")
     log_messages.append(f"\nTotal pages with numbers {len(all_found_numbers) - len(missing_numbers)}")
     log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
-
-    compressed_output_file = compress_pdf(filename, f"{log_directory}/compressed_{filename.name}")
-
-    log_messages.append(f"\n\nPath to original pdf: \n{compressed_output_file}")
 
     log_file_location = f"{log_directory}/{filename.name}_LOG.txt"
 
