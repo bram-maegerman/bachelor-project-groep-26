@@ -110,7 +110,7 @@ class API:
         webview.windows[0].evaluate_js(f"renderOverview({json.dumps(self.get_all_files())})")
 
     def run_last(self):
-        webview.windows[0].evaluate_js(f"renderLastRun({list(self._latest_run)})")
+        webview.windows[0].evaluate_js(f"loadLastRunFiles({list(self._latest_run)})")
 
     def set_next(self, files: list):
         self.next_run = files

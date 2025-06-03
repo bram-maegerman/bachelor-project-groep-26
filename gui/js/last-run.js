@@ -1,3 +1,5 @@
+let allFiles = [];
+let allFilteredFiles = [];
 let ascNameSorting = true;
 
 function sortFilesByName(files) {
@@ -9,18 +11,20 @@ function sortFilesByName(files) {
   renderLastRun(files);
 }
 
-function filterFilesByName(files, filterValue) {
+function filterFilesByName(filterValue) {
   if (filterValue.length === 0) {
     allFilteredFiles = allFiles;
   } else {
+    console.log(allFiles)
     allFilteredFiles = allFiles.filter(file => 
-      file.fileName.toLowerCase().includes(filterValue.toLowerCase())
+      file.toLowerCase().includes(filterValue.toLowerCase())
     );
   }
-  renderLastRun(files);
+  renderLastRun(allFilteredFiles);
 }
 
 function renderLastRun(files) {
+  console.log(files);
   const container = document.getElementById("file-list-container");
   container.innerHTML = "";
   const noFilesContainer = document.getElementById("no-files");
@@ -111,6 +115,16 @@ function parseErrorCount(log) {
   const parts = lastLine.split(" ");
   const count = parseInt(parts[parts.length - 1], 10);
   return count;
+}
+
+const nameFilterInput = document.getElementById("name-filter");
+nameFilterInput.addEventListener("input", () => {
+  filterFilesByName(nameFilterInput.value.trim());
+})
+
+function loadLastRunFiles(lastRunFiles) {
+  allFiles = lastRunFiles;
+  renderLastRun(allFiles);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

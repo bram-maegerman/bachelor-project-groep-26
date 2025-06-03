@@ -179,9 +179,7 @@ function parseErrorCount(log) {
   return count;
 }
 
-
 const nameFilterInput = document.getElementById("name-filter");
-
 nameFilterInput.addEventListener("input", () => {
   filterAllFilesByName(nameFilterInput.value.trim());
 })
