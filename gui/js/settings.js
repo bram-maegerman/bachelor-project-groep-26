@@ -3,21 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
   ////     G L O B A L   V A R I A B L E S   ////
   ///////////////////////////////////////////////
 
-  let logLevel = 2; // Default log level
-  let exportPath = ""; // Default export path
+  let logLevel = 2;
+  let exportPaths = [];
+  let projectNameToAdd = '';
+
   const logOptions = {
-    1: {
-      id: "log-level-1",
-      description: "Only warnings are shown",
-    },
-    2: {
-      id: "log-level-2",
-      description: "Warnings and info messages are shown",
-    },
-    3: {
-      id: "log-level-3",
-      description: "All logs are shown",
-    },
+    1: { id: "log-level-1", description: "Only warnings are shown" },
+    2: { id: "log-level-2", description: "Warnings and info messages are shown" },
+    3: { id: "log-level-3", description: "All logs are shown" },
   };
 
   /////////////////////////////////////
@@ -26,27 +19,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const saveButton = document.getElementById("save-button");
   const resetButton = document.getElementById("reset-button");
-
-  const exportPathElement = document.getElementById("export-path");
-  const exportFolderButton = document.getElementById("choose-export-folder");
-
+  const exportList = document.getElementById("export-paths-list");
+  const addPathButton = document.getElementById("choose-new-export-folder");
+  const exportName = document.getElementById("new-export-name");
   const descriptionElement = document.getElementById("log-level-description");
-
   const option1 = document.getElementById("log-level-1");
   const option2 = document.getElementById("log-level-2");
   const option3 = document.getElementById("log-level-3");
 
-  ///////////////////////////////////////
-  ////     F U N C T I O N S   //////////
-  ///////////////////////////////////////
+  /////////////////////////////////
+  ////     F U N C T I O N S   ////
+  /////////////////////////////////
 
-  function setSelected(number) {
-    let selectedElement = document.querySelector(".selected");
-    if (selectedElement) {
-      selectedElement.classList.remove("selected");
-    }
-
-    const { id, description } = logOptions[number];
+  function setSelected(level) {
+    document.querySelectorAll(".option").forEach((btn) => btn.classList.remove("selected"));
+    const { id, description } = logOptions[level];
 
     const element = document.getElementById(id);
     if (element) {
@@ -57,42 +44,88 @@ document.addEventListener("DOMContentLoaded", () => {
       descriptionElement.textContent = description;
     }
 
-    // Update global log level variable
-    logLevel = number;
-    removeSuccesssClass();
+    logLevel = level;
+    removeSuccessClass();
   }
 
-  function setExportPath(path) {
-    exportPathElement.textContent = path || "No file selected";
-    exportPath = path; // Update global export path variable
-    removeSuccesssClass();
+  function renderExportPaths() {
+    exportList.innerHTML = "";
+    if (exportPaths.length === 0) {
+      const empty = document.createElement("p");
+      empty.textContent = "No export paths set.";
+      exportList.appendChild(empty);
+      return;
+    }
+
+    exportPaths.forEach((entry, index) => {
+      const row = document.createElement("div");
+      row.classList.add("export-path-item");
+
+      const nameEl = document.createElement("span");
+      nameEl.textContent = `${entry.name}: `;
+      nameEl.classList.add("export-path-name");
+
+      const pathEl = document.createElement("span");
+      pathEl.textContent = entry.path;
+      pathEl.classList.add("export-path-value");
+
+      const removeBtn = document.createElement("button");
+      removeBtn.textContent = "✕";
+      removeBtn.classList.add("remove-btn");
+      removeBtn.onclick = () => {
+        exportPaths.splice(index, 1);
+        renderExportPaths();
+        removeSuccessClass();
+      };
+
+      row.appendChild(nameEl);
+      row.appendChild(pathEl);
+      row.appendChild(removeBtn);
+
+      exportList.appendChild(row);
+    });
   }
 
-  function addSuccesssClass() {
+  function addSuccessClass() {
     saveButton.classList.add("successs");
   }
 
-  function removeSuccesssClass() {
+  function removeSuccessClass() {
     saveButton.classList.remove("successs");
   }
 
   async function chooseExportFolder() {
-    const selectedPath = await window.pywebview.api.choose_export_path();
-    document.getElementById("export-path").textContent =
-      selectedPath || "No file selected";
-    setExportPath(selectedPath);
+    projectNameToAdd = await window.pywebview.api.choose_export_path();
+    if (!projectNameToAdd) return;
+
+    const selectedPathInput = document.getElementById("selected-export-path");
+    if (selectedPathInput) {
+      selectedPathInput.value = projectNameToAdd;
+    }
+  }
+
+
+  function addPath() {
+    const name = exportName.value.trim();
+    if (!name) return alert("Please enter a name for the export path.");
+
+    if(!projectNameToAdd.trim()) return alert("Please choose a path.");
+    
+    exportPaths.push({ name, path: projectNameToAdd });
+    exportName.value = "";
+    renderExportPaths();
+    removeSuccessClass();
   }
 
   async function save() {
     try {
       saveButton.classList.add("success");
-      await window.pywebview.api.set_settings(exportPath, logLevel);
+      await window.pywebview.api.set_settings(exportPaths, logLevel);
       console.log("Settings saved:", {
-        export_path: exportPath,
+        export_paths: exportPaths,
         log_level: logLevel,
       });
-
-      addSuccesssClass();
+      addSuccessClass();
     } catch (err) {
       console.warn("Failed to save settings:", err);
     }
@@ -100,16 +133,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function reset() {
     try {
-      let confirmation = confirm(
-        "Are you sure you want to reset the settings?"
-      );
-      if (!confirmation) {
-        return;
-      } else {
-        await window.pywebview.api.set_settings("", 1);
-        setExportPath("");
-        setSelected(1);
-      }
+      let confirmation = confirm("Are you sure you want to reset the settings?");
+      if (!confirmation) return;
+
+      await window.pywebview.api.set_settings([], 1);
+      exportPaths = [];
+      renderExportPaths();
+      setSelected(1);
     } catch (err) {
       console.warn("Failed to reset settings:", err);
     }
@@ -121,29 +151,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("pywebviewready", async () => {
     try {
-      const { export_path, log_level } =
-        await window.pywebview.api.get_settings();
-      let path = export_path || exportPath;
-
-      setExportPath(path);
-
-      let level = log_level || logLevel;
-      setSelected(level);
-
-      addSuccesssClass();
+      const { export_paths, log_level } = await window.pywebview.api.get_settings();
+      exportPaths = export_paths || [];
+      renderExportPaths();
+      setSelected(log_level || 2);
+      addSuccessClass();
+      const plusButton = document.getElementById("add-path-button");
+      plusButton.addEventListener("click", addPath);
 
       option1.addEventListener("click", () => setSelected(1));
       option2.addEventListener("click", () => setSelected(2));
       option3.addEventListener("click", () => setSelected(3));
-
-      // Set export path in the UI
-      exportFolderButton.addEventListener(
-        "click",
-        async () => await chooseExportFolder()
-      );
-
+      addPathButton.addEventListener("click", async () => await chooseExportFolder());
       saveButton.addEventListener("click", async () => await save());
-
       resetButton.addEventListener("click", async () => await reset());
     } catch (err) {
       console.error("Failed to initialize settings:", err);

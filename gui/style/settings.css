@@ -7,7 +7,7 @@ body {
 }
 
 .settings-container {
-  max-width: 500px;
+  max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
   background-color: #ffffff;
@@ -113,47 +113,117 @@ body {
   color: white;
 }
 
-#export-path {
-  margin: 0;
-  margin-left: 10px;
-  font-style: italic;
-  color: #333;
-  max-width: 600px;
+#export-paths-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.export-path-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.export-path-item {
+  display: flex;
+  margin-top: 25px;
+}
+
+.export-path-name {
+  margin-right: 10px;
+}
+
+.export-path-value {
+  overflow: auto;
   white-space: nowrap;
-  overflow-x: auto;
-  font-weight: normal;
 }
 
-#export-path::-webkit-scrollbar {
-  height: 4px;
+.export-add-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-#export-path::-webkit-scrollbar-thumb {
-  background-color: #aaa;
+.input-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.input-field {
+  width: 100%;
+  padding: 8px 36px 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
   border-radius: 4px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  height: 38px;
+  line-height: 1.5;
 }
 
-.export-path-row {
+#choose-new-export-folder {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  height: 100%;
+}
+
+#choose-new-export-folder:hover {
+  background: #005fa3;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.path-input-wrapper {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  position: relative;
 }
 
-.export-path-row p {
-  margin: 0;
-  font-style: italic;
-  color: #333;
-}
 
-.export-path-row button {
+#choose-new-export-folder {
+  position: absolute;
+  right: 0;
+  color: white;
   border: none;
-  background-color: transparent;
-  padding: 0;
+  border-radius: 4px;
+  padding: 6px 10px;
   cursor: pointer;
+  font-size: 14px;
 }
 
-.export-path-row button img {
+#choose-new-export-folder:hover {
+  background: #005fa3;
+}
+
+#add-path-button {
   display: block;
-  width: 24px;
-  height: 24px;
+  margin: 1rem auto 0 auto;
+  color: #28a745;
+  border: 2px solid #28a745;
+  border-radius: 8em;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+#add-path-button:hover {
+  background-color: #28a745;
+  color: white;
 }

@@ -162,8 +162,6 @@ def main():
     
     log_messages.append(f"\n\nmanually_checked=false")
 
-    log_messages.append(f"\n\nPath to original pdf: \n{filename}")
-
     log_file_location = f"{log_directory}/{filename.name}_LOG.txt"
 
     with open(log_file_location, "w") as file:

@@ -6,6 +6,17 @@ main {
   color: #2596be;
   margin-bottom: 0.5em;
   text-align: center;
+  cursor: pointer;
+}
+
+.details-container h3 {
+  color: #2596be;
+  margin-bottom: 0.5em;
+}
+
+.details-container h2:hover {
+  color: #00407a;
+  text-decoration: underline;
 }
 
 .details-container ul {
@@ -55,9 +66,29 @@ main {
   scrollbar-color: #615c5c transparent;
 }
 
+#pdf-preview canvas {
+  width: 700px;
+}
+
 #pdf-loading {
   text-align: center;
   align-self: center;
+}
+
+#page-header {
+  text-align: center;
+  margin: 1em 0 0.5em;
+}
+
+.filename-title {
+  color: #2596be;
+  cursor: pointer;
+  margin: 0;
+}
+
+.filename-title:hover {
+  color: #00407a;
+  text-decoration: underline;
 }
 
 .log-box {

@@ -29,10 +29,18 @@
     </nav>
   </header>
   <h1 class="title">Precheck</h1>
-
   <div class="center-container">
-    <div class="drop-area" onclick="pickFile()">
-      <p>Click here to upload file(s)</p>
+    <div class="left-container">
+      <div class="project-wrapper">
+        <button id="project-dropdown" class="project-dropdown-button">
+          Select project<span id="project-arrow">&#x25BC;</span>
+        </button>
+        <ul id="project-options" class="project-options hidden"></ul>
+      </div>
+
+      <div class="drop-area" onclick="pickFile()">
+        <p>Click here to upload file(s)</p>
+      </div>
     </div>
 
     <div class="file-box">

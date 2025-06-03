@@ -9,14 +9,14 @@ class API:
         self._window_loaded = threading.Event()
         self._latest_run = set()
         self._init_config()  # Ensure config file exists with defaults
-        self.export_path = self._load_export_path()
+        self.export_paths = self._load_export_paths()
         self.log_level = self._load_log_level()
         self.next_run = []
 
     def _init_config(self):
         if not CONFIG_FILE.exists():
             default_config = {
-                "export_path": "",
+                "export_paths": [],
                 "log_level": 1
             }
             with open(CONFIG_FILE, "w") as f:
@@ -31,22 +31,22 @@ class API:
                 except json.JSONDecodeError:
                     # In case of corrupted JSON, reset to default
                     self._init_config()
-                    return {"export_path": "", "log_level": 1}
+                    return {"export_paths": [], "log_level": 1}
         else:
             self._init_config()
-            return {"export_path": "", "log_level": 1}
+            return {"export_paths": [], "log_level": 1}
 
     def _save_config(self, data):
         with open(CONFIG_FILE, "w") as f:
             json.dump(data, f, indent=2)
 
-    def _load_export_path(self):
+    def _load_export_paths(self):
         data = self._load_config()
-        return data.get("export_path", "")
+        return data.get("export_paths", [])
 
-    def _save_export_path(self, path: str):
+    def _save_export_paths(self, paths: list):
         data = self._load_config()
-        data["export_path"] = path
+        data["export_paths"] = paths
         self._save_config(data)
 
     def _load_log_level(self):
@@ -64,22 +64,35 @@ class API:
         if result:
             return result[0]
         else:
-            return self.export_path
+            return self.export_paths
 
-    def set_settings(self, export_path: str, log_level: int):
-        self.export_path = export_path
+    def set_settings(self, export_paths: list, log_level: int):
+        self.export_paths = export_paths
         self.log_level = log_level
-        self._save_export_path(export_path)
+        self._save_export_paths(export_paths)
         self._save_log_level(log_level)
 
     def get_settings(self):
         return {
-            "export_path": self.export_path,
-            "log_level": self.log_level
+            "export_paths": self._load_export_paths(),
+            "log_level": self._load_log_level()
         }
 
-    def get_export_path(self):
-        return self.export_path
+    def add_export_path(self, name: str, path: str):
+        paths = self._load_export_paths()
+        paths.append({"name": name, "path": path})
+        self._save_export_paths(paths)
+
+    def remove_export_path(self, name: str):
+        paths = self._load_export_paths()
+        paths = [p for p in paths if p["name"] != name]
+        self._save_export_paths(paths)
+
+    def get_export_paths(self):
+        return self._load_export_paths()
+    
+    def set_export_path(self, path: str):
+        self._selected_export_path = path
 
     def set_log_level(self, level: int):
         self.log_level = level
@@ -88,18 +101,34 @@ class API:
     def get_log_level(self):
         return self.log_level
 
+    def _load_export_paths(self):
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data.get("export_paths", [])
+
     def get_all_files(self):
         result = dict()
-        for sub_dir in os.listdir(self._files_dir):
-            sub_dir_name = self._files_dir / sub_dir
-            if os.path.isdir(sub_dir_name):
-                sub_result = []
-                for file in os.listdir(sub_dir_name):
-                    if file.endswith("_LOG.txt"):
-                        file_name = f"{sub_dir_name}/{file.removesuffix('_LOG.txt')}"
-                        sub_result.append(file_name)
-                result[str(sub_dir_name)] = sub_result
+
+        export_paths = self._load_export_paths()
+
+        for export_entry in export_paths:
+            base_path = Path(export_entry['path'])
+
+            if not base_path.exists():
+                continue
+
+            for sub_dir in base_path.iterdir():
+                if sub_dir.is_dir():
+                    sub_result = []
+                    for file in sub_dir.iterdir():
+                        if file.name.endswith("_LOG.txt"):
+                            file_path_without_suffix = str(file).removesuffix("_LOG.txt")
+                            sub_result.append(file_path_without_suffix)
+
+                    if sub_result:
+                        result[f"{export_entry['name']}_{sub_dir.name}"] = sub_result
         return result
+
 
     def open_file_dialog(self):
         window = webview.windows[0]
@@ -117,27 +146,42 @@ class API:
 
     def run_script_on_files(self):
         # Load all files from current run in a table
-        webview.windows[0].evaluate_js(f"loadFilesInTable({self.next_run})")
+
+        file_paths = [Path(x) for x in self.next_run]
+        formatted_files = ["/".join(p.parts[-4:]) for p in file_paths]
+        print(formatted_files)
+
+
+        webview.windows[0].evaluate_js(f"loadFilesInTable({formatted_files})")
 
         self._latest_run = set()
 
         # Load latest settings from json file
-        export_path = self._load_export_path()
+        export_path = self._selected_export_path or self._load_export_path()
 
-        for file_path in self.next_run:
+        for index, file_path in enumerate(self.next_run):
+            current_file = formatted_files[index]
             # Updates table of files to see which one is processing a.t.m.
-            webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(file_path)})")
+            webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
 
             result = subprocess.run(
                 ["python", "scripts/main.py", file_path, export_path],
                 capture_output=True,
                 text=True
             )
-            success = result.returncode == 0
 
+            log_file_location = result.stdout.strip()
+
+            subprocess.run(
+                ["python", "scripts/compression.py", str(file_path), str(log_file_location)],
+                capture_output=True,
+                text=True
+            )
+
+            success = result.returncode == 0
             # Updates table with the result of the current file
             result_object = {
-                "file": file_path,
+                "file": current_file,
                 "success": success,
             }
             webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
