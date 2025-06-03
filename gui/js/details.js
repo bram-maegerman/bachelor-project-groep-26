@@ -208,7 +208,6 @@ window.addEventListener("pywebviewready", async () => {
   container.appendChild(createLogBox(logText));
   container.appendChild(createManualCheckButton(manuallyCheckedLine))
 
-  const pdfPath = rawPdfPath.replace("Path to original pdf: \n", "").trim();
   console.log("PDF Path:", pdfPath);
   await loadPdf(pdfPath);
 });
