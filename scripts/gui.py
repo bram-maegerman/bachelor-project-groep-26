@@ -136,7 +136,7 @@ class API:
 
             log_file_location = result.stdout.strip()
 
-            compression = subprocess.run(
+            subprocess.run(
                 ["python", "scripts/compression.py", str(file_path), str(log_file_location)],
                 capture_output=True,
                 text=True
