@@ -27,9 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const option2 = document.getElementById("log-level-2");
   const option3 = document.getElementById("log-level-3");
 
-  ///////////////////////////////////////
-  ////     F U N C T I O N S   //////////
-  ///////////////////////////////////////
+  /////////////////////////////////
+  ////     F U N C T I O N S   ////
+  /////////////////////////////////
 
   function setSelected(level) {
     document.querySelectorAll(".option").forEach((btn) => btn.classList.remove("selected"));

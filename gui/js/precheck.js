@@ -77,14 +77,16 @@ function updateFileList() {
 
 function renderProjects() {
   const options = document.getElementById("project-options");
-  options.innerHTML = ""; // clear old items
+  options.innerHTML = "";
 
   exportPaths.forEach((entry) => {
     const option = document.createElement("li");
     option.textContent = entry.name;
     option.addEventListener("click", async () => {
       document.getElementById("project-dropdown").textContent = entry.name;
-      await window.pywebview.api.set_export_path(entry.path);  // ⬅️ New function
+      document.getElementById("project-options").classList.toggle("hidden");
+      projectDropDown.style.borderRadius = "25px";
+      await window.pywebview.api.set_export_path(entry.path);
     });
     options.appendChild(option);
   });
@@ -92,7 +94,7 @@ function renderProjects() {
 
 window.addEventListener("pywebviewready", async () => {
   try {
-    const { export_paths, log_level } = await window.pywebview.api.get_settings();
+    const { export_paths } = await window.pywebview.api.get_settings();
     exportPaths = export_paths || [];
     renderProjects();
   } catch (err) {
