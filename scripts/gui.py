@@ -146,16 +146,23 @@ class API:
 
     def run_script_on_files(self):
         # Load all files from current run in a table
-        webview.windows[0].evaluate_js(f"loadFilesInTable({self.next_run})")
+
+        file_paths = [Path(x) for x in self.next_run]
+        formatted_files = ["/".join(p.parts[-4:]) for p in file_paths]
+        print(formatted_files)
+
+
+        webview.windows[0].evaluate_js(f"loadFilesInTable({formatted_files})")
 
         self._latest_run = set()
 
         # Load latest settings from json file
         export_path = self._selected_export_path or self._load_export_path()
 
-        for file_path in self.next_run:
+        for index, file_path in enumerate(self.next_run):
+            current_file = formatted_files[index]
             # Updates table of files to see which one is processing a.t.m.
-            webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(file_path)})")
+            webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
 
             result = subprocess.run(
                 ["python", "scripts/main.py", file_path, export_path],
@@ -174,7 +181,7 @@ class API:
             success = result.returncode == 0
             # Updates table with the result of the current file
             result_object = {
-                "file": file_path,
+                "file": current_file,
                 "success": success,
             }
             webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
