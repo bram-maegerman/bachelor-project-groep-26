@@ -1,4 +1,4 @@
-import re, fitz, io
+import re, io
 from typing import Literal
 import pytesseract
 from PIL import ImageEnhance, Image, ImageFilter
@@ -195,3 +195,5 @@ def process_page(args):
         print(f"Error processing page {args[1]}: {e}")
         progress_queue.put(1)
         return []
+    
+
