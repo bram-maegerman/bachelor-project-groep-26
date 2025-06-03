@@ -55,6 +55,10 @@ main {
   scrollbar-color: #615c5c transparent;
 }
 
+#pdf-preview canvas {
+  width: 700px;
+}
+
 #pdf-loading {
   text-align: center;
   align-self: center;
