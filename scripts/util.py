@@ -197,7 +197,7 @@ def process_page(args):
         return []
     
 
-def compress_pdf(input_pdf_path: str, output_pdf_path: str, image_quality: int = 50, dpi: int = 100):
+def compress_pdf(input_pdf_path: str, output_pdf_path: str, image_quality: int = 50, dpi: int = 90):
     """
     Compress a PDF images by reducing DPI and JPEG quality.
 
