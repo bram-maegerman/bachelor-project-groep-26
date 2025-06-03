@@ -1,13 +1,44 @@
-function renderLastRun(files) {
-  const container = document.getElementById("file-list-container");
-  const noFilesContainer = document.getElementById("no-files");
+let allFiles = [];
+let allFilteredFiles = [];
+let ascNameSorting = true;
 
+function sortFilesByName(files) {
+  if (ascNameSorting) {
+    files.sort((a, b) => b.localeCompare(a));
+  } else {
+    files.sort((a, b) => a.localeCompare(b));
+  }
+  renderLastRun(files);
+}
+
+function filterFilesByName(filterValue) {
+  if (filterValue.length === 0) {
+    allFilteredFiles = allFiles;
+  } else {
+    allFilteredFiles = allFiles.filter(file => 
+      file.toLowerCase().includes(filterValue.toLowerCase())
+    );
+  }
+  renderLastRun(allFilteredFiles);
+}
+
+function renderLastRun(files) {
   const table = document.createElement("table");
   table.className = "file-table";
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Name", "Errors", "Status", "Date"].forEach((headerText) => {
+
+  const nameHeader = document.createElement("th");
+  nameHeader.textContent = `Name ${ascNameSorting ? '▲' : '▼'}`;
+  nameHeader.className = "sortable-header"
+  nameHeader.addEventListener("click", () => {
+    ascNameSorting = !ascNameSorting;
+    sortFilesByName(files);
+  });
+  headerRow.appendChild(nameHeader);
+
+  ["Errors", "Status", "Date"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);
@@ -17,7 +48,10 @@ function renderLastRun(files) {
 
   const tbody = document.createElement("tbody");
 
-  if (files.length == 0) {
+  const noFilesContainer = document.getElementById("no-files");
+  noFilesContainer.innerHTML = "";
+
+  if (allFiles.length == 0) {
     const noFiles = document.createElement("p");
     noFiles.innerHTML = "No runs performed yet during this session.";
     noFilesContainer.appendChild(noFiles);
@@ -68,6 +102,9 @@ function renderLastRun(files) {
   });
 
   table.appendChild(tbody);
+
+  const container = document.getElementById("file-list-container");
+  container.innerHTML = "";
   container.appendChild(table);
 }
 
@@ -77,6 +114,16 @@ function parseErrorCount(log) {
   const parts = lastLine.split(" ");
   const count = parseInt(parts[parts.length - 1], 10);
   return count;
+}
+
+const nameFilterInput = document.getElementById("name-filter");
+nameFilterInput.addEventListener("input", () => {
+  filterFilesByName(nameFilterInput.value.trim());
+})
+
+function loadLastRunFiles(lastRunFiles) {
+  allFiles = lastRunFiles;
+  renderLastRun(allFiles);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
