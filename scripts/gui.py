@@ -191,6 +191,9 @@ class API:
         with open(path, 'rb') as f:
             encoded = base64.b64encode(f.read()).decode('utf-8')
             return f'data:application/pdf;base64,{encoded}'
+        
+    def change_manual_check_status(self, path, checkedBool):
+        print(checkedBool) #TODO
 
 api = API()
 

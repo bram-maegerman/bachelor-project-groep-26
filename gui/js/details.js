@@ -66,6 +66,29 @@ function createLogBox(logText) {
   return logBox;
 }
 
+function createManualCheckButton(manuallyCheckedLine) {
+  const checked = manuallyCheckedLine.split("=")[1];
+
+  const checkedButton = document.createElement("label");
+  checkedButton.className = "manually-checked-button";
+
+  const checkedButtonBox = document.createElement("input");
+  checkedButtonBox.type = "checkbox";
+  checkedButtonBox.checked = checked === "true";
+
+  checkedButtonBox.addEventListener("change", () => {
+    window.pywebview.api.change_manual_check_status(path, checkedButtonBox.checked);
+  });
+
+  checkedButton.appendChild(checkedButtonBox);
+  
+  const checkedButtonText = document.createElement("p");
+  checkedButtonText.innerHTML = "Manually checked"
+  checkedButton.appendChild(checkedButtonText);
+
+  return checkedButton;
+}
+
 async function loadPdf(path) {
   const loading = document.getElementById("pdf-loading");
   const preview = document.getElementById("pdf-preview");
@@ -156,11 +179,12 @@ window.addEventListener("pywebviewready", async () => {
   );
 
   const file = await window.pywebview.api.get_log(path);
-  const [logText, statistics, rawPdfPath] = file.split(/\r?\n\r?\n/);
+  const [logText, statistics, manuallyCheckedLine ,rawPdfPath] = file.split(/\r?\n\r?\n/);
 
   const stats = extractStats(statistics.trim().trim("\n"));
   container.appendChild(createStatsBox(stats));
   container.appendChild(createLogBox(logText));
+  container.appendChild(createManualCheckButton(manuallyCheckedLine))
 
   const pdfPath = rawPdfPath.replace("Path to original pdf: \n", "").trim();
   console.log("PDF Path:", pdfPath);
