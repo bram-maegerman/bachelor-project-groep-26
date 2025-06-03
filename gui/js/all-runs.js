@@ -1,10 +1,13 @@
 let currentPage = 1;
 let allFiles = [];
+let allFilteredFiles = [];
 let totalPages = 1;
+
+let ascNameSorting = true;
 
 async function renderOverview(files) {
   const container = document.getElementById("file-list-container");
-  container.innerHTML = "<h1 class='title'>All runs</h1>";
+  container.innerHTML = "";
 
   allFiles = [];
   Object.keys(files).forEach((date) => {
@@ -19,7 +22,29 @@ async function renderOverview(files) {
     });
   });
 
+  allFilteredFiles = allFiles;
+
   totalPages = Math.ceil(allFiles.length / 10);
+  await renderPage(currentPage);
+}
+
+async function sortAllFilesByName() {
+  if (ascNameSorting) {
+    allFilteredFiles.sort((a, b) => b.fileName.localeCompare(a.fileName));
+  } else {
+    allFilteredFiles.sort((a, b) => a.fileName.localeCompare(b.fileName));
+  }
+  await renderPage(currentPage);
+}
+
+async function filterAllFilesByName(filterValue) {
+  if (filterValue.length === 0) {
+    allFilteredFiles = allFiles;
+  } else {
+    allFilteredFiles = allFiles.filter(file => 
+      file.fileName.toLowerCase().includes(filterValue.toLowerCase())
+    );
+  }
   await renderPage(currentPage);
 }
 
@@ -27,17 +52,24 @@ async function renderPage(page) {
   currentPage = page;
   const start = (page - 1) * 10;
   const end = start + 10;
-  const pageFiles = allFiles.slice(start, end);
-
-  const container = document.getElementById("file-list-container");
-  container.innerHTML = "<h1 class='title'>All runs</h1>";
+  const pageFiles = allFilteredFiles.slice(start, end);
 
   const table = document.createElement("table");
   table.className = "file-table";
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Name", "Errors", "Status", "Date"].forEach((headerText) => {
+
+  const nameHeader = document.createElement("th");
+  nameHeader.textContent = `Name ${ascNameSorting ? '▲' : '▼'}`;
+  nameHeader.className = "sortable-header"
+  nameHeader.addEventListener("click", () => {
+    ascNameSorting = !ascNameSorting;
+    sortAllFilesByName();
+  });
+  headerRow.appendChild(nameHeader);
+
+  ["Errors", "Status", "Date"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);
@@ -89,6 +121,9 @@ async function renderPage(page) {
   }
 
   table.appendChild(tbody);
+
+  const container = document.getElementById("file-list-container");
+  container.innerHTML = "";
   container.appendChild(table);
 
   createPagination();
@@ -143,6 +178,11 @@ function parseErrorCount(log) {
   const count = parseInt(parts[parts.length - 1], 10);
   return count;
 }
+
+const nameFilterInput = document.getElementById("name-filter");
+nameFilterInput.addEventListener("input", () => {
+  filterAllFilesByName(nameFilterInput.value.trim());
+})
 
 document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("pywebviewready", () => {
