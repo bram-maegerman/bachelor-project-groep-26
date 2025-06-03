@@ -1,4 +1,6 @@
 const currentFiles = [];
+let exportPaths = [];
+let selectedExportPath = null;
 
 async function pickFile() {
   if (!window.pywebview?.api?.open_file_dialog) {
@@ -24,18 +26,23 @@ async function pickFile() {
 }
 
 async function checkFiles() {
-  if (currentFiles.length === 0) {
-    alert("Select a mininum of 1 file!");
+  if (!selectedExportPath) {
+    alert("Select a project first!");
     return;
   }
+
+  if (currentFiles.length === 0) {
+    alert("Select a minimum of 1 file!");
+    return;
+  }
+
   if (currentFiles.length > 20) {
     alert("Select fewer than 20 files!");
     return;
   }
+
   const filePaths = currentFiles.map((file) => file.path);
-
   await window.pywebview.api.set_next(filePaths);
-
   window.location.href = "progress.html";
 }
 
@@ -73,3 +80,33 @@ function updateFileList() {
 
   countEl.textContent = `${currentFiles.length}/20`;
 }
+
+function renderProjects() {
+  const options = document.getElementById("project-options");
+  options.innerHTML = "";
+
+  exportPaths.forEach((entry) => {
+    const option = document.createElement("li");
+    option.textContent = entry.name;
+    option.addEventListener("click", async () => {
+      document.getElementById("project-dropdown").textContent = entry.name;
+      document.getElementById("project-options").classList.toggle("hidden");
+      projectDropDown.style.borderRadius = "25px";
+      selectedExportPath = entry.path;
+      await window.pywebview.api.set_export_path(entry.path);
+    });
+    options.appendChild(option);
+  });
+}
+
+window.addEventListener("pywebviewready", async () => {
+  try {
+    selectedExportPath = null;
+    const { export_paths } = await window.pywebview.api.get_settings();
+    exportPaths = export_paths || [];
+    renderProjects();
+  } catch (err) {
+    console.error("Failed to initialize settings:", err);
+  }
+});
+

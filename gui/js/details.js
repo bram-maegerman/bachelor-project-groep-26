@@ -151,18 +151,40 @@ window.addEventListener("pywebviewready", async () => {
     return;
   }
 
-  container.appendChild(
-    Object.assign(document.createElement("h2"), { textContent: filename })
-  );
-
+  
   const file = await window.pywebview.api.get_log(path);
   const [logText, statistics, rawPdfPath] = file.split(/\r?\n\r?\n/);
-
+  
   const stats = extractStats(statistics.trim().trim("\n"));
+  const pdfPath = rawPdfPath.replace("Path to original pdf: \n", "").trim();
+  
+  const back = document.createElement("button");
+  back.innerHTML = "&lt; Back";
+  back.className = "back-button"
+  back.onclick = () => {
+      window.history.back();  
+  };
+  container.appendChild(back);
+
+  const statsTitle = document.createElement("h3");
+  statsTitle.innerHTML = "Statistics";
+  container.appendChild(statsTitle);
+
+  const header = document.getElementById("page-header");
+
+  const title = document.createElement("h2");
+  title.innerHTML = filename;
+  title.onclick = () => {
+    window.pywebview.api.open_file(pdfPath);
+  };
+  title.className = "filename-title";
+
+  header.appendChild(title);
+
   container.appendChild(createStatsBox(stats));
   container.appendChild(createLogBox(logText));
+  
 
-  const pdfPath = rawPdfPath.replace("Path to original pdf: \n", "").trim();
-  console.log("PDF Path:", pdfPath);
+
   await loadPdf(pdfPath);
 });
