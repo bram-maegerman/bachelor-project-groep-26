@@ -133,23 +133,16 @@ class API:
                 capture_output=True,
                 text=True
             )
-            
-            stdout = result.stdout
-            stderr = result.stderr
 
-            print(type(stdout) , stdout)
+            log_file_location = result.stdout.strip()
 
             compression = subprocess.run(
-                ["python", "scripts/compression.py", str(file_path), str(stdout)],
+                ["python", "scripts/compression.py", str(file_path), str(log_file_location)],
                 capture_output=True,
                 text=True
             )
 
-            print(compression.stdout)
-            print(compression.stderr)
-
             success = result.returncode == 0
-
             # Updates table with the result of the current file
             result_object = {
                 "file": file_path,
