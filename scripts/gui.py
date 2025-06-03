@@ -196,7 +196,7 @@ class API:
         return
 
     def get_log(self, key):
-        file_path = key + "_LOG.txt"
+        file_path = key + "_LOG.txt" #TODO revisit this
         if not os.path.exists(file_path):
             return "Log file not found."
 
@@ -235,6 +235,18 @@ class API:
         with open(path, 'rb') as f:
             encoded = base64.b64encode(f.read()).decode('utf-8')
             return f'data:application/pdf;base64,{encoded}'
+        
+    def change_manual_check_status(self, path, checkedBool):
+        with open(path, 'r') as file:
+            lines = file.readlines()
+
+        for i, line in enumerate(lines):
+            if line.strip().startswith('manually_checked='):
+                lines[i] = f'manually_checked={"true" if checkedBool else "false"}\n'
+                break
+
+        with open(path, 'w') as file:
+            file.writelines(lines)
 
 api = API()
 

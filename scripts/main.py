@@ -159,6 +159,8 @@ def main():
     log_messages.append(f"\nTotal pages in document {len(doc)}")
     log_messages.append(f"\nTotal pages with numbers {len(all_found_numbers) - len(missing_numbers)}")
     log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
+    
+    log_messages.append(f"\n\nmanually_checked=false")
 
     log_file_location = f"{log_directory}/{filename.name}_LOG.txt"
 
