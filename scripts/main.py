@@ -160,7 +160,7 @@ def main():
     log_messages.append(f"\nTotal pages with numbers {len(all_found_numbers) - len(missing_numbers)}")
     log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
 
-    compressed_output_file = compress_pdf(filename, f"{log_directory}/{filename.name}_compressed")
+    compressed_output_file = compress_pdf(filename, f"{log_directory}/compressed_{filename.name}")
 
     log_messages.append(f"\n\nPath to original pdf: \n{compressed_output_file}")
 
