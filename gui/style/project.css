@@ -1,0 +1,10 @@
+.project-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  color: #004070;
+  width: 100%;
+}

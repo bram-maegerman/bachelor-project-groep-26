@@ -9,14 +9,14 @@ class API:
         self._window_loaded = threading.Event()
         self._latest_run = set()
         self._init_config()  # Ensure config file exists with defaults
-        self.export_paths = self._load_export_paths()
+        self.projects: dict = self._load_projects()
         self.log_level = self._load_log_level()
         self.next_run = []
 
     def _init_config(self):
         if not CONFIG_FILE.exists():
             default_config = {
-                "export_paths": [],
+                "projects": [],
                 "log_level": 1
             }
             with open(CONFIG_FILE, "w") as f:
@@ -31,22 +31,18 @@ class API:
                 except json.JSONDecodeError:
                     # In case of corrupted JSON, reset to default
                     self._init_config()
-                    return {"export_paths": [], "log_level": 1}
+                    return {"projects": [], "log_level": 1}
         else:
             self._init_config()
-            return {"export_paths": [], "log_level": 1}
+            return {"projects": [], "log_level": 1}
 
     def _save_config(self, data):
         with open(CONFIG_FILE, "w") as f:
             json.dump(data, f, indent=2)
 
-    def _load_export_paths(self):
+    def _save_projects(self, paths: list):
         data = self._load_config()
-        return data.get("export_paths", [])
-
-    def _save_export_paths(self, paths: list):
-        data = self._load_config()
-        data["export_paths"] = paths
+        data["projects"] = paths
         self._save_config(data)
 
     def _load_log_level(self):
@@ -58,7 +54,7 @@ class API:
         data["log_level"] = level
         self._save_config(data)
 
-    def choose_export_path(self):
+    def choose_folder(self):
         window = webview.windows[0]
         result = window.create_file_dialog(webview.FOLDER_DIALOG)
         if result:
@@ -66,33 +62,53 @@ class API:
         else:
             return ""
 
-    def set_settings(self, export_paths: list, log_level: int):
-        self.export_paths = export_paths
+    def set_settings(self, log_level: int):
         self.log_level = log_level
-        self._save_export_paths(export_paths)
         self._save_log_level(log_level)
 
     def get_settings(self):
         return {
-            "export_paths": self._load_export_paths(),
+            "projects": self._load_projects(),
             "log_level": self._load_log_level()
         }
 
-    def add_export_path(self, name: str, path: str):
-        paths = self._load_export_paths()
-        paths.append({"name": name, "path": path})
-        self._save_export_paths(paths)
+    def add_project(self, name: str, path: str):
+        if not name or not path:
+            print("Project name and path cannot be empty.")
+            return
+        if not os.path.exists(path):
+            print(f"Path '{path}' does not exist.")
+            return
+        if name in self.projects:
+            print(f"Project '{name}' already exists.")
+            return
+        if not os.path.isabs(path):
+            print(f"Path '{path}' must be an absolute path.")
+            return
+        if not os.path.isdir(path):
+            print(f"Path '{path}' is not a directory.")
+            return
+        paths = self.projects
+        paths[name] = path
+        self._save_projects(paths)
 
-    def remove_export_path(self, name: str):
-        paths = self._load_export_paths()
-        paths = [p for p in paths if p["name"] != name]
-        self._save_export_paths(paths)
+    def remove_project(self, name: str):
+        paths = self.projects
+        try:
+            del paths[name]
+        except KeyError:
+            print(f"Project '{name}' not found.")
+            return
 
-    def get_export_paths(self):
-        return self._load_export_paths()
+        #TODO: add code to remove all files related to this project
 
-    def set_export_path(self, path: str):
-        self._selected_export_path = path
+        self._save_projects(paths)
+
+    def get_projects(self):
+        return self.projects
+
+    def set_projects(self, path: str):
+        self._selected_projects = path
 
     def set_log_level(self, level: int):
         self.log_level = level
@@ -101,18 +117,37 @@ class API:
     def get_log_level(self):
         return self.log_level
 
-    def _load_export_paths(self):
+    def _load_projects(self):
         with open(CONFIG_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
-            return data.get("export_paths", [])
+            return data.get("projects", dict())
+
+    def get_files_for_project(self, project: str):
+        projects = self._load_projects()
+        if project not in projects:
+            print(f"Project '{project}' not found.")
+            return []
+
+        project_path = projects[project]
+        if not os.path.exists(project_path):
+            print(f"Project path '{project_path}' does not exist.")
+            return []
+
+        files = []
+        for root, _, filenames in os.walk(project_path):
+            for filename in filenames:
+                if filename.endswith("_LOG.txt"):
+                    file_path_without_suffix = os.path.join(root, filename).removesuffix("_LOG.txt")
+                    files.append(file_path_without_suffix)
+        return files
 
     def get_all_files(self):
         result = dict()
 
-        export_paths = self._load_export_paths()
+        projects: dict = self._load_projects()
 
-        for export_entry in export_paths:
-            base_path = Path(export_entry['path'])
+        for project in projects.keys():
+            base_path = Path(projects[project])
 
             if not base_path.exists():
                 continue
@@ -126,7 +161,7 @@ class API:
                             sub_result.append(file_path_without_suffix)
 
                     if sub_result:
-                        result[f"{export_entry['name']}_{sub_dir.name}"] = sub_result
+                        result[f"{project}_{sub_dir.name}"] = sub_result
         return result
 
 
@@ -141,6 +176,15 @@ class API:
     def run_last(self):
         webview.windows[0].evaluate_js(f"loadLastRunFiles({list(self._latest_run)})")
 
+    def project_overview(self, project: str):
+        files = self.get_files_for_project(project)
+        if not files:
+            print(f"No files found for project '{project}'.")
+            return
+        # Convert file paths to a JSON-compatible format
+        files = [str(Path(file).resolve()) for file in files]
+        webview.windows[0].evaluate_js(f"renderProjectOverview({json.dumps(files)})")
+
     def set_next(self, files: list):
         self.next_run = files
 
@@ -151,14 +195,14 @@ class API:
         self._latest_run = set()
 
         # Load latest settings from json file
-        export_path = self._selected_export_path or self._load_export_path()
+        projects = self._selected_projects or self._load_projects()
 
         for file_path in self.next_run:
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(file_path)})")
 
             result = subprocess.run(
-                ["python", "scripts/main.py", file_path, export_path],
+                ["python", "scripts/main.py", file_path, projects],
                 capture_output=True,
                 text=True
             )
@@ -236,5 +280,5 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-webview.create_window("Scan-Checker", "../gui/homepage.html", js_api=api)
+webview.create_window("Scan-Checker", "../gui/projects.html", js_api=api)
 webview.start(maximize_window, debug=True)

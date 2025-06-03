@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style/global.css" />
+    <link rel="stylesheet" href="style/nav.css" />
+    <link rel="stylesheet" href="style/projects.css" />
+    <script src="js/global.js" defer></script>
+    <script src="js/projects.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="homepage.html">
+                <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+            </a>
+            <div class="nav-wrapper">
+                <button id="nav-dropdown">Projects <span id="nav-arrow">&#x25BC;</span></button>
+                <ul id="options" class="nav-options hidden">
+                    <li><a href="homepage.html">Home</a></li>
+                    <li><a href="precheck.html">Precheck</a></li>
+                    <li><a href="last-run.html">Last run</a></li>
+                    <li><a href="all-runs.html">All runs</a></li>
+                    <li><a href="settings.html">Settings</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <h1 class="title">Projects</h1>
+        <div id="project-list" class="projects">
+            <div id="add-project" class="hidden">
+                <button id="close-form">&times;</button>
+                <div class="input-form">
+                    <h2>Add Project</h2>
+                    <div class="input-field">
+                        <label for="project-name">Name: </label><input type="text" id="project-name"
+                            placeholder="Enter project name..." required name="project-name" />
+                    </div>
+
+                    <div class="input-field">
+                        <label for="project-path">Path: </label>
+                        <input type="text" id="export-path" placeholder="Choose export path 📁..." readonly
+                            name="project-path" required />
+                    </div>
+
+                    <button class="submit" id="submit">Submit</button>
+                </div>
+            </div>
+            <button id="add-project-button" class="add">+</button>
+        </div>
+    </main>
+</body>
+
+</html>
