@@ -64,7 +64,7 @@ class API:
         if result:
             return result[0]
         else:
-            return self.export_paths
+            return ""
 
     def set_settings(self, export_paths: list, log_level: int):
         self.export_paths = export_paths
@@ -90,7 +90,7 @@ class API:
 
     def get_export_paths(self):
         return self._load_export_paths()
-    
+
     def set_export_path(self, path: str):
         self._selected_export_path = path
 
