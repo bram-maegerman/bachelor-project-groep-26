@@ -77,7 +77,7 @@ function createManualCheckButton(manuallyCheckedLine) {
   checkedButtonBox.checked = checked === "true";
 
   checkedButtonBox.addEventListener("change", () => {
-    window.pywebview.api.change_manual_check_status(path, checkedButtonBox.checked);
+    window.pywebview.api.change_manual_check_status(path + "_LOG.txt", checkedButtonBox.checked);
   });
 
   checkedButton.appendChild(checkedButtonBox);
@@ -180,14 +180,6 @@ window.addEventListener("pywebviewready", async () => {
 
   const stats = extractStats(statistics.trim().trim("\n"));
   const pdfPath = rawPdfPath.replace("Path to original pdf: \n", "").trim();
-  
-  const back = document.createElement("button");
-  back.innerHTML = "&lt; Back";
-  back.className = "back-button"
-  back.onclick = () => {
-      window.history.back();  
-  };
-  container.appendChild(back);
 
   const statsTitle = document.createElement("h3");
   statsTitle.innerHTML = "Statistics";
@@ -204,9 +196,22 @@ window.addEventListener("pywebviewready", async () => {
 
   header.appendChild(title);
 
+  const backAndCheckedButtons = document.createElement("div");
+  backAndCheckedButtons.className = "buttons-under-title";
+
+  const back = document.createElement("button");
+  back.innerHTML = "&lt; Back";
+  back.className = "back-button"
+  back.onclick = () => {
+      window.history.back();  
+  };
+  backAndCheckedButtons.appendChild(back);
+  backAndCheckedButtons.appendChild(createManualCheckButton(manuallyCheckedLine));
+
+  header.appendChild(backAndCheckedButtons);
+
   container.appendChild(createStatsBox(stats));
   container.appendChild(createLogBox(logText));
-  container.appendChild(createManualCheckButton(manuallyCheckedLine))
 
   console.log("PDF Path:", pdfPath);
   await loadPdf(pdfPath);
