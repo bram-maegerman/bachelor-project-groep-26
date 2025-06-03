@@ -22,11 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
         : "25px 25px 0 0";
     });
   }
-  projectDropDown.addEventListener("click", () => {
-    projectArrow.textContent = toggleArrow(projectArrow.textContent.trim());
-    projectOptions.classList.toggle("hidden");
-    projectDropDown.style.borderRadius = projectOptions.classList.contains("hidden")
-      ? "25px"
-      : "25px 25px 0 0";
-  });
+  if (projectDropDown && navArrow && options) {
+    projectDropDown.addEventListener("click", () => {
+      projectArrow.textContent = toggleArrow(projectArrow.textContent.trim());
+      projectOptions.classList.toggle("hidden");
+      projectDropDown.style.borderRadius = projectOptions.classList.contains("hidden")
+        ? "25px"
+        : "25px 25px 0 0";
+    });
+  }
 });

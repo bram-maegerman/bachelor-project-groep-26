@@ -11,19 +11,22 @@ async function renderOverview(files) {
 
   allFiles = [];
   Object.keys(files).forEach((date) => {
+    console.log(files)
     const splitDate = date.split("\\").at(-1);
+    const splitDatee = splitDate.split("_").at(-1);
+    const project = splitDate.split("_").at(0);
 
     files[date].forEach((file) => {
       allFiles.push({
         file: file,
-        fileName: file.split("/").at(-1),
-        date: splitDate,
+        fileName: file.split("\\").at(-1),
+        date: splitDatee,
+        project: project
       });
     });
   });
 
   allFilteredFiles = allFiles;
-
   totalPages = Math.ceil(allFiles.length / 10);
   await renderPage(currentPage);
 }
@@ -69,7 +72,7 @@ async function renderPage(page) {
   });
   headerRow.appendChild(nameHeader);
 
-  ["Errors", "Status", "Date"].forEach((headerText) => {
+  ["Errors", "Status", "Date", "Project"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);
@@ -106,6 +109,9 @@ async function renderPage(page) {
     const datumCell = document.createElement("td");
     datumCell.textContent = fileData.date;
 
+    const projectCell = document.createElement("td");
+    projectCell.textContent = fileData.project;
+
     row.classList.add("clickable-row");
     row.addEventListener("click", () => {
       window.location.href = `details.html?file=${encodeURIComponent(
@@ -117,6 +123,7 @@ async function renderPage(page) {
     row.appendChild(foutenCell);
     row.appendChild(statusCell);
     row.appendChild(datumCell);
+    row.appendChild(projectCell);
     tbody.appendChild(row);
   }
 

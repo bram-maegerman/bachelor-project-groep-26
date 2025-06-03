@@ -101,18 +101,34 @@ class API:
     def get_log_level(self):
         return self.log_level
 
+    def _load_export_paths(self):
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data.get("export_paths", [])
+
     def get_all_files(self):
         result = dict()
-        for sub_dir in os.listdir(self._files_dir):
-            sub_dir_name = self._files_dir / sub_dir
-            if os.path.isdir(sub_dir_name):
-                sub_result = []
-                for file in os.listdir(sub_dir_name):
-                    if file.endswith("_LOG.txt"):
-                        file_name = f"{sub_dir_name}/{file.removesuffix('_LOG.txt')}"
-                        sub_result.append(file_name)
-                result[str(sub_dir_name)] = sub_result
+
+        export_paths = self._load_export_paths()
+
+        for export_entry in export_paths:
+            base_path = Path(export_entry['path'])
+
+            if not base_path.exists():
+                continue
+
+            for sub_dir in base_path.iterdir():
+                if sub_dir.is_dir():
+                    sub_result = []
+                    for file in sub_dir.iterdir():
+                        if file.name.endswith("_LOG.txt"):
+                            file_path_without_suffix = str(file).removesuffix("_LOG.txt")
+                            sub_result.append(file_path_without_suffix)
+
+                    if sub_result:
+                        result[f"{export_entry['name']}_{sub_dir.name}"] = sub_result
         return result
+
 
     def open_file_dialog(self):
         window = webview.windows[0]
