@@ -179,7 +179,6 @@ function createPagination() {
 
 function parseErrorCount(log) {
   const lines = log.split("\n").filter((line) => line.trim());
-
   const lastLine = lines[lines.length - 4];
   const parts = lastLine.split(" ");
   const count = parseInt(parts[parts.length - 1], 10);
