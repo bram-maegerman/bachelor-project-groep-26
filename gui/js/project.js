@@ -22,6 +22,9 @@ function filterFilesByName(filterValue) {
 }
 
 const nameFilterInput = document.getElementById("name-filter");
+if (allFiles.length > 0) {
+  nameFilterInput.classList.remove("hidden");
+}
 nameFilterInput.addEventListener("input", () => {
   filterFilesByName(nameFilterInput.value.trim());
 });
@@ -124,6 +127,12 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("pywebviewready", async () => {
     const backButton = document.getElementById("back-button");
     const removeButton = document.getElementById("remove-button");
+    const editButton = document.getElementById("edit-button");
+    const addForm = document.getElementById("add-project");
+    const saveButton = document.getElementById("save-button");
+    const newNameInput = document.getElementById("project-name");
+    const exportPath = document.getElementById("export-path");
+    const closeButton = document.getElementById("close-form");
 
     backButton.addEventListener("click", () => {
       window.history.back();
@@ -140,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         !confirm(
-          "Are you sure you want to remove this project? This action cannot be undone."
+          "Are you sure you want to remove this project?\n\nThis will remove all related files and the directory itself.\n\n This action cannot be undone."
         )
       ) {
         return;
@@ -149,6 +158,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const projectName = decodeURIComponent(filename);
       await window.pywebview.api.remove_project(projectName);
       window.location.href = "projects.html";
+    });
+
+    exportPath.addEventListener("click", async () => {
+      const path = await window.pywebview.api.choose_folder();
+      if (path) {
+        exportPath.value = path;
+      }
     });
 
     const title = document.getElementById("title");
@@ -166,5 +182,41 @@ document.addEventListener("DOMContentLoaded", () => {
     title.textContent = `Project: ${projectName}`;
 
     await window.pywebview.api.project_overview(projectName);
+
+    editButton.addEventListener("click", async () => {
+      addForm.classList.remove("hidden");
+      newNameInput.value = projectName;
+      exportPath.value = await window.pywebview.api.get_export_path(
+        projectName
+      );
+    });
+
+    saveButton.addEventListener("click", async () => {
+      const newName = newNameInput.value.trim();
+      const exportPathValue = exportPath.value.trim();
+
+      if (newName.length === 0 || exportPathValue.length === 0) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      try {
+        await window.pywebview.api.edit_project(
+          projectName,
+          newName,
+          exportPathValue
+        );
+        window.location.href = `project.html?project=${encodeURIComponent(
+          newName
+        )}`;
+      } catch (error) {
+        console.error("Error editing project:", error);
+        alert("An error occurred while editing the project. Please try again.");
+      }
+    });
+
+    closeButton.addEventListener("click", () => {
+      addForm.classList.add("hidden");
+    });
   });
 });

@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function save() {
     try {
       saveButton.classList.add("success");
-      await window.pywebview.api.set_settings(logLevel);
+      await window.pywebview.api.set_log_level(logLevel);
 
       addSuccessClass();
     } catch (err) {
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       if (!confirmation) return;
 
-      await window.pywebview.api.set_settings(1);
+      await window.pywebview.api.set_log_level(1);
       setSelected(1);
     } catch (err) {
       console.warn("Failed to reset settings:", err);

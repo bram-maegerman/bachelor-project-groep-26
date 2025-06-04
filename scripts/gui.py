@@ -9,14 +9,13 @@ class API:
         self._window_loaded = threading.Event()
         self._latest_run = set()
         self._init_config()  # Ensure config file exists with defaults
-        self.projects: dict = self._load_projects()
-        self.log_level = self._load_log_level()
+        self.projects, self.log_level = self._load_config()
         self.next_run = []
 
     def _init_config(self):
         if not CONFIG_FILE.exists():
             default_config = {
-                "projects": [],
+                "projects": {},
                 "log_level": 1
             }
             with open(CONFIG_FILE, "w") as f:
@@ -27,32 +26,26 @@ class API:
             with open(CONFIG_FILE, "r") as f:
                 try:
                     data = json.load(f)
-                    return data
+                    return (data.get("projects", {}), data.get("log_level", 1))
                 except json.JSONDecodeError:
                     # In case of corrupted JSON, reset to default
                     self._init_config()
-                    return {"projects": [], "log_level": 1}
+                    return ({}, 1)
         else:
             self._init_config()
-            return {"projects": [], "log_level": 1}
+            return ({}, 1)
 
-    def _save_config(self, data):
+    def _save_config(self):
+        data = {
+            "projects": self.projects,
+            "log_level": self.log_level
+        }
         with open(CONFIG_FILE, "w") as f:
             json.dump(data, f, indent=2)
 
     def _save_projects(self, paths: list):
-        data = self._load_config()
-        data["projects"] = paths
-        self._save_config(data)
-
-    def _load_log_level(self):
-        data = self._load_config()
-        return data.get("log_level", 1)
-
-    def _save_log_level(self, level: int):
-        data = self._load_config()
-        data["log_level"] = level
-        self._save_config(data)
+        self.projects = paths
+        self._save_config()
 
     def choose_folder(self):
         window = webview.windows[0]
@@ -62,14 +55,14 @@ class API:
         else:
             return ""
 
-    def set_settings(self, log_level: int):
+    def set_log_level(self, log_level: int):
         self.log_level = log_level
-        self._save_log_level(log_level)
+        self._save_config()
 
     def get_settings(self):
         return {
-            "projects": self._load_projects(),
-            "log_level": self._load_log_level()
+            "projects": self.projects,
+            "log_level": self.log_level
         }
 
     def add_project(self, name: str, path: str):
@@ -95,35 +88,67 @@ class API:
     def remove_project(self, name: str):
         paths = self.projects
         try:
+            pathname = paths[name]
             del paths[name]
+            if os.path.exists(pathname):
+                # empty the directory
+                for file in os.listdir(pathname):
+                    file_path = os.path.join(pathname, file)
+                    try:
+                        if os.path.isfile(file_path):
+                            os.remove(file_path)
+                    except Exception as e:
+                        print(f"Error removing file '{file_path}': {e}")
+
+                # remove the directory if empty
+                if not os.listdir(pathname):
+                    os.rmdir(pathname)
+                else:
+                    print(f"Directory '{pathname}' is not empty, cannot remove.")
+            else:
+                print(f"Path '{pathname}' does not exist, cannot remove files.")
+            self._save_projects(paths)
         except KeyError:
             print(f"Project '{name}' not found.")
             return
 
-        #TODO: add code to remove all files related to this project
+    def edit_project(self, name: str, new_name: str, new_path: str):
+        if not name or not new_name or not new_path:
+            print("Project name, new name, and new path cannot be empty.")
+            return
+        if not os.path.exists(new_path):
+            print(f"Path '{new_path}' does not exist.")
+            return
+        if name not in self.projects:
+            print(f"Project '{name}' does not exist.")
+            return
+        if not os.path.isabs(new_path):
+            print(f"Path '{new_path}' must be an absolute path.")
+            return
+        if not os.path.isdir(new_path):
+            print(f"Path '{new_path}' is not a directory.")
+            return
 
+        paths = self.projects
+        del paths[name]
+        paths[new_name] = new_path
         self._save_projects(paths)
+
+    def get_export_path(self, project: str):
+        if project not in self.projects:
+            print(f"Project '{project}' not found.")
+            return None
+        return self.projects[project]
 
     def get_projects(self):
         return self.projects
 
-    def set_projects(self, path: str):
-        self._selected_projects = path
-
     def set_log_level(self, level: int):
         self.log_level = level
-        self._save_log_level(level)
-
-    def get_log_level(self):
-        return self.log_level
-
-    def _load_projects(self):
-        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return data.get("projects", dict())
+        self._save_config()
 
     def get_files_for_project(self, project: str):
-        projects = self._load_projects()
+        projects = self.projects
         if project not in projects:
             print(f"Project '{project}' not found.")
             return []
@@ -144,7 +169,7 @@ class API:
     def get_all_files(self):
         result = dict()
 
-        projects: dict = self._load_projects()
+        projects: dict = self.projects
 
         for project in projects.keys():
             base_path = Path(projects[project])
@@ -195,7 +220,7 @@ class API:
         self._latest_run = set()
 
         # Load latest settings from json file
-        projects = self._selected_projects or self._load_projects()
+        projects = self._selected_projects or self.projects
 
         for file_path in self.next_run:
             # Updates table of files to see which one is processing a.t.m.
