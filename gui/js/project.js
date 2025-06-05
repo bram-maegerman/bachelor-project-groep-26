@@ -87,9 +87,10 @@ function renderProjectOverview(files) {
     const date = file.split("\\").at(-2) || "";
 
     let errorCount = 0;
+    let log = null;
 
     try {
-      const log = await window.pywebview.api.get_log(file);
+      log = await window.pywebview.api.get_log(file);
       errorCount = parseErrorCount(log);
     } catch (error) {
       console.error("Error loading log:", error);
@@ -104,7 +105,7 @@ function renderProjectOverview(files) {
     const statusCell = document.createElement("td");
     const statusIndicator = document.createElement("div");
     statusIndicator.className = `status-circle ${
-      errorCount > 0 ? "red" : "green"
+      log && parseManuallyChecked(log) ? "green" : "red"
     }`;
     statusCell.appendChild(statusIndicator);
 
@@ -226,3 +227,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+function parseManuallyChecked(log) {
+  const lines = log.split("\n").filter((line) => line.trim());
+  const checkedLine = lines[lines.length - 5];
+  return checkedLine.split("=")[1] === "true";
+}

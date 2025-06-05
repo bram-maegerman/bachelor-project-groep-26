@@ -192,7 +192,7 @@ function parseErrorCount(log) {
 
 function parseManuallyChecked(log) {
   const lines = log.split("\n").filter((line) => line.trim());
-  const checkedLine = lines[lines.length - 3];
+  const checkedLine = lines[lines.length - 5];
   return checkedLine.split("=")[1] === "true";
 }
 
