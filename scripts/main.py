@@ -48,7 +48,8 @@ def main():
             all_found_numbers_list = pool.map_async(process_page, args).get()
             all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list)}
         
-        log_messages.extend(process_messages)
+        # list(dict.fromkeys(process_messages)) removes duplicates from the list
+        log_messages.extend(list(dict.fromkeys(process_messages)))
 
         #   Loop over all found numbers
         #   Every entry of all_found_numbers holds a set of numbers which are found a specific page
