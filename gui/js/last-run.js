@@ -38,7 +38,7 @@ function renderLastRun(files) {
   });
   headerRow.appendChild(nameHeader);
 
-  ["Errors", "Status", "Date"].forEach((headerText) => {
+  ["Errors", "Checked", "Date"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);
@@ -61,11 +61,12 @@ function renderLastRun(files) {
     const row = document.createElement("tr");
 
     const fileName = file.split("/").at(-1);
-    const date = file.split("\\").at(-2) || "";
+    const date = file.split(/[/\\]/).at(-2) || "";
 
     let errorCount = 0;
+    let log = null;
     try {
-      const log = await window.pywebview.api.get_log(file);
+      log = await window.pywebview.api.get_log(file);
       errorCount = parseErrorCount(log);
     } catch (error) {
       console.error("Error loading log:", error);
@@ -80,7 +81,7 @@ function renderLastRun(files) {
     const statusCell = document.createElement("td");
     const statusIndicator = document.createElement("div");
     statusIndicator.className = `status-circle ${
-      errorCount > 0 ? "red" : "green"
+      log && parseManuallyChecked(log) ? "green" : "red"
     }`;
     statusCell.appendChild(statusIndicator);
 
@@ -109,11 +110,22 @@ function renderLastRun(files) {
 }
 
 function parseErrorCount(log) {
-  const lines = log.split("\n").filter((line) => line.trim());
-  const lastLine = lines[lines.length - 3];
-  const parts = lastLine.split(" ");
-  const count = parseInt(parts[parts.length - 1], 10);
+  const regex = /Total pages with missing numbers.*?(\d+)/;
+  const match = log.match(regex);
+
+  const count = match ? parseInt(match[1], 10) : 0;
+
+  if (isNaN(count)) {
+    return 0;
+  }
+
   return count;
+}
+
+function parseManuallyChecked(log) {
+  const lines = log.split("\n").filter((line) => line.trim());
+  const checkedLine = lines[lines.length - 5];
+  return checkedLine.split("=")[1] === "true";
 }
 
 const nameFilterInput = document.getElementById("name-filter");

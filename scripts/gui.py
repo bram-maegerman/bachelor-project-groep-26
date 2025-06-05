@@ -9,14 +9,14 @@ class API:
         self._window_loaded = threading.Event()
         self._latest_run = set()
         self._init_config()  # Ensure config file exists with defaults
-        self.export_paths = self._load_export_paths()
-        self.log_level = self._load_log_level()
+        self.projects, self.log_level = self._load_config()
         self.next_run = []
+        self.next_export_path = None
 
     def _init_config(self):
         if not CONFIG_FILE.exists():
             default_config = {
-                "export_paths": [],
+                "projects": {},
                 "log_level": 1
             }
             with open(CONFIG_FILE, "w") as f:
@@ -27,92 +27,143 @@ class API:
             with open(CONFIG_FILE, "r") as f:
                 try:
                     data = json.load(f)
-                    return data
+                    return (data.get("projects", {}), data.get("log_level", 1))
                 except json.JSONDecodeError:
                     # In case of corrupted JSON, reset to default
                     self._init_config()
-                    return {"export_paths": [], "log_level": 1}
+                    return ({}, 1)
         else:
             self._init_config()
-            return {"export_paths": [], "log_level": 1}
+            return ({}, 1)
 
-    def _save_config(self, data):
+    def _save_config(self):
+        data = {
+            "projects": self.projects,
+            "log_level": self.log_level
+        }
         with open(CONFIG_FILE, "w") as f:
             json.dump(data, f, indent=2)
 
-    def _load_export_paths(self):
-        data = self._load_config()
-        return data.get("export_paths", [])
+    def _save_projects(self, paths: list):
+        self.projects = paths
+        self._save_config()
 
-    def _save_export_paths(self, paths: list):
-        data = self._load_config()
-        data["export_paths"] = paths
-        self._save_config(data)
-
-    def _load_log_level(self):
-        data = self._load_config()
-        return data.get("log_level", 1)
-
-    def _save_log_level(self, level: int):
-        data = self._load_config()
-        data["log_level"] = level
-        self._save_config(data)
-
-    def choose_export_path(self):
+    def choose_folder(self):
         window = webview.windows[0]
         result = window.create_file_dialog(webview.FOLDER_DIALOG)
         if result:
             return result[0]
         else:
-            return self.export_paths
+            return ""
 
-    def set_settings(self, export_paths: list, log_level: int):
-        self.export_paths = export_paths
+    def set_log_level(self, log_level: int):
         self.log_level = log_level
-        self._save_export_paths(export_paths)
-        self._save_log_level(log_level)
+        self._save_config()
 
-    def get_settings(self):
-        return {
-            "export_paths": self._load_export_paths(),
-            "log_level": self._load_log_level()
-        }
+    def add_project(self, name: str, path: str):
+        if not name or not path:
+            print("Project name and path cannot be empty.")
+            return
+        if not os.path.exists(path):
+            print(f"Path '{path}' does not exist.")
+            return
+        if name in self.projects:
+            print(f"Project '{name}' already exists.")
+            return
+        if not os.path.isabs(path):
+            print(f"Path '{path}' must be an absolute path.")
+            return
+        if not os.path.isdir(path):
+            print(f"Path '{path}' is not a directory.")
+            return
+        paths = self.projects
+        paths[name] = path
+        self._save_projects(paths)
 
-    def add_export_path(self, name: str, path: str):
-        paths = self._load_export_paths()
-        paths.append({"name": name, "path": path})
-        self._save_export_paths(paths)
+    def remove_project(self, name: str):
+        paths = self.projects
+        try:
+            pathname = paths[name]
+            projects = self.get_files_for_project(name)
+            del paths[name]
+            if os.path.exists(pathname):
+                # empty the directory
+                for file in projects:
+                    try:
+                        os.remove(file + '_LOG.txt')
+                    except Exception as e:
+                        print(f"Error removing file '{file}': {e}")
+            else:
+                print(f"Path '{pathname}' does not exist, cannot remove files.")
+            self._save_projects(paths)
+        except KeyError:
+            print(f"Project '{name}' not found.")
+            return
 
-    def remove_export_path(self, name: str):
-        paths = self._load_export_paths()
-        paths = [p for p in paths if p["name"] != name]
-        self._save_export_paths(paths)
+    def edit_project(self, name: str, new_name: str, new_path: str):
+        if not name or not new_name or not new_path:
+            print("Project name, new name, and new path cannot be empty.")
+            return
+        if not os.path.exists(new_path):
+            print(f"Path '{new_path}' does not exist.")
+            return
+        if name not in self.projects:
+            print(f"Project '{name}' does not exist.")
+            return
+        if not os.path.isabs(new_path):
+            print(f"Path '{new_path}' must be an absolute path.")
+            return
+        if not os.path.isdir(new_path):
+            print(f"Path '{new_path}' is not a directory.")
+            return
 
-    def get_export_paths(self):
-        return self._load_export_paths()
-    
-    def set_export_path(self, path: str):
-        self._selected_export_path = path
+        paths = self.projects
+        del paths[name]
+        paths[new_name] = new_path
+        self._save_projects(paths)
 
-    def set_log_level(self, level: int):
-        self.log_level = level
-        self._save_log_level(level)
+    def get_export_path(self, project: str):
+        if project not in self.projects:
+            print(f"Project '{project}' not found.")
+            return None
+        return self.projects[project]
+
+    def get_projects(self):
+        return self.projects
 
     def get_log_level(self):
         return self.log_level
 
-    def _load_export_paths(self):
-        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return data.get("export_paths", [])
+    def set_log_level(self, level: int):
+        self.log_level = level
+        self._save_config()
+
+    def get_files_for_project(self, project: str):
+        projects = self.projects
+        if project not in projects:
+            print(f"Project '{project}' not found.")
+            return []
+
+        project_path = projects[project]
+        if not os.path.exists(project_path):
+            print(f"Project path '{project_path}' does not exist.")
+            return []
+
+        files = []
+        for root, _, filenames in os.walk(project_path):
+            for filename in filenames:
+                if filename.endswith("_LOG.txt"):
+                    file_path_without_suffix = os.path.join(root, filename).removesuffix("_LOG.txt")
+                    files.append(file_path_without_suffix)
+        return files
 
     def get_all_files(self):
         result = dict()
 
-        export_paths = self._load_export_paths()
+        projects: dict = self.projects
 
-        for export_entry in export_paths:
-            base_path = Path(export_entry['path'])
+        for project in projects.keys():
+            base_path = Path(projects[project])
 
             if not base_path.exists():
                 continue
@@ -126,7 +177,7 @@ class API:
                             sub_result.append(file_path_without_suffix)
 
                     if sub_result:
-                        result[f"{export_entry['name']}_{sub_dir.name}"] = sub_result
+                        result[f"{project}_{sub_dir.name}"] = sub_result
         return result
 
 
@@ -141,23 +192,64 @@ class API:
     def run_last(self):
         webview.windows[0].evaluate_js(f"loadLastRunFiles({list(self._latest_run)})")
 
+    def project_overview(self, project: str):
+        files = self.get_files_for_project(project)
+        if not files:
+            print(f"No files found for project '{project}'.")
+            return
+        # Convert file paths to a JSON-compatible format
+        files = [str(Path(file).resolve()) for file in files]
+        webview.windows[0].evaluate_js(f"renderProjectOverview({json.dumps(files)})")
+
     def set_next(self, files: list):
         self.next_run = files
 
-    def run_script_on_files(self):
-        # Load all files from current run in a table
+    def set_export_path(self, path: str):
+        if not path:
+            print("Export path cannot be empty.")
+            return
+        if not os.path.exists(path):
+            print(f"Export path '{path}' does not exist.")
+            return
+        if not os.path.isabs(path):
+            print(f"Export path '{path}' must be an absolute path.")
+            return
+        self.next_export_path = path
 
+    def open_file(self, file_path: str):
+        file_path = Path(file_path.replace("/", os.sep)).resolve()
+        if not file_path.exists():
+            print(f"File '{file_path}' does not exist.")
+            return
+        if not file_path.is_file():
+            print(f"Path '{file_path}' is not a file.")
+            return
+
+        # open the file with like the file explorer
+        if os.name == 'nt':  # Windows
+            os.startfile(file_path)
+
+    def run_script_on_files(self):
         file_paths = [Path(x) for x in self.next_run]
         formatted_files = ["/".join(p.parts[-4:]) for p in file_paths]
-        print(formatted_files)
 
+        if not formatted_files:
+            print("No files to process.")
+            return
+
+        if not self.next_export_path:
+            print("No export path set.")
+            return
+
+        # Ensure the export path exists
+        export_path = Path(self.next_export_path)
+        if not export_path.exists():
+            print(f"Export path '{self.next_export_path}' does not exist.")
+            return
 
         webview.windows[0].evaluate_js(f"loadFilesInTable({formatted_files})")
 
         self._latest_run = set()
-
-        # Load latest settings from json file
-        export_path = self._selected_export_path or self._load_export_path()
 
         for index, file_path in enumerate(self.next_run):
             current_file = formatted_files[index]
@@ -186,7 +278,7 @@ class API:
             }
             webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
 
-            output = result.stdout.strip()
+            output: str = result.stdout.strip()
             if success:
                 if output.endswith("_LOG.txt"):
                     file_name = output.removesuffix("_LOG.txt")
@@ -196,7 +288,7 @@ class API:
         return
 
     def get_log(self, key):
-        file_path = key + "_LOG.txt"
+        file_path = key + "_LOG.txt" #TODO revisit this
         if not os.path.exists(file_path):
             return "Log file not found."
 
@@ -218,7 +310,7 @@ class API:
                 if ")[I" in line:
                     filtered_logs.append(line)
             if self.log_level == 3:
-                if ")[S" in line:
+                if ")[I" in line or ")[S" in line:
                     filtered_logs.append(line)
 
         filtered_logs.extend(summary_block)
@@ -235,6 +327,18 @@ class API:
         with open(path, 'rb') as f:
             encoded = base64.b64encode(f.read()).decode('utf-8')
             return f'data:application/pdf;base64,{encoded}'
+
+    def change_manual_check_status(self, path, checkedBool):
+        with open(path, 'r') as file:
+            lines = file.readlines()
+
+        for i, line in enumerate(lines):
+            if line.strip().startswith('manually_checked='):
+                lines[i] = f'manually_checked={"true" if checkedBool else "false"}\n'
+                break
+
+        with open(path, 'w') as file:
+            file.writelines(lines)
 
 api = API()
 

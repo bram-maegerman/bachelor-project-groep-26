@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style/global.css" />
+    <link rel="stylesheet" href="style/nav.css" />
+    <link rel="stylesheet" href="style/all-runs.css" />
+    <link rel="stylesheet" href="style/projects.css" />
+    <link rel="stylesheet" href="style/project.css" />
+    <script src="js/global.js" defer></script>
+    <script src="js/project.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="homepage.html">
+                <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+            </a>
+            <div class="nav-wrapper">
+                <button id="nav-dropdown">Projects <span id="nav-arrow">&#x25BC;</span></button>
+                <ul id="options" class="nav-options hidden">
+                    <li><a href="homepage.html">Home</a></li>
+                    <li><a href="precheck.html">Precheck</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="last-run.html">Last run</a></li>
+                    <li><a href="all-runs.html">All runs</a></li>
+                    <li><a href="settings.html">Settings</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="centered-list">
+            <div class="project-header">
+                <button id="back-button" class="standard-btn">&lt; Back</button>
+                <h1 class="title" id="title">Project: ...</h1>
+                <div class="options">
+                    <img src="assets/svg/edit-btn.svg" alt="Edit button" width="50" height="50" id="edit-button"
+                        class="edit-btn" />
+                    <button id="remove-button" class="remove">Remove project</button>
+                </div>
+            </div>
+            <input type="text" id="name-filter" class="name-filter hidden" placeholder="Filter by Name" />
+            <div id="add-project" class="hidden">
+                <button id="close-form">&times;</button>
+                <div class="input-form">
+                    <h2>Add Project</h2>
+                    <div class="input-field">
+                        <label for="project-name">Name: </label><input type="text" id="project-name"
+                            placeholder="Enter project name..." required name="project-name" />
+                    </div>
+
+                    <div class="input-field">
+                        <label for="project-path">Path: </label>
+                        <input type="text" id="export-path" placeholder="Choose export path 📁..." readonly
+                            name="project-path" required />
+                    </div>
+
+                    <button class="submit" id="save-button">Save</button>
+                </div>
+            </div>
+        </div>
+        <div id="file-list-container" class="centered-list"></div>
+        <div id="no-files" class="no-files">No pdf's have been scanned yet for this project.</div>
+        <div id="pagination" class="pagination-nav"></div>
+    </main>
+</body>
+
+</html>

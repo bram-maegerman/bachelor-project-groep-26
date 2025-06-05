@@ -86,9 +86,19 @@
 
 .file-table {
   width: 60%;
-  border-collapse: collapse;
   margin-top: 20px;
   border: 1px solid #147fa1;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.file-table thead th:first-child {
+  border-top-left-radius: 16px;
+}
+.file-table thead th:last-child {
+  border-top-right-radius: 16px;
 }
 
 .file-table th,

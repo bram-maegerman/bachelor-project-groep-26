@@ -11,7 +11,6 @@ async function renderOverview(files) {
 
   allFiles = [];
   Object.keys(files).forEach((date) => {
-    console.log(files)
     const splitDate = date.split("\\").at(-1);
     const splitDatee = splitDate.split("_").at(-1);
     const project = splitDate.split("_").at(0);
@@ -72,7 +71,7 @@ async function renderPage(page) {
   });
   headerRow.appendChild(nameHeader);
 
-  ["Errors", "Status", "Date", "Project"].forEach((headerText) => {
+  ["Errors", "Checked", "Date", "Project"].forEach((headerText) => {
     const th = document.createElement("th");
     th.textContent = headerText;
     headerRow.appendChild(th);
@@ -84,8 +83,9 @@ async function renderPage(page) {
 
   for (const fileData of pageFiles) {
     let errorCount = 0;
+    let log = null;
     try {
-      const log = await window.pywebview.api.get_log(fileData.file);
+      log = await window.pywebview.api.get_log(fileData.file);
       errorCount = parseErrorCount(log);
     } catch (error) {
       console.error("Error loading log:", error);
@@ -102,7 +102,7 @@ async function renderPage(page) {
     const statusCell = document.createElement("td");
     const statusIndicator = document.createElement("div");
     statusIndicator.className = `status-circle ${
-      errorCount > 0 ? "red" : "green"
+      log && parseManuallyChecked(log) ? "green" : "red"
     }`;
     statusCell.appendChild(statusIndicator);
 
@@ -178,12 +178,22 @@ function createPagination() {
 }
 
 function parseErrorCount(log) {
-  const lines = log.split("\n").filter((line) => line.trim());
+  const regex = /Total pages with missing numbers.*?(\d+)/;
+  const match = log.match(regex);
 
-  const lastLine = lines[lines.length - 3];
-  const parts = lastLine.split(" ");
-  const count = parseInt(parts[parts.length - 1], 10);
+  const count = match ? parseInt(match[1], 10) : 0;
+
+  if (isNaN(count)) {
+    return 0;
+  }
+
   return count;
+}
+
+function parseManuallyChecked(log) {
+  const lines = log.split("\n").filter((line) => line.trim());
+  const checkedLine = lines[lines.length - 5];
+  return checkedLine.split("=")[1] === "true";
 }
 
 const nameFilterInput = document.getElementById("name-filter");
