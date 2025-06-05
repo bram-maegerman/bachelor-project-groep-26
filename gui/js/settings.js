@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const saveButton = document.getElementById("save-button");
   const resetButton = document.getElementById("reset-button");
-  const addPathButton = document.getElementById("choose-new-export-folder");
   const descriptionElement = document.getElementById("log-level-description");
   const option1 = document.getElementById("log-level-1");
   const option2 = document.getElementById("log-level-2");
@@ -91,16 +90,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const log_level = await window.pywebview.api.get_log_level();
       setSelected(log_level || 2);
       addSuccessClass();
-      const plusButton = document.getElementById("add-path-button");
-      plusButton.addEventListener("click", addPath);
 
       option1.addEventListener("click", () => setSelected(1));
       option2.addEventListener("click", () => setSelected(2));
       option3.addEventListener("click", () => setSelected(3));
-      addPathButton.addEventListener(
-        "click",
-        async () => await chooseExportFolder()
-      );
       saveButton.addEventListener("click", async () => await save());
       resetButton.addEventListener("click", async () => await reset());
     } catch (err) {
