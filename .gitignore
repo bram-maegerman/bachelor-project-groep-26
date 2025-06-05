@@ -2,3 +2,5 @@ files/*
 scripts/__pycache__
 .vscode
 scripts/config.json
+build/
+dist/
