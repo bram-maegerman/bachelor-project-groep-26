@@ -243,5 +243,17 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-webview.create_window("Scan-Checker", "../gui/homepage.html", js_api=api)
-webview.start(maximize_window, debug=True)
+def find_file(filename, search_path):
+    for root, _, files in os.walk(search_path):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
+
+current_file = Path(__file__)
+homepage = find_file("homepage.html", current_file.parent.parent)
+
+if homepage:
+    webview.create_window("Scan-Checker", homepage, js_api=api)
+    webview.start(maximize_window, debug=True)
+else:
+    print("Couldn't find homepage.")
