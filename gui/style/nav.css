@@ -34,6 +34,7 @@ nav button {
   text-decoration: none;
   box-sizing: border-box;
   z-index: 100;
+  margin: 0;
 }
 
 /* Arrow */

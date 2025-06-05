@@ -1,0 +1,60 @@
+.project-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem auto;
+  background-color: white;
+  color: #004070;
+  width: 100%;
+}
+
+button {
+  margin: 0.5rem;
+  padding: 1rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  border: none;
+  height: auto;
+}
+
+.remove {
+  border: 2px solid red;
+  background-color: white;
+  color: red;
+  font-weight: bold;
+}
+
+#close-form {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #004070;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  border: none;
+}
+
+#close-form:hover {
+  background-color: red;
+  color: white;
+  border: none;
+}
+
+.options {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  & img {
+    cursor: pointer;
+  }
+}

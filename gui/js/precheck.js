@@ -10,19 +10,17 @@ async function pickFile() {
   currentFiles.length = 0;
   const paths = await window.pywebview.api.open_file_dialog();
 
+  currentFiles.length = 0;
   if (paths && paths.length > 0) {
-    currentFiles.length = 0;
     paths.forEach((path) => {
       currentFiles.push({
         name: path.split(/[/\\]/).pop(),
         path: path,
       });
     });
-    updateFileList();
   } else {
-    currentFiles.length = 0;
-    updateFileList();
   }
+  updateFileList();
 }
 
 async function checkFiles() {
@@ -85,15 +83,15 @@ function renderProjects() {
   const options = document.getElementById("project-options");
   options.innerHTML = "";
 
-  exportPaths.forEach((entry) => {
+  Object.keys(exportPaths).forEach((entry) => {
     const option = document.createElement("li");
-    option.textContent = entry.name;
+    option.textContent = entry;
     option.addEventListener("click", async () => {
-      document.getElementById("project-dropdown").textContent = entry.name;
+      document.getElementById("project-dropdown").textContent = entry;
       document.getElementById("project-options").classList.toggle("hidden");
       projectDropDown.style.borderRadius = "25px";
-      selectedExportPath = entry.path;
-      await window.pywebview.api.set_export_path(entry.path);
+      selectedExportPath = entry;
+      await window.pywebview.api.set_export_path(exportPaths[entry]);
     });
     options.appendChild(option);
   });
@@ -102,11 +100,10 @@ function renderProjects() {
 window.addEventListener("pywebviewready", async () => {
   try {
     selectedExportPath = null;
-    const { export_paths } = await window.pywebview.api.get_settings();
-    exportPaths = export_paths || [];
+    const projects = await window.pywebview.api.get_projects();
+    exportPaths = projects || [];
     renderProjects();
   } catch (err) {
     console.error("Failed to initialize settings:", err);
   }
 });
-

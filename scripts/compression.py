@@ -63,4 +63,5 @@ if __name__ == '__main__':
     compressed_output_path = compress_pdf(original_pdf_path, output_pdf)
 
     with open(log_file_path, "a") as file:
-        file.write(f"\n\nPath to original pdf: \n{compressed_output_path}")
+        file.write(f"\n\nPath to original pdf: \n{original_pdf_path}\n")
+        file.write(f"Path to compressed pdf: \n{compressed_output_path}\n")

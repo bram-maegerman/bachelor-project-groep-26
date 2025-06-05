@@ -77,13 +77,16 @@ function createManualCheckButton(manuallyCheckedLine) {
   checkedButtonBox.checked = checked === "true";
 
   checkedButtonBox.addEventListener("change", () => {
-    window.pywebview.api.change_manual_check_status(path + "_LOG.txt", checkedButtonBox.checked);
+    window.pywebview.api.change_manual_check_status(
+      path + "_LOG.txt",
+      checkedButtonBox.checked
+    );
   });
 
   checkedButton.appendChild(checkedButtonBox);
-  
+
   const checkedButtonText = document.createElement("p");
-  checkedButtonText.innerHTML = "Manually checked"
+  checkedButtonText.innerHTML = "Manually checked";
   checkedButton.appendChild(checkedButtonText);
 
   return checkedButton;
@@ -174,12 +177,19 @@ window.addEventListener("pywebviewready", async () => {
     return;
   }
 
-  
   const file = await window.pywebview.api.get_log(path);
-  const [logText, statistics, manuallyCheckedLine ,rawPdfPath] = file.split(/\r?\n\r?\n/);
+  const [logText, statistics, manuallyCheckedLine, rawPdfPaths] =
+    file.split(/\r?\n\r?\n/);
 
   const stats = extractStats(statistics.trim().trim("\n"));
-  const pdfPath = rawPdfPath.replace("Path to original pdf: \n", "").trim();
+
+  // Use regex to extract paths
+  const originalPdfPath = rawPdfPaths
+    .match(/Path to original pdf: \n(.+)/)?.[1]
+    ?.trim();
+  const compressedPdfPath = rawPdfPaths
+    .match(/Path to compressed pdf: \n(.+)/)?.[1]
+    ?.trim();
 
   const statsTitle = document.createElement("h3");
   statsTitle.innerHTML = "Statistics";
@@ -190,7 +200,7 @@ window.addEventListener("pywebviewready", async () => {
   const title = document.createElement("h2");
   title.innerHTML = filename;
   title.onclick = () => {
-    window.pywebview.api.open_file(pdfPath);
+    window.pywebview.api.open_file(originalPdfPath);
   };
   title.className = "filename-title";
 
@@ -201,18 +211,19 @@ window.addEventListener("pywebviewready", async () => {
 
   const back = document.createElement("button");
   back.innerHTML = "&lt; Back";
-  back.className = "back-button"
+  back.className = "back-button";
   back.onclick = () => {
-      window.history.back();  
+    window.history.back();
   };
   backAndCheckedButtons.appendChild(back);
-  backAndCheckedButtons.appendChild(createManualCheckButton(manuallyCheckedLine));
+  backAndCheckedButtons.appendChild(
+    createManualCheckButton(manuallyCheckedLine)
+  );
 
   header.appendChild(backAndCheckedButtons);
 
   container.appendChild(createStatsBox(stats));
   container.appendChild(createLogBox(logText));
 
-  console.log("PDF Path:", pdfPath);
-  await loadPdf(pdfPath);
+  await loadPdf(compressedPdfPath);
 });
