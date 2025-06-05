@@ -1,0 +1,104 @@
+html {
+    scroll-behavior: smooth;
+    font-size: 1.2rem;
+    font-family: sans-serif;
+}
+
+header {
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+}
+
+header img {
+    position: absolute;
+    left: 0;
+}
+  
+.content-wrapper {
+    display: flex;
+}
+
+.content-table {
+    background-color: #52beec9a;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 200px;
+    /* border: 1px solid black; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 1rem;
+    z-index: 1;
+}
+  
+.content-table ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.content-table li {
+    margin: 10px 0;
+}
+
+.content-table li a {
+    text-decoration: none;
+    color: white;
+}
+
+.content-table li a:hover {
+    text-decoration: underline;
+}
+
+.content-table a.active {
+    font-weight: bold;
+  }
+
+.content-container {
+    margin-top: 100px;
+    margin-left: 300px; /* enough space for fixed sidebar */
+    padding: 2rem;
+    /* max-width: 800px; */
+    width: 100%;
+}
+
+.progress-icon-list li{
+    margin: 5px 0;
+}
+
+.queue, .processing, .checked, .error {
+    list-style: none; 
+    position: relative;
+    padding-left: 24px;
+  }
+  
+  .queue::before, .processing::before, .checked::before, .error::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0px;
+    width: 25px;
+    height: 25px;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  .queue::before {
+    background-image: url('/gui/assets/img/image_file_queue.png');
+
+  }
+
+  .processing::before {
+    background-image: url("/gui/assets/img/image_file_processing.png");
+  }
+
+  .checked::before {
+    background-image: url("/gui/assets/img/image_file_checked.png");
+  }
+
+  .error::before {
+    background-image: url("/gui/assets/img/image_file_error.png");
+  }
