@@ -110,10 +110,15 @@ function renderLastRun(files) {
 }
 
 function parseErrorCount(log) {
-  const lines = log.split("\n").filter((line) => line.trim());
-  const lastLine = lines[lines.length - 4];
-  const parts = lastLine.split(" ");
-  const count = parseInt(parts[parts.length - 1], 10);
+  const regex = /Total pages with missing numbers.*?(\d+)/;
+  const match = log.match(regex);
+
+  const count = match ? parseInt(match[1], 10) : 0;
+
+  if (isNaN(count)) {
+    return 0;
+  }
+
   return count;
 }
 

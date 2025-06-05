@@ -84,22 +84,15 @@ class API:
         paths = self.projects
         try:
             pathname = paths[name]
+            projects = self.get_files_for_project(name)
             del paths[name]
             if os.path.exists(pathname):
                 # empty the directory
-                for file in os.listdir(pathname):
-                    file_path = os.path.join(pathname, file)
+                for file in projects:
                     try:
-                        if os.path.isfile(file_path):
-                            os.remove(file_path)
+                        os.remove(file + '_LOG.txt')
                     except Exception as e:
-                        print(f"Error removing file '{file_path}': {e}")
-
-                # remove the directory if empty
-                if not os.listdir(pathname):
-                    os.rmdir(pathname)
-                else:
-                    print(f"Directory '{pathname}' is not empty, cannot remove.")
+                        print(f"Error removing file '{file}': {e}")
             else:
                 print(f"Path '{pathname}' does not exist, cannot remove files.")
             self._save_projects(paths)
@@ -354,5 +347,5 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-webview.create_window("Scan-Checker", "../gui/projects.html", js_api=api)
+webview.create_window("Scan-Checker", "../gui/homepage.html", js_api=api)
 webview.start(maximize_window, debug=True)

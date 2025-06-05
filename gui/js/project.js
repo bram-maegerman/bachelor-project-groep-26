@@ -8,7 +8,6 @@ function parseErrorCount(log) {
 
   const count = match ? parseInt(match[1], 10) : 0;
 
-  // If the regex does not match, return 0
   if (isNaN(count)) {
     return 0;
   }
@@ -88,6 +87,7 @@ function renderProjectOverview(files) {
     const date = file.split("\\").at(-2) || "";
 
     let errorCount = 0;
+
     try {
       const log = await window.pywebview.api.get_log(file);
       errorCount = parseErrorCount(log);
