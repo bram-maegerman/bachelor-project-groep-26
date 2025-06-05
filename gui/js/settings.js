@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("pywebviewready", async () => {
     try {
-      const { log_level } = await window.pywebview.api.get_settings();
+      const log_level = await window.pywebview.api.get_log_level();
       setSelected(log_level || 2);
       addSuccessClass();
       const plusButton = document.getElementById("add-path-button");
