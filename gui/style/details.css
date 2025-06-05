@@ -52,13 +52,12 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 2rem;
   width: 100%;
 }
 
 #pdf-preview {
   margin-top: 2rem;
-  height: 75vh;
+  height: 69vh;
   overflow-y: auto;
 
   /* Scrollbar */
@@ -73,14 +72,17 @@ main {
 #pdf-loading {
   text-align: center;
   align-self: center;
+  & p {
+    margin: 0;
+  }
 }
 
 #page-header {
   text-align: center;
-  margin: 1em 0 0.5em;
+  margin-top: 1rem;
 }
 
-.buttons-under-title{
+.buttons-under-title {
   margin: 0px 3em;
   display: flex;
   flex-direction: row;
