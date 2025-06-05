@@ -3,10 +3,17 @@ let allFiles = [];
 let allFilteredFiles = [];
 
 function parseErrorCount(log) {
-  const lines = log.split("\n").filter((line) => line.trim());
-  const lastLine = lines[lines.length - 3];
-  const parts = lastLine.split(" ");
-  const count = parseInt(parts[parts.length - 1], 10);
+  const regex = /Total pages with missing numbers.*?(\d+)/;
+  const match = log.match(regex);
+  console.log(`Log: ${log}`);
+
+  const count = match ? parseInt(match[1], 10) : 0;
+
+  // If the regex does not match, return 0
+  if (isNaN(count)) {
+    return 0;
+  }
+
   return count;
 }
 
@@ -78,7 +85,7 @@ function renderProjectOverview(files) {
   files.forEach(async (file) => {
     const row = document.createElement("tr");
 
-    const fileName = file.split("/").at(-1);
+    const fileName = file.split("\\").at(-1);
     const date = file.split("\\").at(-2) || "";
 
     let errorCount = 0;
