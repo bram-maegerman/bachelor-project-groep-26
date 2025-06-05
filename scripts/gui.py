@@ -218,7 +218,7 @@ class API:
                 if ")[I" in line:
                     filtered_logs.append(line)
             if self.log_level == 3:
-                if ")[S" in line:
+                if ")[I" in line or ")[S" in line:
                     filtered_logs.append(line)
 
         filtered_logs.extend(summary_block)
