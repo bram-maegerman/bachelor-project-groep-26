@@ -5,7 +5,6 @@ let allFilteredFiles = [];
 function parseErrorCount(log) {
   const regex = /Total pages with missing numbers.*?(\d+)/;
   const match = log.match(regex);
-  console.log(`Log: ${log}`);
 
   const count = match ? parseInt(match[1], 10) : 0;
 
