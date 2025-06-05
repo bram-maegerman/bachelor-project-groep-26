@@ -153,6 +153,9 @@ def main():
                 else:
                     last_found_number = expected_number = find_sequence(all_found_numbers, key)
 
+    if len(log_messages) == 0:
+        custom_print(pdf_page=0, statement_type="WARNING", statement=f"No status messages are present in this log file, this could mean that something went wrong during the execution of the script.")
+
     log_messages.append(f"\nMissing pages: {', '.join(str(x) for x in sorted(missing_numbers)) if len(missing_numbers) > 0 else 'None'}")
 
     # Show some stats
