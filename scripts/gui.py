@@ -223,6 +223,19 @@ class API:
             return
         self.next_export_path = path
 
+    def open_file(self, file_path: str):
+        file_path = Path(file_path.replace("/", os.sep)).resolve()
+        if not file_path.exists():
+            print(f"File '{file_path}' does not exist.")
+            return
+        if not file_path.is_file():
+            print(f"Path '{file_path}' is not a file.")
+            return
+
+        # open the file with like the file explorer
+        if os.name == 'nt':  # Windows
+            os.startfile(file_path)
+
     def run_script_on_files(self):
         file_paths = [Path(x) for x in self.next_run]
         formatted_files = ["/".join(p.parts[-4:]) for p in file_paths]
