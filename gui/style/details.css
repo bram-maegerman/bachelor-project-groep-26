@@ -2,6 +2,17 @@ main {
   display: flex;
 }
 
+.back-button {
+  background-color: #147fa1;
+  padding: 1rem;
+  border: none;
+  border-radius: 2em;
+  color: white;
+  text-decoration: none;
+  width: max-content;
+  font-size: 1rem;
+}
+
 .details-container h2 {
   color: #2596be;
   margin-bottom: 0.5em;
@@ -178,7 +189,7 @@ main {
   flex-direction: row;
   gap: 5px;
   padding: 0px 20px;
-  background-color: #52bdec;
+  background-color: #147fa1;
   color: white;
   border-radius: 3rem;
   border: 2px solid white;
