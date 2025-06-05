@@ -11,6 +11,7 @@ class API:
         self._init_config()  # Ensure config file exists with defaults
         self.projects, self.log_level = self._load_config()
         self.next_run = []
+        self.next_export_path = None
 
     def _init_config(self):
         if not CONFIG_FILE.exists():
@@ -58,12 +59,6 @@ class API:
     def set_log_level(self, log_level: int):
         self.log_level = log_level
         self._save_config()
-
-    def get_settings(self):
-        return {
-            "projects": self.projects,
-            "log_level": self.log_level
-        }
 
     def add_project(self, name: str, path: str):
         if not name or not path:
@@ -143,6 +138,9 @@ class API:
     def get_projects(self):
         return self.projects
 
+    def get_log_level(self):
+        return self.log_level
+
     def set_log_level(self, level: int):
         self.log_level = level
         self._save_config()
@@ -213,20 +211,39 @@ class API:
     def set_next(self, files: list):
         self.next_run = files
 
-    def run_script_on_files(self):
-        # Load all files from current run in a table
+    def set_export_path(self, path: str):
+        if not path:
+            print("Export path cannot be empty.")
+            return
+        if not os.path.exists(path):
+            print(f"Export path '{path}' does not exist.")
+            return
+        if not os.path.isabs(path):
+            print(f"Export path '{path}' must be an absolute path.")
+            return
+        self.next_export_path = path
 
+    def run_script_on_files(self):
         file_paths = [Path(x) for x in self.next_run]
         formatted_files = ["/".join(p.parts[-4:]) for p in file_paths]
-        print(formatted_files)
 
+        if not formatted_files:
+            print("No files to process.")
+            return
+
+        if not self.next_export_path:
+            print("No export path set.")
+            return
+
+        # Ensure the export path exists
+        export_path = Path(self.next_export_path)
+        if not export_path.exists():
+            print(f"Export path '{self.next_export_path}' does not exist.")
+            return
 
         webview.windows[0].evaluate_js(f"loadFilesInTable({formatted_files})")
 
         self._latest_run = set()
-
-        # Load latest settings from json file
-        projects = self._selected_projects or self.projects
 
         for index, file_path in enumerate(self.next_run):
             current_file = formatted_files[index]
@@ -234,7 +251,7 @@ class API:
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
 
             result = subprocess.run(
-                ["python", "scripts/main.py", file_path, projects],
+                ["python", "scripts/main.py", file_path, export_path],
                 capture_output=True,
                 text=True
             )
@@ -255,7 +272,7 @@ class API:
             }
             webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
 
-            output = result.stdout.strip()
+            output: str = result.stdout.strip()
             if success:
                 if output.endswith("_LOG.txt"):
                     file_name = output.removesuffix("_LOG.txt")
@@ -304,7 +321,7 @@ class API:
         with open(path, 'rb') as f:
             encoded = base64.b64encode(f.read()).decode('utf-8')
             return f'data:application/pdf;base64,{encoded}'
-        
+
     def change_manual_check_status(self, path, checkedBool):
         with open(path, 'r') as file:
             lines = file.readlines()
