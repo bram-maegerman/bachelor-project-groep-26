@@ -66,6 +66,10 @@ main {
   scrollbar-color: #615c5c transparent;
 }
 
+#pdf-preview canvas {
+  width: 700px;
+}
+
 #pdf-loading {
   text-align: center;
   align-self: center;
@@ -74,6 +78,14 @@ main {
 #page-header {
   text-align: center;
   margin: 1em 0 0.5em;
+}
+
+.buttons-under-title{
+  margin: 0px 3em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .filename-title {
@@ -157,4 +169,21 @@ main {
 .setting-item select:focus {
   border-color: #00407a;
   outline: none;
+}
+
+.manually-checked-button {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  padding: 0px 20px;
+  background-color: #52bdec;
+  color: white;
+  border-radius: 3rem;
+  border: 2px solid white;
+}
+
+.manually-checked-button > input[type="checkbox"] {
+  transform: scale(1.5);
+  accent-color: #00407a;
+  border: 2px solid white;
 }

@@ -48,7 +48,8 @@ def main():
             all_found_numbers_list = pool.map_async(process_page, args).get()
             all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list)}
         
-        log_messages.extend(process_messages)
+        # list(dict.fromkeys(process_messages)) removes duplicates from the list
+        log_messages.extend(list(dict.fromkeys(process_messages)))
 
         #   Loop over all found numbers
         #   Every entry of all_found_numbers holds a set of numbers which are found a specific page
@@ -153,12 +154,17 @@ def main():
                 else:
                     last_found_number = expected_number = find_sequence(all_found_numbers, key)
 
+    if len(log_messages) == 0:
+        custom_print(pdf_page=0, statement_type="WARNING", statement=f"No status messages are present in this log file, this could mean that something went wrong during the execution of the script.")
+
     log_messages.append(f"\nMissing pages: {', '.join(str(x) for x in sorted(missing_numbers)) if len(missing_numbers) > 0 else 'None'}")
 
     # Show some stats
     log_messages.append(f"\nTotal pages in document {len(doc)}")
     log_messages.append(f"\nTotal pages with numbers {len(all_found_numbers) - len(missing_numbers)}")
     log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
+    
+    log_messages.append(f"\n\nmanually_checked=false")
 
     log_file_location = f"{log_directory}/{filename.name}_LOG.txt"
 
