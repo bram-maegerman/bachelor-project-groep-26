@@ -83,6 +83,18 @@ function renderProjects() {
   const options = document.getElementById("project-options");
   options.innerHTML = "";
 
+  if (!exportPaths || Object.keys(exportPaths).length === 0) {
+    const noProjects = document.createElement("li");
+    noProjects.id = "no-projects";
+    noProjects.innerHTML =
+      "No projects available.<br>Click here to create one.";
+    noProjects.addEventListener("click", async () => {
+      window.location.href = "projects.html";
+    });
+    options.appendChild(noProjects);
+    return;
+  }
+
   Object.keys(exportPaths).forEach((entry) => {
     const option = document.createElement("li");
     option.textContent = entry;

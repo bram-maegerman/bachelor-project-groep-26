@@ -156,3 +156,8 @@ ul.project-options li:last-child {
   flex-direction: column;
   min-height: 450px;
 }
+
+#no-projects {
+  color: red;
+  font-weight: bold;
+}
