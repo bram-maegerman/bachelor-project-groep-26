@@ -10,9 +10,9 @@ function loadFilesInTable(files) {
 
   for (const index in files) {
     let li = document.createElement("li");
+    li.id = files[index]
 
     let status = document.createElement("div");
-    status.id = files[index];
     status.className = queuedClassName;
     status.innerHTML = "-";
     li.appendChild(status);
@@ -29,20 +29,36 @@ function loadFilesInTable(files) {
 
 function updateResult(result) {
   const fileToUpdate = document.getElementById(result.file);
+  children = fileToUpdate.children
 
   if (result.success) {
-    fileToUpdate.className = doneClassName;
-    fileToUpdate.innerHTML = "V";
+    children[0].className = doneClassName;
+    children[0].innerHTML = "V";
   } else {
-    fileToUpdate.className = errorClassName;
-    fileToUpdate.innerHTML = "X";
+    children[0].className = errorClassName;
+    children[0].innerHTML = "X";
   }
+
+  children[1].innerHTML = children[1].innerHTML.split(" - ")[0];
 }
 
 function setFileInProgress(file) {
   const fileToUpdate = document.getElementById(file);
-  fileToUpdate.className = inProgressClassName;
-  fileToUpdate.innerHTML = "O";
+  children = fileToUpdate.children
+
+  // children[0] is the status element
+  // children[1] is the file name of path
+  children[0].className = inProgressClassName;
+  children[0].innerHTML = "O";
+
+  children[1].innerHTML = children[1].innerHTML.concat(" - processing...");
+}
+
+function startCompressing(file) {
+  const fileToUpdate = document.getElementById(file);
+  children = fileToUpdate.children
+
+  children[1].innerHTML = children[1].innerHTML.replace("processing", "compressing");
 }
 
 function finished() {

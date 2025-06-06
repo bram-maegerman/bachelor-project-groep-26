@@ -256,21 +256,22 @@ class API:
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
 
-            result = subprocess.run(
+            process_result = subprocess.run(
                 ["python", "scripts/main.py", file_path, export_path],
                 capture_output=True,
                 text=True
             )
+            webview.windows[0].evaluate_js(f"startCompressing({json.dumps(current_file)})")
 
-            log_file_location = result.stdout.strip()
+            log_file_location = process_result.stdout.strip()
 
-            subprocess.run(
+            compress_result = subprocess.run(
                 ["python", "scripts/compression.py", str(file_path), str(log_file_location)],
                 capture_output=True,
                 text=True
             )
 
-            success = result.returncode == 0
+            success = process_result.returncode == 0
             # Updates table with the result of the current file
             result_object = {
                 "file": current_file,
@@ -278,7 +279,7 @@ class API:
             }
             webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
 
-            output: str = result.stdout.strip()
+            output: str = process_result.stdout.strip()
             if success:
                 if output.endswith("_LOG.txt"):
                     file_name = output.removesuffix("_LOG.txt")
