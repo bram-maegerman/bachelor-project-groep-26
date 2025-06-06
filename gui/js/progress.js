@@ -46,18 +46,27 @@ function setFileInProgress(file) {
   const fileToUpdate = document.getElementById(file);
   children = fileToUpdate.children
 
+  const stepToRemove = document.getElementById("current-step");
+  if (stepToRemove) {
+    stepToRemove.remove();
+  }
+  
   // children[0] is the status element
   // children[1] is the file name of path
   children[0].className = inProgressClassName;
   children[0].innerHTML = "O";
 
-  children[1].innerHTML = children[1].innerHTML.concat(" - processing");
+  const currentStep = document.createElement("div");
+  currentStep.id = "current-step";
+  currentStep.className = "current-step";
+  currentStep.innerHTML =  "Processing";
 
   const percentage = document.createElement("div");
   percentage.id = "percentage";
   percentage.innerHTML = "(0%)";
-
-  children[1].appendChild(percentage);
+  currentStep.appendChild(percentage);
+  
+  children[1].appendChild(currentStep);
 }
 
 function updatePercentage(percentage_str) {
@@ -65,12 +74,9 @@ function updatePercentage(percentage_str) {
   percentage.innerHTML = `(${percentage_str})`;
 }
 
-function startCompressing(file) {
-  const fileToUpdate = document.getElementById(file);
-  children = fileToUpdate.children
-
-  children[1].innerHTML = children[1].innerHTML.replace("processing", "compressing");
-  children[1].removeChild(document.getElementById("percentage"));
+function startCompressing() {
+  const currentStep = document.getElementById("current-step");
+  currentStep.innerHTML = "Compressing...";
 }
 
 function finished() {
@@ -79,6 +85,11 @@ function finished() {
 
   loader.className = "hidden";
   overzicht.classList.remove("hidden");
+
+  const stepToRemove = document.getElementById("current-step");
+  if (stepToRemove) {
+    stepToRemove.remove();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

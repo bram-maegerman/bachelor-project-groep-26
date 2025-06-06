@@ -266,7 +266,8 @@ class API:
             log_file_location = ""
             for line in process_result.stdout:
                 stripped = line.strip()
-                webview.windows[0].evaluate_js(f"updatePercentage({json.dumps(stripped)})")
+                if stripped and stripped[0].isdigit():
+                    webview.windows[0].evaluate_js(f"updatePercentage({json.dumps(stripped)})")
                 log_file_location = stripped
 
             process_result.wait()
@@ -367,6 +368,6 @@ homepage = find_file("homepage.html", current_file.parent.parent)
 
 if homepage:
     webview.create_window("Scan-Checker", homepage, js_api=api)
-    webview.start(maximize_window)
+    webview.start(maximize_window, debug=True)
 else:
     print("Couldn't find homepage.")
