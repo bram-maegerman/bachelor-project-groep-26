@@ -55,13 +55,14 @@
 }
 
 .pagination-button:hover:not(:disabled) {
-  background-color: #f5f5f5;
+  background-color: white;
+  color: #147fa1;
 }
 
 .pagination-button.active {
-  background-color: #007bff;
+  background-color: #147fa1;
   color: white;
-  border-color: #007bff;
+  border-color: #147fa1;
 }
 
 .pagination-button:disabled {
@@ -71,11 +72,11 @@
 
 .pagination-nav button {
   background: none;
-  border: 1px solid #2596be;
+  border: 1px solid #147fa1;
   margin: 0 5px;
   cursor: pointer;
   font-size: 16px;
-  color: #2596be;
+  color: #147fa1;
   padding: 10px;
 }
 
@@ -101,6 +102,14 @@
   border-bottom: 1px solid #ddd;
 }
 
+.file-table tr:hover {
+  background-color: #dedede80;
+}
+.file-table .clickable-row th:hover {
+  background-color: #89d4eb;
+  color: white;
+}
+
 .file-table th {
   background-color: #147fa1;
   text-align: center;
@@ -114,10 +123,6 @@
 
 .clickable-row {
   cursor: pointer;
-}
-
-.clickable-row:hover {
-  background-color: #89d4eb;
 }
 
 .status-circle {
@@ -163,8 +168,4 @@
   border-radius: 1rem;
   padding: 0px 10px;
   outline: none;
-}
-
-.name-filter:focus {
-  border-color: #007bff;
 }
