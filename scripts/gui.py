@@ -256,21 +256,32 @@ class API:
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
 
-            result = subprocess.run(
+            process_result = subprocess.Popen(
                 ["python", "scripts/main.py", file_path, export_path],
-                capture_output=True,
-                text=True
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
             )
+            log_file_location = ""
+            for line in process_result.stdout:
+                stripped = line.strip()
+                if stripped and stripped[0].isdigit():
+                    webview.windows[0].evaluate_js(f"updatePercentage({json.dumps(stripped)})")
+                log_file_location = stripped
 
-            log_file_location = result.stdout.strip()
+            process_result.wait()
 
-            subprocess.run(
+            print(log_file_location)
+            webview.windows[0].evaluate_js(f"startCompressing({json.dumps(current_file)})")
+
+            compress_result = subprocess.run(
                 ["python", "scripts/compression.py", str(file_path), str(log_file_location)],
                 capture_output=True,
                 text=True
             )
 
-            success = result.returncode == 0
+            success = process_result.returncode == 0
             # Updates table with the result of the current file
             result_object = {
                 "file": current_file,
@@ -278,10 +289,9 @@ class API:
             }
             webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
 
-            output: str = result.stdout.strip()
             if success:
-                if output.endswith("_LOG.txt"):
-                    file_name = output.removesuffix("_LOG.txt")
+                if log_file_location.endswith("_LOG.txt"):
+                    file_name = log_file_location.removesuffix("_LOG.txt")
                     self._latest_run.add(file_name)
 
         webview.windows[0].evaluate_js(f"finished()")
