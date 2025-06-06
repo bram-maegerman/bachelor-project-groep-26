@@ -45,8 +45,15 @@ def main():
         progress_queue = manager.Queue()
         args = [(doc.extract_image(doc[i].get_images()[0][0]), i, doc_len, progress_queue, process_messages) for i in range(doc_len)]
         with Pool(processes=cpu_count()) as pool:
-            all_found_numbers_list = pool.map_async(process_page, args).get()
-            all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list)}
+            all_found_numbers_list = pool.map_async(process_page, args)
+
+            completed = 0
+            while completed < doc_len:
+                progress_queue.get()
+                completed += 1
+                print(f"\r{completed/doc_len*100:.1f}%", end="", flush=True)
+            all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list.get())}
+
         
         # list(dict.fromkeys(process_messages)) removes duplicates from the list
         log_messages.extend(list(dict.fromkeys(process_messages)))
