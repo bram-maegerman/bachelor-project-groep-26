@@ -106,7 +106,7 @@ button span {
 
 button:hover,
 ul.project-options li:hover {
-  background-color: #70cdf5;
+  background-color: #147fa1;
   color: white;
 }
 
@@ -138,16 +138,16 @@ ul.nav-options li:last-child {
 }
 
 div.project-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: right;
-    width: 400px;
-    box-sizing: border-box;
-    z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: right;
+  width: 400px;
+  box-sizing: border-box;
+  z-index: 999;
 }
 
 ul.project-options li:last-child {
-  border-bottom: none;
+  border-bottom: 1px solid transparent;
   border-radius: 0 0 25px 25px;
 }
 
@@ -159,5 +159,9 @@ ul.project-options li:last-child {
 
 #no-projects {
   color: red;
-  font-weight: bold;
+  &:hover {
+    color: darkred;
+    cursor: pointer;
+    background-color: #fff;
+  }
 }

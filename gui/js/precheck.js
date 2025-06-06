@@ -2,6 +2,17 @@ const currentFiles = [];
 let exportPaths = [];
 let selectedExportPath = null;
 
+const projectDropDown = document.getElementById("project-dropdown");
+const projectOptions = document.getElementById("project-options");
+projectDropDown.addEventListener("click", () => {
+  projectOptions.classList.toggle("hidden");
+  projectDropDown.style.borderRadius = projectOptions.classList.contains(
+    "hidden"
+  )
+    ? "25px"
+    : "25px 25px 0 0";
+});
+
 async function pickFile() {
   if (!window.pywebview?.api?.open_file_dialog) {
     alert("Backend API not available");
@@ -57,7 +68,7 @@ function updateFileList() {
       const li = document.createElement("li");
       li.textContent = file.name;
 
-      const removeBtn = document.createElement("button");
+      const removeBtn = document.createElement("span");
       removeBtn.className = "remove-btn";
       removeBtn.textContent = "×";
       removeBtn.title = "Verwijderen";
@@ -86,8 +97,7 @@ function renderProjects() {
   if (!exportPaths || Object.keys(exportPaths).length === 0) {
     const noProjects = document.createElement("li");
     noProjects.id = "no-projects";
-    noProjects.innerHTML =
-      "No projects available.<br>Click here to create one.";
+    noProjects.textContent = "No projects available. Click here to create one.";
     noProjects.addEventListener("click", async () => {
       window.location.href = "projects.html";
     });
@@ -99,8 +109,8 @@ function renderProjects() {
     const option = document.createElement("li");
     option.textContent = entry;
     option.addEventListener("click", async () => {
-      document.getElementById("project-dropdown").textContent = entry;
-      document.getElementById("project-options").classList.toggle("hidden");
+      projectDropDown.textContent = entry;
+      options.classList.toggle("hidden");
       projectDropDown.style.borderRadius = "25px";
       selectedExportPath = entry;
       await window.pywebview.api.set_export_path(exportPaths[entry]);

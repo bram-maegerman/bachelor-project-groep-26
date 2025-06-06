@@ -54,3 +54,21 @@
     cursor: pointer;
   }
 }
+
+#no-files {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-items: center;
+}
+
+.scan-button {
+  background-color: white;
+  color: #147fa1;
+  border: 2px solid #147fa1;
+
+  &:hover {
+    color: white;
+    background-color: #147fa1;
+  }
+}
