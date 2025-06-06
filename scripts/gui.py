@@ -266,7 +266,7 @@ class API:
             log_file_location = ""
             for line in process_result.stdout:
                 stripped = line.strip()
-                print(stripped)
+                webview.windows[0].evaluate_js(f"updatePercentage({json.dumps(stripped)})")
                 log_file_location = stripped
 
             process_result.wait()

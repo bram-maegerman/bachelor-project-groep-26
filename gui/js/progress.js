@@ -51,7 +51,18 @@ function setFileInProgress(file) {
   children[0].className = inProgressClassName;
   children[0].innerHTML = "O";
 
-  children[1].innerHTML = children[1].innerHTML.concat(" - processing...");
+  children[1].innerHTML = children[1].innerHTML.concat(" - processing");
+
+  const percentage = document.createElement("div");
+  percentage.id = "percentage";
+  percentage.innerHTML = "(0%)";
+
+  children[1].appendChild(percentage);
+}
+
+function updatePercentage(percentage_str) {
+  const percentage = document.getElementById("percentage");
+  percentage.innerHTML = `(${percentage_str})`;
 }
 
 function startCompressing(file) {
@@ -59,6 +70,7 @@ function startCompressing(file) {
   children = fileToUpdate.children
 
   children[1].innerHTML = children[1].innerHTML.replace("processing", "compressing");
+  children[1].removeChild(document.getElementById("percentage"));
 }
 
 function finished() {
