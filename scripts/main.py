@@ -182,7 +182,7 @@ def main():
     with open(log_file_location, "w") as file:
         file.writelines(log_messages)
 
-    print(log_file_location)
+    print(f"\n{log_file_location}")
             
             
 if __name__ == "__main__":

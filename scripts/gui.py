@@ -256,14 +256,23 @@ class API:
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
 
-            process_result = subprocess.run(
+            process_result = subprocess.Popen(
                 ["python", "scripts/main.py", file_path, export_path],
-                capture_output=True,
-                text=True
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
             )
-            webview.windows[0].evaluate_js(f"startCompressing({json.dumps(current_file)})")
+            log_file_location = ""
+            for line in process_result.stdout:
+                stripped = line.strip()
+                print(stripped)
+                log_file_location = stripped
 
-            log_file_location = process_result.stdout.strip()
+            process_result.wait()
+
+            print(log_file_location)
+            webview.windows[0].evaluate_js(f"startCompressing({json.dumps(current_file)})")
 
             compress_result = subprocess.run(
                 ["python", "scripts/compression.py", str(file_path), str(log_file_location)],
@@ -279,10 +288,9 @@ class API:
             }
             webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
 
-            output: str = process_result.stdout.strip()
             if success:
-                if output.endswith("_LOG.txt"):
-                    file_name = output.removesuffix("_LOG.txt")
+                if log_file_location.endswith("_LOG.txt"):
+                    file_name = log_file_location.removesuffix("_LOG.txt")
                     self._latest_run.add(file_name)
 
         webview.windows[0].evaluate_js(f"finished()")
@@ -359,6 +367,6 @@ homepage = find_file("homepage.html", current_file.parent.parent)
 
 if homepage:
     webview.create_window("Scan-Checker", homepage, js_api=api)
-    webview.start(maximize_window, debug=True)
+    webview.start(maximize_window)
 else:
     print("Couldn't find homepage.")
