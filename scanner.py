@@ -1,4 +1,6 @@
-import os, subprocess
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 current_dir = Path(__file__).parent
@@ -15,13 +17,15 @@ def find_file(target_name, search_path=current_dir):
             return Path(root) / target_name
     return None
 
-scripts_dir = find_subdirectory('scripts')
-if scripts_dir is None:
-    raise FileNotFoundError("The 'scripts' directory was not found in the current directory or its subdirectories.")
-else:
+while True:
+    scripts_dir = find_subdirectory('scripts')
+    if scripts_dir is None:
+        print("The 'scripts' directory was not found. Retrying...")
+        continue  # Keep looping until found
     gui = find_file('gui.py', scripts_dir)
     if gui is None:
-        raise FileNotFoundError("The 'gui.py' file was not found in the 'scripts' directory.")
-    else:
-        print(f"Found 'gui.py' at: {gui}")
-        subprocess.run(['python', gui], check=True)
+        print("The 'gui.py' file was not found in the 'scripts' directory. Retrying...")
+        continue  # Keep looping until found
+    print(f"Found 'gui.py' at: {gui}")
+    subprocess.run([sys.executable, str(gui)], check=True)
+    break  # Stop once successfully run

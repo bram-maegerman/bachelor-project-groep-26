@@ -12,9 +12,9 @@ SolidCompression=yes
 ; Include built executable
 Source: "dist\scanner\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
-[Run]
-; Run Tesseract installer silently after app install completes
-Filename: "{tmp}\tesseract-ocr-w64-setup-5.5.0.20241111.exe"; Parameters: "\SILENT"; Flags: postinstall waituntilterminated shellexec runasoriginaluser
+; [Run]
+; ; Run Tesseract installer silently after app install completes
+; Filename: "{tmp}\tesseract-ocr-w64-setup-5.5.0.20241111.exe"; Parameters: "\SILENT"; Flags: postinstall waituntilterminated shellexec runasoriginaluser
 
 [Icons]
 Name: "{group}\ScanChecker"; Filename: "{app}\scanner.exe"

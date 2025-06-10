@@ -1,4 +1,4 @@
-import webview, subprocess, os, threading, json, base64
+import webview, subprocess, os, threading, json, base64, sys
 from pathlib import Path
 
 cur_dir = Path(__file__).parent
@@ -262,9 +262,9 @@ class API:
             current_file = formatted_files[index]
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
-            main_path = find_file("main.py", cur_dir)
+            main_path = find_file(sys.executable, cur_dir)
             process_result = subprocess.Popen(
-                ["python", main_path, file_path, export_path],
+                [sys.executable, main_path, file_path, export_path],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
@@ -284,7 +284,7 @@ class API:
             compression_path = find_file("compression.py", cur_dir)
 
             compress_result = subprocess.run(
-                ["python", compression_path, str(file_path), str(log_file_location)],
+                [sys.executable, compression_path, str(file_path), str(log_file_location)],
                 capture_output=True,
                 text=True
             )
