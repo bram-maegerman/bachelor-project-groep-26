@@ -7,7 +7,7 @@ from datetime import date
 from util import find_sequence, custom_print, process_page, log_messages
 
 if len(sys.argv) < 3:
-    print("Usage: python multi_main.py <path_to_pdf> <log_files_export_path")
+    print("Usage: python multi_main.py <path_to_pdf> <log_files_export_path>")
     sys.exit(1)
 
 filename = Path(sys.argv[1])
@@ -54,7 +54,7 @@ def main():
                 print(f"\r{completed/doc_len*100:.1f}%", end="", flush=True)
             all_found_numbers = {i + 1: val for i, val in enumerate(all_found_numbers_list.get())}
 
-        
+
         # list(dict.fromkeys(process_messages)) removes duplicates from the list
         log_messages.extend(list(dict.fromkeys(process_messages)))
 
@@ -67,12 +67,12 @@ def main():
                 continue
 
             #   Increment expected number on each page if pagination has started
-            if expected_number: 
+            if expected_number:
                 expected_number += 1
-            
+
             #   If no numbers are found on page
             if len(parsed_numbers) == 0:
-                
+
                 #   If pagination has started
                 if last_found_number and expected_number:
                     missing_numbers[key] = expected_number
@@ -95,11 +95,11 @@ def main():
                             key_page_num_diff = key - expected_number
 
                             if amt_consec_missing_numbers > 1:
-                                custom_print(pdf_page=key, statement_type="WARNING", 
+                                custom_print(pdf_page=key, statement_type="WARNING",
                                              statement=f"No page number found between pages {first_missing + key_page_num_diff} and {last_missing + key_page_num_diff}. Missing page numbers are {first_missing} - {last_missing}.")
                             else:
                                 custom_print(pdf_page=key, statement_type="WARNING", statement=f"No page number found on page {key - 1}. Missing page number is {last_missing}.")
-                    
+
                         last_found_number = expected_number
                         custom_print(pdf_page=key, statement_type="SUCCESS", statement=f"Found expected page number {last_found_number} on page {key}.")
 
@@ -110,7 +110,7 @@ def main():
                             custom_print(pdf_page=key, statement_type="WARNING", statement=f"No page number found on last page {key}. Manual check!")
                         else:
                             #   Check if numbers could be possible page numbers
-                            if all(x < last_found_number or x > len(all_found_numbers) 
+                            if all(x < last_found_number or x > len(all_found_numbers)
                                 for x in parsed_numbers):
                                 if expected_number + 1 in all_found_numbers[key + 1]:
                                     last_found_number = expected_number
@@ -133,12 +133,12 @@ def main():
                                 if len(common) > 0:
                                     #   Lowest found number in intersection is **most likely** the next page number
                                     estimated_next_number = min(common)
-                                    
+
                                     #   Add all numbers between previous+1 and the smallest found number to missing_numbers
                                     if type(last_found_number) == type(estimated_next_number):
                                         #   All page numbers that have been skipped
                                         skipped_page_numbers = [x for x in range(int(last_found_number) + 1, int(estimated_next_number))]
-                                        
+
                                         #   Check if only one page has been skipped & the next page is the expected (pages have swapped)
                                         if len(skipped_page_numbers) == 1 and estimated_next_number - 1 in all_found_numbers[key + 1]:
                                             #   remove swapped page from missing numbers
@@ -174,7 +174,7 @@ def main():
     log_messages.append(f"\nTotal pages in document {len(doc)}")
     log_messages.append(f"\nTotal pages with numbers {len(all_found_numbers) - len(missing_numbers)}")
     log_messages.append(f"\nTotal pages with missing numbers {len(missing_numbers)}")
-    
+
     log_messages.append(f"\n\nmanually_checked=false")
 
     log_file_location = f"{log_directory}/{filename.name}_LOG.txt"
@@ -183,7 +183,7 @@ def main():
         file.writelines(log_messages)
 
     print(f"\n{log_file_location}")
-            
-            
+
+
 if __name__ == "__main__":
     main()
