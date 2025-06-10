@@ -27,7 +27,6 @@
           <li><a href="projects.html">Projects</a></li>
           <li><a href="last-run.html">Last run</a></li>
           <li><a href="all-runs.html">All runs</a></li>
-          <li><a href="settings.html">Settings</a></li>
         </ul>
       </div>
     </nav>
@@ -44,7 +43,7 @@
           <li><a href="#last-run">Last Run page</a></li>
           <li><a href="#all-runs">All Runs page</a></li>
           <li><a href="#details">Details page</a></li>
-          <li><a href="#settings">Settings</a></li>
+          <li><a href="#projects">Projects page</a></li>
         </ul>
       </div>
       <div class="content-container">
@@ -83,9 +82,6 @@
             <li><b>Precheck</b> - the actual precheck tool</li>
             <li><b>Last Run</b> - the last run of checked documents</li>
             <li><b>All Runs</b> - all runs of checked documents</li>
-            <li>
-              <b>Settings</b> - customise and manage personal preferences
-            </li>
           </ul>
         </section>
         <hr />
@@ -96,7 +92,7 @@
             <li>
               <b>Select project</b> - Select which project you want to add the
               scanned files to. <br />
-              A project can be created in the <a href="#settings">settings</a>
+              A project can be created in the <a href="#projects">projects page</a>
             </li>
             <li>
               <b>File selector</b> - Select the files you want to check for
@@ -190,37 +186,37 @@
               <b>Success</b> - returns every successful found page number.
             </li>
           </ul>
+          <p>The log level will change the amount of logs that are visible in the log box.</p>
+          <ul>
+            <li><strong>Level 1:</strong> only shows warnings</li>
+            <li><strong>Level 2:</strong> shows warnings and info logs</li>
+            <li><strong>Level 3:</strong> shows all logs</li>
+          </ul>
           <p>
             When a file is manually checked, the user can click the "Manually
             check" button and the file will be marked as checked.
           </p>
         </section>
-        <hr />
-        <section id="settings">
-          <h1>Settings</h1>
+        <section id="projects">
+          <h1>Projects</h1>
           <p>
-            On the settings page, a user can customise and manage personal
-            preferences like:
+            On the projects page, a user can customise and manage their projects:
           </p>
           <ul>
             <li>
-              Projects - gives an overview of all created projects. A new
+              Gives an overview of all created projects. A new
               project can be added by giving a name and export path and
-              pressing the plus button. A project can also be deleted by the
-              red cross button next to each project.
+              pressing the submit button.
             </li>
             <li>
-              Log level - Log level determines which log messages are shown in
-              the log box on the details page. The log levels :
-              <ol style="margin-top: 10px">
-                <li>- Show only warning logs</li>
-                <li>- Show warning and info logs</li>
-                <li>- Show all kinds of logs</li>
-              </ol>
+              When a project is clicked, the user is navigated to the details page
+              of this project. Here, an overview is shown of all pdf's that have been scanned
+              for this specific project. The project can also be edited and deleted on this page.
             </li>
           </ul>
-          <p>After making changes, click save.</p>
+
         </section>
+        <hr />
       </div>
     </div>
   </main>
