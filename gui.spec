@@ -18,7 +18,7 @@ datas += [(os.path.join(root, file), os.path.relpath(root, "."))
 datas.append(('requirements.txt', '.'))
 
 a = Analysis(
-    ['scripts\\gui.py'],
+    ['scanner.py'],
     pathex=[],
     binaries=[],
     datas=datas,
@@ -37,7 +37,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='gui',
+    name='scanner',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -56,5 +56,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='gui',
+    name='scanner',
 )

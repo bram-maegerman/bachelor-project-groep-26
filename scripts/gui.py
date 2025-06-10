@@ -9,25 +9,8 @@ def find_file(filename, search_path):
             return os.path.join(root, filename)
     return None
 
-def find_dir(filename, search_path):
-    print(os.listdir(search_path))
-    for dir in os.listdir(search_path):
-        if dir == filename:
-            return os.path.join(search_path, dir)
-    return None
-
-current_file = Path(__file__)
-scripts_dir = current_file.parent
-print(scripts_dir)
-gui_dir = find_dir("gui", scripts_dir)
-
-if gui_dir == None:
-    quit()
-
-
 class API:
     def __init__(self):
-        self._files_dir = Path(__file__).parent.parent / "files"
         self._window_loaded = threading.Event()
         self._latest_run = set()
         self._init_config()  # Ensure config file exists with defaults
