@@ -62,7 +62,7 @@
   align-items: center;
 }
 
-.scan-button {
+.scan-btn {
   background-color: white;
   color: #147fa1;
   border: 2px solid #147fa1;
@@ -71,4 +71,10 @@
     color: white;
     background-color: #147fa1;
   }
+}
+
+.back-btn {
+  border: 2px solid #147fa1;
+  background-color: #147fa1;
+  color: white;
 }
