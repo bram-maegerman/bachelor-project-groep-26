@@ -369,6 +369,6 @@ homepage = find_file("homepage.html", cur_dir.parent)
 
 if homepage is not None:
     webview.create_window("Scan-Checker", homepage, js_api=api)
-    webview.start(maximize_window, debug=True)
+    webview.start(maximize_window)
 else:
     print("Couldn't find homepage.")
