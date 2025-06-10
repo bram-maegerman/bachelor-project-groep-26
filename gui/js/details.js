@@ -28,9 +28,8 @@ function createStatsBox(stats) {
   const statsBox = document.createElement("div");
   statsBox.innerHTML = `
     <p><strong>Missing page numbers:</strong><br>${stats.missing}</p>
-    <p><strong>Total pages:</strong><br>${stats.total}</p>
-    <p><strong>Total pages with numbers:</strong><br>${stats.withNumbers}</p>
-    <p><strong>Total pages with missing numbers:</strong><br>${stats.withMissing}</p>
+    <p><strong>Number of pages with missing numbers:</strong> ${stats.withMissing}</p>
+
   `;
   return statsBox;
 }
@@ -227,3 +226,72 @@ window.addEventListener("pywebviewready", async () => {
 
   await loadPdf(compressedPdfPath);
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  let logLevel = 2;
+
+  const option1 = document.getElementById("log-level-1");
+  const option2 = document.getElementById("log-level-2");
+  const option3 = document.getElementById("log-level-3");
+
+async function setSelected(level) {
+  document
+    .querySelectorAll(".option")
+    .forEach((btn) => {
+      btn.classList.remove("selected", "red", "orange", "green");
+    });
+
+  const selectedBtn = document.getElementById(`log-level-${level}`);
+  selectedBtn.classList.add("selected");
+
+  if (level === 1) selectedBtn.classList.add("red");
+  if (level === 2) selectedBtn.classList.add("orange");
+  if (level === 3) selectedBtn.classList.add("green");
+
+  logLevel = level;
+
+  try {
+    await window.pywebview.api.set_log_level(logLevel);
+    await updateLogBox();
+  } catch (err) {
+    console.warn("Failed to save settings:", err);
+  }
+}
+
+
+  window.addEventListener("pywebviewready", async () => {
+    try {
+      const log_level = await window.pywebview.api.get_log_level();
+      setSelected(log_level || 2);
+
+      option1.addEventListener("click", () => setSelected(1));
+      option2.addEventListener("click", () => setSelected(2));
+      option3.addEventListener("click", () => setSelected(3));
+
+    } catch (err) {
+      console.error("Failed to initialize settings:", err);
+    }
+  });
+});
+
+async function updateLogBox() {
+  const container = document.getElementById("file-details");
+  if (!path) return;
+
+  const file = await window.pywebview.api.get_log(path);
+  const [logText, statistics] =
+    file.split(/\r?\n\r?\n/);
+
+  const stats = extractStats(statistics.trim());
+
+  container.innerHTML = "";
+
+  const statsTitle = document.createElement("h3");
+  statsTitle.innerHTML = "Statistics";
+  container.appendChild(statsTitle);
+
+  container.appendChild(createStatsBox(stats));
+  container.appendChild(createLogBox(logText));
+}
+
