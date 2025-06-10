@@ -3,9 +3,30 @@ from pathlib import Path
 
 CONFIG_FILE = Path(__file__).parent / "config.json"
 
+def find_file(filename, search_path):
+    for root, _, files in os.walk(search_path):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
+
+def find_dir(filename, search_path):
+    print(os.listdir(search_path))
+    for dir in os.listdir(search_path):
+        if dir == filename:
+            return os.path.join(search_path, dir)
+    return None
+
+current_file = Path(__file__)
+scripts_dir = current_file.parent
+print(scripts_dir)
+gui_dir = find_dir("gui", scripts_dir)
+
+if gui_dir == None:
+    quit()
+    
+
 class API:
     def __init__(self):
-        self._files_dir = Path(__file__).parent.parent / "files"
         self._window_loaded = threading.Event()
         self._latest_run = set()
         self._init_config()  # Ensure config file exists with defaults
@@ -255,17 +276,20 @@ class API:
             current_file = formatted_files[index]
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
-
+            main_path = find_file("main.py", scripts_dir)
             result = subprocess.run(
-                ["python", "scripts/main.py", file_path, export_path],
+                ["python", main_path, file_path, export_path],
                 capture_output=True,
                 text=True
             )
 
-            log_file_location = result.stdout.strip()
+            print("STDOUT:", result.stdout)
+            print("STDERR:", result.stderr)
 
+            log_file_location = result.stdout.strip()
+            compression_path = find_file("compression.py", scripts_dir)
             subprocess.run(
-                ["python", "scripts/compression.py", str(file_path), str(log_file_location)],
+                ["python", compression_path, str(file_path), str(log_file_location)],
                 capture_output=True,
                 text=True
             )
@@ -347,14 +371,7 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-def find_file(filename, search_path):
-    for root, _, files in os.walk(search_path):
-        if filename in files:
-            return os.path.join(root, filename)
-    return None
-
-current_file = Path(__file__)
-homepage = find_file("homepage.html", current_file.parent.parent)
+homepage = find_file("homepage.html", gui_dir)
 
 if homepage:
     webview.create_window("Scan-Checker", homepage, js_api=api)

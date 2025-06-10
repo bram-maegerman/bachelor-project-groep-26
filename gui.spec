@@ -1,12 +1,28 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
+from glob import glob
 
+datas = []
+
+# Include everything in /bin, including tessdata and tesseract.exe
+datas.append(('bin\\tesseract.exe', 'bin'))
+datas += [(file, 'bin\\tessdata') for file in glob('bin\\tessdata\\*.traineddata')]
+
+# Include everything from /gui and /scripts
+datas += [(os.path.join(root, file), os.path.relpath(root, ".")) 
+          for root, _, files in os.walk('gui') for file in files]
+datas += [(os.path.join(root, file), os.path.relpath(root, ".")) 
+          for root, _, files in os.walk('scripts') for file in files]
+
+# Include requirements.txt (if needed at runtime)
+datas.append(('requirements.txt', '.'))
 
 a = Analysis(
     ['scripts\\gui.py'],
     pathex=[],
     binaries=[],
-    datas=[('.', '.')],
-    hiddenimports=[],
+    datas=datas,
+    hiddenimports=['fitz', 'PyMuPDF'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
