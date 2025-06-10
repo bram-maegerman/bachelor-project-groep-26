@@ -140,6 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const newNameInput = document.getElementById("project-name");
     const exportPath = document.getElementById("export-path");
     const closeButton = document.getElementById("close-form");
+    const scanButton = document.getElementById("scan-button");
 
     backButton.addEventListener("click", () => {
       window.history.back();
@@ -224,6 +225,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     closeButton.addEventListener("click", () => {
       addForm.classList.add("hidden");
+    });
+
+    scanButton.addEventListener("click", () => {
+      window.location.href = "precheck.html";
     });
   });
 });

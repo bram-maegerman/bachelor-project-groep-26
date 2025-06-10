@@ -23,10 +23,11 @@ gui_dir = find_dir("gui", scripts_dir)
 
 if gui_dir == None:
     quit()
-    
+
 
 class API:
     def __init__(self):
+        self._files_dir = Path(__file__).parent.parent / "files"
         self._window_loaded = threading.Event()
         self._latest_run = set()
         self._init_config()  # Ensure config file exists with defaults
@@ -277,24 +278,33 @@ class API:
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
             main_path = find_file("main.py", scripts_dir)
-            result = subprocess.run(
+            process_result = subprocess.Popen(
                 ["python", main_path, file_path, export_path],
-                capture_output=True,
-                text=True
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
             )
+            log_file_location = ""
+            for line in process_result.stdout:
+                stripped = line.strip()
+                if stripped and stripped[0].isdigit():
+                    webview.windows[0].evaluate_js(f"updatePercentage({json.dumps(stripped)})")
+                log_file_location = stripped
 
-            print("STDOUT:", result.stdout)
-            print("STDERR:", result.stderr)
+            process_result.wait()
 
-            log_file_location = result.stdout.strip()
+            print(log_file_location)
+            webview.windows[0].evaluate_js(f"startCompressing({json.dumps(current_file)})")
             compression_path = find_file("compression.py", scripts_dir)
-            subprocess.run(
+
+            compress_result = subprocess.run(
                 ["python", compression_path, str(file_path), str(log_file_location)],
                 capture_output=True,
                 text=True
             )
 
-            success = result.returncode == 0
+            success = process_result.returncode == 0
             # Updates table with the result of the current file
             result_object = {
                 "file": current_file,
@@ -302,10 +312,9 @@ class API:
             }
             webview.windows[0].evaluate_js(f"updateResult({json.dumps(result_object)})")
 
-            output: str = result.stdout.strip()
             if success:
-                if output.endswith("_LOG.txt"):
-                    file_name = output.removesuffix("_LOG.txt")
+                if log_file_location.endswith("_LOG.txt"):
+                    file_name = log_file_location.removesuffix("_LOG.txt")
                     self._latest_run.add(file_name)
 
         webview.windows[0].evaluate_js(f"finished()")
