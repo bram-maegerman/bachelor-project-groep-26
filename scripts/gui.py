@@ -1,7 +1,9 @@
 import webview, subprocess, os, threading, json, base64
 from pathlib import Path
 
-CONFIG_FILE = Path(__file__).parent / "config.json"
+cur_dir = Path(__file__).parent
+
+CONFIG_FILE = cur_dir / "config.json"
 
 def find_file(filename, search_path):
     for root, _, files in os.walk(search_path):
@@ -13,7 +15,7 @@ class API:
     def __init__(self):
         self._window_loaded = threading.Event()
         self._latest_run = set()
-        self._init_config()  # Ensure config file exists with defaults
+        self._init_config()  #  Ensure config file exists with defaults
         self.projects, self.log_level = self._load_config()
         self.next_run = []
         self.next_export_path = None
@@ -260,7 +262,7 @@ class API:
             current_file = formatted_files[index]
             # Updates table of files to see which one is processing a.t.m.
             webview.windows[0].evaluate_js(f"setFileInProgress({json.dumps(current_file)})")
-            main_path = find_file("main.py", scripts_dir)
+            main_path = find_file("main.py", cur_dir)
             process_result = subprocess.Popen(
                 ["python", main_path, file_path, export_path],
                 stdout=subprocess.PIPE,
@@ -279,7 +281,7 @@ class API:
 
             print(log_file_location)
             webview.windows[0].evaluate_js(f"startCompressing({json.dumps(current_file)})")
-            compression_path = find_file("compression.py", scripts_dir)
+            compression_path = find_file("compression.py", cur_dir)
 
             compress_result = subprocess.run(
                 ["python", compression_path, str(file_path), str(log_file_location)],
@@ -363,9 +365,9 @@ def maximize_window():
     window.restore()
     window.maximize()
 
-homepage = find_file("homepage.html", gui_dir)
+homepage = find_file("homepage.html", cur_dir.parent)
 
-if homepage:
+if homepage is not None:
     webview.create_window("Scan-Checker", homepage, js_api=api)
     webview.start(maximize_window, debug=True)
 else:

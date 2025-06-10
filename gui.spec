@@ -12,7 +12,8 @@ datas += [(file, 'bin\\tessdata') for file in glob('bin\\tessdata\\*.traineddata
 datas += [(os.path.join(root, file), os.path.relpath(root, ".")) 
           for root, _, files in os.walk('gui') for file in files]
 datas += [(os.path.join(root, file), os.path.relpath(root, ".")) 
-          for root, _, files in os.walk('scripts') for file in files]
+          for root, _, files in os.walk('scripts') for file in files
+          if file != 'config.json']
 
 # Include requirements.txt (if needed at runtime)
 datas.append(('requirements.txt', '.'))
