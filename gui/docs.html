@@ -1,236 +1,229 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Documentation</title>
-    <link rel="stylesheet" href="style/global.css" />
-    <link rel="stylesheet" href="style/docs.css" />
-    <link rel="stylesheet" href="style/nav.css" />
-  </head>
-  <body>
-    <header>
-      <nav>
-        <a href="homepage.html">
-          <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
-        </a>
-        <div class="nav-wrapper">
-          <button id="nav-dropdown">
-            Home<span id="nav-arrow">&#x25BC;</span>
-          </button>
-          <ul id="options" class="nav-options hidden">
-            <li><a href="precheck.html">Precheck</a></li>
-            <li><a href="last-run.html">Last run</a></li>
-            <li><a href="all-runs.html">All runs</a></li>
-            <li><a href="settings.html">Settings</a></li>
-          </ul>
-        </div>
-      </nav>
-    </header>
-    <main>
-      <div class="content-wrapper">
-        <div class="content-table">
-          <ul>
-            <li><a href="#intro">About this tool</a></li>
-            <li><a href="#homepage">Homepage</a></li>
-            <li><a href="#navigation">Navigation</a></li>
-            <li><a href="#precheck">Precheck page</a></li>
-            <li><a href="#progress">Process page</a></li>
-            <li><a href="#last-run">Last Run page</a></li>
-            <li><a href="#all-runs">All Runs page</a></li>
-            <li><a href="#details">Details page</a></li>
-            <li><a href="#settings">Settings</a></li>
-          </ul>
-        </div>
-        <div class="content-container">
-          <section id="intro">
-            <h1>About this tool</h1>
-            <p>
-              The tool is used as a precheck on scanned documents to look for
-              errors like:
-            </p>
-            <ul>
-              <li>unscanned pages</li>
-              <li>wrong pagination</li>
-              <li>double scans</li>
-              <li>...</li>
-            </ul>
-          </section>
-          <hr />
-          <section id="homepage">
-            <h1>Homepage</h1>
-            <p>On the homepage, the user sees the following:</p>
-            <ol>
-              <li>Quick navigation menu</li>
-              <li>Precheck pdf - the actual tool</li>
-              <li>Project analysis</li>
-            </ol>
-            <img
-              width="700"
-              src="/gui/assets/img/image_homepage.png"
-              alt="image homepage"
-            />
-          </section>
-          <hr />
-          <section id="navigation">
-            <h1>Navigation</h1>
-            <p>
-              Through the navigation the user can navigate to the following
-              pages:
-            </p>
-            <ul>
-              <li><b>Precheck</b> - the actual precheck tool</li>
-              <li><b>Last Run</b> - the last run of checked documents</li>
-              <li><b>All Runs</b> - all runs of checked documents</li>
-              <li>
-                <b>Settings</b> - customise and manage personal preferences
-              </li>
-            </ul>
-          </section>
-          <hr />
-          <section id="precheck">
-            <h1>Precheck page</h1>
-            <p>On the precheck page, the user sees the following:</p>
-            <ol>
-              <li>
-                <b>Select project</b> - Select which project you want to add the
-                scanned files to. <br />
-                A project can be created in the <a href="#settings">settings</a>
-              </li>
-              <li>
-                <b>File selector</b> - Select the files you want to check for
-                errors, you can select up to 20 files a time. <br />
-                The selected files will be shown in the "Selected files" box on
-                the right.
-              </li>
-              <li>
-                <b>Remove file</b> - Each selected file can be removed from the
-                list by clicking on the red button next to it.
-              </li>
-              <li>
-                <b>Check</b> - To start the checking process, click the button
-                "Check".
-              </li>
-            </ol>
-            <img
-              width="700"
-              src="/gui/assets/img/image_precheck.png"
-              alt="image precheck page"
-            />
-          </section>
-          <hr />
-          <section id="progress">
-            <h1>Progress page</h1>
-            <p>
-              The progress page shows the progress of the tool checking the
-              selected files.
-            </p>
-            <img
-              width="700"
-              src="/gui/assets/img/image_progress.png"
-              alt="image progress"
-            />
-            <p>Each item of the list shows it's status:</p>
-            <ul class="progress-icon-list">
-              <li class="queue">
-                - The file is in the queue for being checked.
-              </li>
-              <li class="processing">
-                - The file is currently being processed.
-              </li>
-              <li class="checked">- The file is checked.</li>
-              <li class="error">
-                - There was an error for checking the file. The file could not
-                be checked and is skipped.
-              </li>
-            </ul>
-            <p>
-              After all the files have been processed, the user can navigate to
-              the overview to see al the files that have been checked.
-            </p>
-            <img src="/gui/assets/img/image_progress_finish.png" alt="" />
-          </section>
-          <hr />
-          <section id="last-run">
-            <h1>Last Run page</h1>
-            <p></p>
-          </section>
-          <hr />
-          <section id="all-runs">
-            <h1>All Runs page</h1>
-            <p>
-              The All Runs page gives an overview of all checked files. A user
-              can search for specific files in the search box.
-            </p>
-            <p>The headers:</p>
-            <ul>
-              <li><b>Name</b> - name of the file</li>
-              <li><b>Errors</b> - the amount of errors found</li>
-              <li>
-                <b>Status</b> - gives the status if a file has been manually
-                checked or not
-              </li>
-              <li><b>Date</b> - date of check execution</li>
-              <li><b>Project</b> - to which project a file belongs to</li>
-            </ul>
-          </section>
-          <hr />
-          <section id="details">
-            <h1>Details page</h1>
-            <p>
-              The details page summarises information of the file and a
-              compressed version of the file for quick lookup for manual checks.
-            </p>
-            <p>
-              In the “log box” each error is displayed to give more information
-              about the found error. each log is clickable and will redirect the
-              user to the page of the given error.
-            </p>
-            <p>There are 3 kinds of logs:</p>
-            <ul>
-              <li><b>Warning</b> - returns a found error in the file.</li>
-              <li>
-                <b>Info</b> - gives back more context about a specific step in
-                the process.
-              </li>
-              <li>
-                <b>Success</b> - returns every successful found page number.
-              </li>
-            </ul>
-            <p>
-              When a file is manually checked, the user can click the "Manually
-              check" button and the file will be marked as checked.
-            </p>
-          </section>
-          <hr />
-          <section id="settings">
-            <h1>Settings</h1>
-            <p>
-              On the settings page, a user can customise and manage personal
-              preferences like:
-            </p>
-            <ul>
-              <li>
-                Projects - gives an overview of all created projects. A new
-                project can be added by giving a name and export path and
-                pressing the plus button. A project can also be deleted by the
-                red cross button next to each project.
-              </li>
-              <li>
-                Log level - Log level determines which log messages are shown in
-                the log box on the details page. The log levels :
-                <ol style="margin-top: 10px">
-                  <li>- Show only warning logs</li>
-                  <li>- Show warning and info logs</li>
-                  <li>- Show all kinds of logs</li>
-                </ol>
-              </li>
-            </ul>
-            <p>After making changes, click save.</p>
-          </section>
-        </div>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style/global.css" />
+  <link rel="stylesheet" href="style/docs.css" />
+  <link rel="stylesheet" href="style/nav.css" />
+  <script src="js/docs.js" defer></script>
+  <script src="js/global.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="homepage.html">
+        <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
+      </a>
+      <div class="nav-wrapper">
+        <button id="hamburger" class="hamburger">
+          ☰
+        </button>
+        <ul id="options" class="nav-options hidden">
+          <li><a href="homepage.html">Home</a></li>
+          <li><a href="precheck.html">Precheck</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="last-run.html">Last run</a></li>
+          <li><a href="all-runs.html">All runs</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
       </div>
-    </main>
-    <script src="js/docs.js" />
-  </body>
+    </nav>
+  </header>
+  <main>
+    <div class="content-wrapper">
+      <div class="content-table">
+        <ul>
+          <li><a href="#intro">About this tool</a></li>
+          <li><a href="#homepage">Homepage</a></li>
+          <li><a href="#navigation">Navigation</a></li>
+          <li><a href="#precheck">Precheck page</a></li>
+          <li><a href="#progress">Process page</a></li>
+          <li><a href="#last-run">Last Run page</a></li>
+          <li><a href="#all-runs">All Runs page</a></li>
+          <li><a href="#details">Details page</a></li>
+          <li><a href="#settings">Settings</a></li>
+        </ul>
+      </div>
+      <div class="content-container">
+        <section id="intro">
+          <h1>About this tool</h1>
+          <p>
+            The tool is used as a precheck on scanned documents to look for
+            errors like:
+          </p>
+          <ul>
+            <li>Unscanned pages</li>
+            <li>Wrong pagination</li>
+            <li>Double scans</li>
+            <li>...</li>
+          </ul>
+        </section>
+        <hr />
+        <section id="homepage">
+          <h1>Homepage</h1>
+          <p>On the homepage, the user sees the following:</p>
+          <ol>
+            <li>Quick navigation menu</li>
+            <li>Precheck pdf - the actual tool</li>
+            <li>Project analysis</li>
+          </ol>
+          <img width="700" src="/gui/assets/img/image_homepage.png" alt="image homepage" />
+        </section>
+        <hr />
+        <section id="navigation">
+          <h1>Navigation</h1>
+          <p>
+            Through the navigation the user can navigate to the following
+            pages:
+          </p>
+          <ul>
+            <li><b>Precheck</b> - the actual precheck tool</li>
+            <li><b>Last Run</b> - the last run of checked documents</li>
+            <li><b>All Runs</b> - all runs of checked documents</li>
+            <li>
+              <b>Settings</b> - customise and manage personal preferences
+            </li>
+          </ul>
+        </section>
+        <hr />
+        <section id="precheck">
+          <h1>Precheck page</h1>
+          <p>On the precheck page, the user sees the following:</p>
+          <ol>
+            <li>
+              <b>Select project</b> - Select which project you want to add the
+              scanned files to. <br />
+              A project can be created in the <a href="#settings">settings</a>
+            </li>
+            <li>
+              <b>File selector</b> - Select the files you want to check for
+              errors, you can select up to 20 files a time. <br />
+              The selected files will be shown in the "Selected files" box on
+              the right.
+            </li>
+            <li>
+              <b>Remove file</b> - Each selected file can be removed from the
+              list by clicking on the red button next to it.
+            </li>
+            <li>
+              <b>Check</b> - To start the checking process, click the button
+              "Check".
+            </li>
+          </ol>
+          <img width="700" src="/gui/assets/img/image_precheck.png" alt="image precheck page" />
+        </section>
+        <hr />
+        <section id="progress">
+          <h1>Progress page</h1>
+          <p>
+            The progress page shows the progress of the tool checking the
+            selected files.
+          </p>
+          <img width="700" src="/gui/assets/img/image_progress.png" alt="image progress" />
+          <p>Each item of the list shows it's status:</p>
+          <ul class="progress-icon-list">
+            <li class="queue">
+              - The file is in the queue for being checked.
+            </li>
+            <li class="processing">
+              - The file is currently being processed.
+            </li>
+            <li class="checked">- The file is checked.</li>
+            <li class="error">
+              - There was an error for checking the file. The file could not
+              be checked and is skipped.
+            </li>
+          </ul>
+          <p>
+            After all the files have been processed, the user can navigate to
+            the overview to see al the files that have been checked.
+          </p>
+          <img src="/gui/assets/img/image_progress_finish.png" alt="" />
+        </section>
+        <hr />
+        <section id="last-run">
+          <h1>Last Run page</h1>
+          <p></p>
+        </section>
+        <hr />
+        <section id="all-runs">
+          <h1>All Runs page</h1>
+          <p>
+            The All Runs page gives an overview of all checked files. A user
+            can search for specific files in the search box.
+          </p>
+          <p>The headers:</p>
+          <ul>
+            <li><b>Name</b> - name of the file</li>
+            <li><b>Errors</b> - the amount of errors found</li>
+            <li>
+              <b>Status</b> - gives the status if a file has been manually
+              checked or not
+            </li>
+            <li><b>Date</b> - date of check execution</li>
+            <li><b>Project</b> - to which project a file belongs to</li>
+          </ul>
+        </section>
+        <hr />
+        <section id="details">
+          <h1>Details page</h1>
+          <p>
+            The details page summarises information of the file and a
+            compressed version of the file for quick lookup for manual checks.
+          </p>
+          <p>
+            In the “log box” each error is displayed to give more information
+            about the found error. each log is clickable and will redirect the
+            user to the page of the given error.
+          </p>
+          <p>There are 3 kinds of logs:</p>
+          <ul>
+            <li><b>Warning</b> - returns a found error in the file.</li>
+            <li>
+              <b>Info</b> - gives back more context about a specific step in
+              the process.
+            </li>
+            <li>
+              <b>Success</b> - returns every successful found page number.
+            </li>
+          </ul>
+          <p>
+            When a file is manually checked, the user can click the "Manually
+            check" button and the file will be marked as checked.
+          </p>
+        </section>
+        <hr />
+        <section id="settings">
+          <h1>Settings</h1>
+          <p>
+            On the settings page, a user can customise and manage personal
+            preferences like:
+          </p>
+          <ul>
+            <li>
+              Projects - gives an overview of all created projects. A new
+              project can be added by giving a name and export path and
+              pressing the plus button. A project can also be deleted by the
+              red cross button next to each project.
+            </li>
+            <li>
+              Log level - Log level determines which log messages are shown in
+              the log box on the details page. The log levels :
+              <ol style="margin-top: 10px">
+                <li>- Show only warning logs</li>
+                <li>- Show warning and info logs</li>
+                <li>- Show all kinds of logs</li>
+              </ol>
+            </li>
+          </ul>
+          <p>After making changes, click save.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+</body>
+
 </html>

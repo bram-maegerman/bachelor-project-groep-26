@@ -44,7 +44,8 @@ async function filterAllFilesByName(filterValue) {
     allFilteredFiles = allFiles;
   } else {
     allFilteredFiles = allFiles.filter(file => 
-      file.fileName.toLowerCase().includes(filterValue.toLowerCase())
+      file.fileName.toLowerCase().includes(filterValue.toLowerCase()) || 
+      file.project.toLowerCase().includes(filterValue.toLowerCase())
     );
   }
   await renderPage(currentPage);

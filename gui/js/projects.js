@@ -1,3 +1,5 @@
+let projects = [];
+
 document.addEventListener("DOMContentLoaded", () => {
   const addForm = document.getElementById("add-project");
   const closeForm = document.getElementById("close-form");
@@ -11,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   async function loadProjects() {
-    const projects = await window.pywebview.api.get_projects();
+    projects = await window.pywebview.api.get_projects();
     const projectsContainer = document.getElementById("project-list");
 
     while (projectsContainer.children.length > 2) {
@@ -44,6 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!nameInput.value || !exportPath) {
       alert("Please fill in all fields.");
+      return;
+    }
+
+    if (projects[nameInput.value]) {
+      alert(
+        "A project with this name already exists. Please choose a different name."
+      );
       return;
     }
 

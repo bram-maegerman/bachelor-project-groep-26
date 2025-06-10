@@ -10,9 +10,9 @@ function loadFilesInTable(files) {
 
   for (const index in files) {
     let li = document.createElement("li");
+    li.id = files[index]
 
     let status = document.createElement("div");
-    status.id = files[index];
     status.className = queuedClassName;
     status.innerHTML = "-";
     li.appendChild(status);
@@ -29,20 +29,54 @@ function loadFilesInTable(files) {
 
 function updateResult(result) {
   const fileToUpdate = document.getElementById(result.file);
+  children = fileToUpdate.children
 
   if (result.success) {
-    fileToUpdate.className = doneClassName;
-    fileToUpdate.innerHTML = "V";
+    children[0].className = doneClassName;
+    children[0].innerHTML = "V";
   } else {
-    fileToUpdate.className = errorClassName;
-    fileToUpdate.innerHTML = "X";
+    children[0].className = errorClassName;
+    children[0].innerHTML = "X";
   }
+
+  children[1].innerHTML = children[1].innerHTML.split(" - ")[0];
 }
 
 function setFileInProgress(file) {
   const fileToUpdate = document.getElementById(file);
-  fileToUpdate.className = inProgressClassName;
-  fileToUpdate.innerHTML = "O";
+  children = fileToUpdate.children
+
+  const stepToRemove = document.getElementById("current-step");
+  if (stepToRemove) {
+    stepToRemove.remove();
+  }
+  
+  // children[0] is the status element
+  // children[1] is the file name of path
+  children[0].className = inProgressClassName;
+  children[0].innerHTML = "O";
+
+  const currentStep = document.createElement("div");
+  currentStep.id = "current-step";
+  currentStep.className = "current-step";
+  currentStep.innerHTML =  "Processing";
+
+  const percentage = document.createElement("div");
+  percentage.id = "percentage";
+  percentage.innerHTML = "(0%)";
+  currentStep.appendChild(percentage);
+  
+  children[1].appendChild(currentStep);
+}
+
+function updatePercentage(percentage_str) {
+  const percentage = document.getElementById("percentage");
+  percentage.innerHTML = `(${percentage_str})`;
+}
+
+function startCompressing() {
+  const currentStep = document.getElementById("current-step");
+  currentStep.innerHTML = "Compressing...";
 }
 
 function finished() {
@@ -51,6 +85,11 @@ function finished() {
 
   loader.className = "hidden";
   overzicht.classList.remove("hidden");
+
+  const stepToRemove = document.getElementById("current-step");
+  if (stepToRemove) {
+    stepToRemove.remove();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

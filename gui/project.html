@@ -20,9 +20,12 @@
                 <img src="assets/img/KULEUVEN_BIB_LOGO.png" alt="Logo" />
             </a>
             <div class="nav-wrapper">
-                <button id="nav-dropdown">Projects <span id="nav-arrow">&#x25BC;</span></button>
+                <button id="hamburger" class="hamburger">
+                    ☰
+                </button>
                 <ul id="options" class="nav-options hidden">
                     <li><a href="homepage.html">Home</a></li>
+                    <li><a href="docs.html">Docs</a></li>
                     <li><a href="precheck.html">Precheck</a></li>
                     <li><a href="projects.html">Projects</a></li>
                     <li><a href="last-run.html">Last run</a></li>
@@ -64,7 +67,10 @@
             </div>
         </div>
         <div id="file-list-container" class="centered-list"></div>
-        <div id="no-files" class="no-files">No pdf's have been scanned yet for this project.</div>
+        <div id="no-files" class="no-files">
+            <p>No pdf's have been scanned yet for this project.</p>
+            <button id="scan-button" class="standard-btn scan-button">Perform a scan</button>
+        </div>
         <div id="pagination" class="pagination-nav"></div>
     </main>
 </body>

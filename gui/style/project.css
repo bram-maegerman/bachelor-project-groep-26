@@ -9,12 +9,11 @@
   width: 100%;
 }
 
-button {
+.project-header button {
   margin: 0.5rem;
   padding: 1rem;
   border-radius: 50px;
   font-size: 1rem;
-  border: none;
   height: auto;
 }
 
@@ -35,10 +34,7 @@ button {
   color: #004070;
   font-size: 1.5rem;
   cursor: pointer;
-  margin: 0;
-  padding: 0;
-  font-size: 1rem;
-  border: none;
+  background-color: transparent;
 }
 
 #close-form:hover {
@@ -56,5 +52,23 @@ button {
 
   & img {
     cursor: pointer;
+  }
+}
+
+#no-files {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-items: center;
+}
+
+.scan-button {
+  background-color: white;
+  color: #147fa1;
+  border: 2px solid #147fa1;
+
+  &:hover {
+    color: white;
+    background-color: #147fa1;
   }
 }
