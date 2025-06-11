@@ -160,6 +160,10 @@
               - There was an error for checking the file. The file could not
               be checked and is skipped.
             </li>
+            <p>
+              When an error occurs, the user can retry the check on this file.</br>
+              When an error keeps occurring on a file, it might mean that the application cannot process that file.
+            </p>
           </ul>
           <p>
             Next to the file name, there is a blue box displayed with step the program is currently on for that file. 
@@ -199,11 +203,15 @@
             <li><b>Project</b> - to which project a file belongs to</li>
           </ul>
           <p>You can filter by Name or Project by typing something in the text field below the title.</p>
+          <p>All tables can be ordered by Name by clicking on the "Name" header in the table.</p>
           <img width="700" src="assets/img/allruns.png" alt="All runs" />
         </section>
         <hr />
         <section id="details">
           <h1>Details page</h1>
+          <p>
+            You can access the details page by clicking on one of the files in the tables on the last/all runs pages or the specific project pages.
+          </p>
           <p>
             The details page summarises information of the file and a
             compressed version of the file for quick lookup for manual checks.
@@ -215,10 +223,11 @@
           </p>
           <p>There are 3 kinds of logs:</p>
           <ul>
-            <li><b>Warning</b> - returns a found error in the file.</li>
             <li>
-              <b>Info</b> - gives back more context about a specific step in
-              the process.
+              <b>Warning</b> - returns a found error in the file.
+            </li>
+            <li>
+              <b>Info</b> - returns when a new sequence of page numbers has been found.
             </li>
             <li>
               <b>Success</b> - returns every successful found page number.
@@ -235,7 +244,14 @@
           <p>
             When the document is fully loaded you can press one of the messages in the log box to go to this page.
           </p>
-          <img width="700" src="assets/img/press_log.gif" alt="Log level" />
+          <img width="700" src="assets/img/press_log.gif" alt="Press log" />
+          <h4>Possible warnings</h3>
+          <ul>
+            <li>Page number Y was skipped on page X. (page was skipped during the physical scan)</li>
+            <li>No page number found on page X. (a page has been scanned but no page number has been found on it)</li>
+            <li>Page X and X+1 have swapped. (pages were physically swapped before they got scanned)</li>
+            <li>Probable double scan has been found on page X. (2 pages were scanned as one page)</li>
+          </ul>
           <p>
             When a file is manually checked, the user can click the "Manually
             check" button and the file will be marked as checked.
@@ -246,5 +262,4 @@
     </div>
   </main>
 </body>
-
 </html>
