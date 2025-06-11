@@ -833,6 +833,8 @@ if __name__ == "__main__":
         tesseract_path = os.path.join(sys._MEIPASS, 'bin', 'tesseract', 'tesseract.exe')
         pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
+    print(f"Tesseract path: {pytesseract.pytesseract.tesseract_cmd}")
+
     gui = GUI()
     homepage = find_file("homepage.html", cur_dir.parent)
 
