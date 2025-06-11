@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         !confirm(
-          "Are you sure you want to remove this project?\n\nThis will remove all the logs and compressed pdf's of scans you've performed (it won't remove any other files).\n\n This action cannot be undone."
+          "Are you sure you want to remove this project?\n\nThis will remove all the logs and compressed pdf's of scans you've performed in this project.\n\nIt won't remove any other files, but it will remove the directory itself if it is empty.\n\n This action cannot be undone."
         )
       ) {
         return;
