@@ -24,12 +24,11 @@
         </button>
         <ul id="options" class="nav-options hidden">
           <li><a href="homepage.html">Home</a></li>
-          <li><a href="docs.html">Docs</a></li>
           <li><a href="precheck.html">Precheck</a></li>
           <li><a href="projects.html">Projects</a></li>
           <li><a href="last-run.html">Last run</a></li>
           <li><a href="all-runs.html">All runs</a></li>
-          <li><a href="settings.html">Settings</a></li>
+          <li><a href="docs.html">Docs</a></li>
         </ul>
       </div>
     </nav>
@@ -38,7 +37,17 @@
   <div id="page-header"></div>
 
   <main>
-    <div id="file-details" class="details-container"></div>
+    <div class="details-wrapper">
+      <div id="file-details" class="details-container"></div>
+      <div class="setting-item">
+        <p class="log-level">Log level</p>
+        <div class="options">
+          <button class="option option-1" id="log-level-1">1</button>
+          <button class="option option-2" id="log-level-2">2</button>
+          <button class="option option-3" id="log-level-3">3</button>
+        </div>
+      </div>
+    </div>
     <div id="pdf-container">
       <div id="pdf-loading"></div>
       <div id="page-control">

@@ -27,7 +27,6 @@
           <li><a href="projects.html">Projects</a></li>
           <li><a href="last-run.html">Last run</a></li>
           <li><a href="all-runs.html">All runs</a></li>
-          <li><a href="settings.html">Settings</a></li>
         </ul>
       </div>
     </nav>
@@ -39,12 +38,12 @@
           <li><a href="#intro">About this tool</a></li>
           <li><a href="#homepage">Homepage</a></li>
           <li><a href="#navigation">Navigation</a></li>
+          <li><a href="#projects">Projects page</a></li>
           <li><a href="#precheck">Precheck page</a></li>
           <li><a href="#progress">Process page</a></li>
           <li><a href="#last-run">Last Run page</a></li>
           <li><a href="#all-runs">All Runs page</a></li>
           <li><a href="#details">Details page</a></li>
-          <li><a href="#settings">Settings</a></li>
         </ul>
       </div>
       <div class="content-container">
@@ -68,24 +67,49 @@
           <ol>
             <li>Quick navigation menu</li>
             <li>Precheck pdf - the actual tool</li>
-            <li>Project analysis</li>
+            <li>Documentation page (you are here)</li>
           </ol>
-          <img width="700" src="/gui/assets/img/image_homepage.png" alt="image homepage" />
+          <img width="700" src="assets/img/image_homepage.png" alt="Homepage" />
         </section>
         <hr />
-        <section id="navigation">
-          <h1>Navigation</h1>
+        <section id="navigation" class="horizontal-split">
+          <div>
+            <h1>Navigation</h1>
+            <p>
+              Through the navigation the user can navigate to the following
+              pages:
+            </p>
+            <ul>
+              <li><b>Precheck</b> - the actual precheck tool</li>
+              <li><b>Projects</b> - manage projects</li>
+              <li><b>Last Run</b> - the last run of checked documents</li>
+              <li><b>All Runs</b> - all runs of checked documents</li>
+              <li><b>Docs</b> - link to the documentation</li>
+            </ul>
+          </div>
+          <img width="200" src="assets/img/navigation_menu.png" alt="Navigation menu" />
+        </section>
+        <hr />
+        <section id="projects">
+          <h1>Projects</h1>
           <p>
-            Through the navigation the user can navigate to the following
-            pages:
+            On the projects page, a user can customise and manage their projects:
           </p>
           <ul>
-            <li><b>Precheck</b> - the actual precheck tool</li>
-            <li><b>Last Run</b> - the last run of checked documents</li>
-            <li><b>All Runs</b> - all runs of checked documents</li>
             <li>
-              <b>Settings</b> - customise and manage personal preferences
+              Gives an overview of all created projects.
             </li>
+            <li>
+              A new project can be created by clicking on the plus button and entering a name and export path.</br>
+              An example can be seen below.</br></br>
+            </li>
+            <img width="700" src="assets/img/projects.gif" alt="image precheck page" />
+            <li>
+              When a project is clicked, the user is navigated to a specific page
+              for this project. Here, an overview is shown of all pdf's that have been scanned
+              for this specific project. The project can also be edited and deleted on this page.</br></br>
+            </li>
+            <img width="700" src="assets/img/project_page.gif" alt="image precheck page" />
           </ul>
         </section>
         <hr />
@@ -96,7 +120,7 @@
             <li>
               <b>Select project</b> - Select which project you want to add the
               scanned files to. <br />
-              A project can be created in the <a href="#settings">settings</a>
+              A project can be created in the <a href="#projects">projects page</a>
             </li>
             <li>
               <b>File selector</b> - Select the files you want to check for
@@ -113,7 +137,7 @@
               "Check".
             </li>
           </ol>
-          <img width="700" src="/gui/assets/img/image_precheck.png" alt="image precheck page" />
+          <img width="700" src="assets/img/precheck.gif" alt="image precheck page" />
         </section>
         <hr />
         <section id="progress">
@@ -122,7 +146,7 @@
             The progress page shows the progress of the tool checking the
             selected files.
           </p>
-          <img width="700" src="/gui/assets/img/image_progress.png" alt="image progress" />
+          <img width="700" src="assets/img/image_progress.png" alt="Progress" />
           <p>Each item of the list shows it's status:</p>
           <ul class="progress-icon-list">
             <li class="queue">
@@ -136,17 +160,29 @@
               - There was an error for checking the file. The file could not
               be checked and is skipped.
             </li>
+            <p>
+              When an error occurs, the user can retry the check on this file.</br>
+              When an error keeps occurring on a file, it might mean that the application cannot process that file.
+            </p>
           </ul>
+          <p>
+            Next to the file name, there is a blue box displayed with step the program is currently on for that file. 
+            When it is processing the file, it also shows a completion percentage. The next and last step for a file is to compress it. <br/>
+            An example of how it looks during this step is displayed in the image below.
+          </p>
+          <img width="400" src="assets/img/image_progress_compressing.png" alt="Progress compressing" />
           <p>
             After all the files have been processed, the user can navigate to
             the overview to see al the files that have been checked.
           </p>
-          <img src="/gui/assets/img/image_progress_finish.png" alt="" />
+          <img width="700" src="assets/img/image_progress_finish.png" alt="Progress finished" />
         </section>
         <hr />
         <section id="last-run">
           <h1>Last Run page</h1>
-          <p></p>
+          <p>The last run page shows you an overview of all files that are checked in the last run of this session.</p>
+          <p>If no run has been done yet in this session, a message will be shown like below.</p>
+          <img width="700" src="assets/img/lastrun.png" alt="Last run" />
         </section>
         <hr />
         <section id="all-runs">
@@ -160,16 +196,22 @@
             <li><b>Name</b> - name of the file</li>
             <li><b>Errors</b> - the amount of errors found</li>
             <li>
-              <b>Status</b> - gives the status if a file has been manually
+              <b>Checked</b> - gives the status if a file has been manually
               checked or not
             </li>
             <li><b>Date</b> - date of check execution</li>
             <li><b>Project</b> - to which project a file belongs to</li>
           </ul>
+          <p>You can filter by Name or Project by typing something in the text field below the title.</p>
+          <p>All tables can be ordered by Name by clicking on the "Name" header in the table.</p>
+          <img width="700" src="assets/img/allruns.png" alt="All runs" />
         </section>
         <hr />
         <section id="details">
           <h1>Details page</h1>
+          <p>
+            You can access the details page by clicking on one of the files in the tables on the last/all runs pages or the specific project pages.
+          </p>
           <p>
             The details page summarises information of the file and a
             compressed version of the file for quick lookup for manual checks.
@@ -181,49 +223,43 @@
           </p>
           <p>There are 3 kinds of logs:</p>
           <ul>
-            <li><b>Warning</b> - returns a found error in the file.</li>
             <li>
-              <b>Info</b> - gives back more context about a specific step in
-              the process.
+              <b>Warning</b> - returns a found error in the file.
+            </li>
+            <li>
+              <b>Info</b> - returns when a new sequence of page numbers has been found.
             </li>
             <li>
               <b>Success</b> - returns every successful found page number.
             </li>
           </ul>
+          <p>The log level will change the amount of logs that are visible in the log box.</p>
+          <ul>
+            <li><strong>Level 1:</strong> only shows warnings</li>
+            <li><strong>Level 2:</strong> shows warnings and info logs</li>
+            <li><strong>Level 3:</strong> shows all logs</li>
+          </ul>
+          <p>The level can be changed in the bottom left by pressing the wanted log level.</p>
+          <img width="300" src="assets/img/log_level.gif" alt="Log level" />
+          <p>
+            When the document is fully loaded you can press one of the messages in the log box to go to this page.
+          </p>
+          <img width="700" src="assets/img/press_log.gif" alt="Press log" />
+          <h4>Possible warnings</h3>
+          <ul>
+            <li>Page number Y was skipped on page X. (page was skipped during the physical scan)</li>
+            <li>No page number found on page X. (a page has been scanned but no page number has been found on it)</li>
+            <li>Page X and X+1 have swapped. (pages were physically swapped before they got scanned)</li>
+            <li>Probable double scan has been found on page X. (2 pages were scanned as one page)</li>
+          </ul>
           <p>
             When a file is manually checked, the user can click the "Manually
             check" button and the file will be marked as checked.
           </p>
-        </section>
-        <hr />
-        <section id="settings">
-          <h1>Settings</h1>
-          <p>
-            On the settings page, a user can customise and manage personal
-            preferences like:
-          </p>
-          <ul>
-            <li>
-              Projects - gives an overview of all created projects. A new
-              project can be added by giving a name and export path and
-              pressing the plus button. A project can also be deleted by the
-              red cross button next to each project.
-            </li>
-            <li>
-              Log level - Log level determines which log messages are shown in
-              the log box on the details page. The log levels :
-              <ol style="margin-top: 10px">
-                <li>- Show only warning logs</li>
-                <li>- Show warning and info logs</li>
-                <li>- Show all kinds of logs</li>
-              </ol>
-            </li>
-          </ul>
-          <p>After making changes, click save.</p>
+          <img width="700" src="assets/img/manual_check.gif" alt="Log level" />
         </section>
       </div>
     </div>
   </main>
 </body>
-
 </html>

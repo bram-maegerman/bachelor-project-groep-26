@@ -4,6 +4,7 @@ from multiprocessing import Pool, Manager, cpu_count
 from datetime import date
 
 # Extracted python logic
+from roman_numeral import RomanNumeral
 from util import find_sequence, custom_print, process_page, log_messages
 
 if len(sys.argv) < 3:
@@ -101,6 +102,11 @@ def main():
                                 custom_print(pdf_page=key, statement_type="WARNING", statement=f"No page number found on page {key - 1}. Missing page number is {last_missing}.")
 
                         last_found_number = expected_number
+
+                        if isinstance(last_found_number, RomanNumeral):
+                            last_found_number = RomanNumeral(expected_number)
+                        else:
+                            last_found_number = expected_number
                         custom_print(pdf_page=key, statement_type="SUCCESS", statement=f"Found expected page number {last_found_number} on page {key}.")
 
                     #   Expected number is not in parsed numbers

@@ -13,42 +13,42 @@ main {
   font-size: 1rem;
 }
 
-.details-container h2 {
+.details-wrapper h2 {
   color: #2596be;
   margin-bottom: 0.5em;
   text-align: center;
   cursor: pointer;
 }
 
-.details-container h3 {
+.details-wrapper h3 {
   color: #2596be;
   margin-bottom: 0.5em;
 }
 
-.details-container h2:hover {
+.details-wrapper h2:hover {
   color: #00407a;
   text-decoration: underline;
 }
 
-.details-container ul {
+.details-wrapper ul {
   list-style: none;
   padding: 0;
 }
 
-.details-container li {
+.details-wrapper li {
   padding: 8px;
   border-bottom: 1px solid #ddd;
 }
 
-.details-container li:last-child {
+.details-wrapper li:last-child {
   border-bottom: none;
 }
 
-.details-container {
+.details-wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 1em 0 0 3em;
+  padding: 0 0 0 3em;
   width: 50%;
 }
 
@@ -113,7 +113,7 @@ main {
 }
 
 .log-box {
-  max-height: 400px;
+  max-height: 350px;
   max-width: 700px;
   min-width: 550px;
   overflow-y: auto;
@@ -159,13 +159,6 @@ main {
   transition: background-color 0.2s ease;
 }
 
-@media (max-width: 1200px) {
-  main {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
 .setting-item select {
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -200,3 +193,94 @@ main {
   accent-color: #00407a;
   border: 2px solid white;
 }
+
+.stats-box {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat span {
+  display: block;
+  margin-top: 5px;
+}
+
+.setting-item {
+  color: #00407a;
+  margin-bottom: 1.5rem;
+  width: 562px;
+  position: absolute;
+  bottom: 0;
+}
+
+.options {
+  /* background-color: #00407a; */
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.option {
+  display: block;
+  text-align: center;
+  width: 100%;
+  background-color: white;
+  color: #00407a;
+  padding: 1em;
+  box-sizing: border-box;
+  border: none;
+  border: 2px solid #333;
+}
+
+.option.selected.red {
+  background-color: #f87171;
+  color: white;
+}
+
+.option.selected.orange {
+  background-color: #facc15;
+  color: white;
+}
+
+.option.selected.green {
+  background-color: #4ade80;
+  color: white;
+}
+
+.option-1 {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+
+.option-2 {
+  border-left: none;
+  border-right: none;
+}
+
+.option-3 {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.log-level {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 1200px) {
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+
+.setting-item {
+  display: flex;
+}
+}
+

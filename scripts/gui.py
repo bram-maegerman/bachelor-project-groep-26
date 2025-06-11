@@ -63,10 +63,6 @@ class API:
         else:
             return ""
 
-    def set_log_level(self, log_level: int):
-        self.log_level = log_level
-        self._save_config()
-
     def add_project(self, name: str, path: str):
         if not name or not path:
             print("Project name and path cannot be empty.")

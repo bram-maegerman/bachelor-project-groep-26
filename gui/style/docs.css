@@ -24,6 +24,10 @@ header {
   }
 }
 
+p {
+  max-width: 80%;
+}
+
 .content-wrapper {
   display: flex;
   flex-direction: row;
@@ -43,6 +47,7 @@ header {
 }
 
 .content-table ul {
+  width: 150px;
   list-style: none;
   padding-left: 0;
 }
@@ -65,13 +70,21 @@ header {
 }
 
 .content-container {
-  margin-top: 100px;
+  margin-top: 70px;
   margin-left: 300px;
+  margin-bottom: 40%;
   width: 100%;
 }
 
 .progress-icon-list li {
   margin: 5px 0;
+}
+
+.horizontal-split {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 5rem;
 }
 
 .queue,
@@ -98,17 +111,17 @@ header {
 }
 
 .queue::before {
-  background-image: url("/gui/assets/img/image_file_queue.png");
+  background-image: url("../assets/img/image_file_queue.png");
 }
 
 .processing::before {
-  background-image: url("/gui/assets/img/image_file_processing.png");
+  background-image: url("../assets/img/image_file_processing.png");
 }
 
 .checked::before {
-  background-image: url("/gui/assets/img/image_file_checked.png");
+  background-image: url("../assets/img/image_file_checked.png");
 }
 
 .error::before {
-  background-image: url("/gui/assets/img/image_file_error.png");
+  background-image: url("../assets/img/image_file_error.png");
 }
