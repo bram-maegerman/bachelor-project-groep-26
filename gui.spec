@@ -9,7 +9,7 @@ a = Analysis(
         ('gui/*', 'gui'),
         ('bin/tesseract/tesseract.zip', 'bin/tesseract'),
     ],
-    hiddenimports=['multiprocessing', 'pytesseract', 'webview', 'tesseract-ocr'],
+    hiddenimports=['multiprocessing', 'pytesseract', 'webview', 'tesseract-ocr', 'pythonnet'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
