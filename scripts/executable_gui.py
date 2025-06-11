@@ -830,7 +830,7 @@ if __name__ == "__main__":
             # Remove the zip file after extraction
             os.remove(tesseract_zip_path)
 
-        tesseract_path = os.path.join(sys._MEIPASS, 'bin', 'tesseract', 'tesseract.exe')
+        tesseract_path = os.path.join(sys._MEIPASS, 'bin', 'tesseract', 'tesseract', 'tesseract.exe')
         pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
     print(f"Tesseract path: {pytesseract.pytesseract.tesseract_cmd}")
