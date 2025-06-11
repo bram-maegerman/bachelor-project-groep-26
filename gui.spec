@@ -7,9 +7,9 @@ a = Analysis(
     binaries=[],
     datas=[
         ('gui/*', 'gui'),
-        ('bin/tesseract/*', 'bin/tesseract'),
+        ('bin/tesseract/tesseract.zip', 'bin/tesseract'),
     ],
-    hiddenimports=['multiprocessing', 'pytesseract', 'webview'],
+    hiddenimports=['multiprocessing', 'pytesseract', 'webview', 'tesseract-ocr'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
