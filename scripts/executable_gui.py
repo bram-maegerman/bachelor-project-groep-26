@@ -269,19 +269,19 @@ class GUI:
 
     def add_project(self, name: str, path: str):
         if not name or not path:
-            print("Project name and path cannot be empty.")
+            # print("Project name and path cannot be empty.")
             return
         if not os.path.exists(path):
-            print(f"Path '{path}' does not exist.")
+            # print(f"Path '{path}' does not exist.")
             return
         if name in self.projects:
-            print(f"Project '{name}' already exists.")
+            # print(f"Project '{name}' already exists.")
             return
         if not os.path.isabs(path):
-            print(f"Path '{path}' must be an absolute path.")
+            # print(f"Path '{path}' must be an absolute path.")
             return
         if not os.path.isdir(path):
-            print(f"Path '{path}' is not a directory.")
+            # print(f"Path '{path}' is not a directory.")
             return
         paths = self.projects
         paths[name] = path
@@ -333,19 +333,19 @@ class GUI:
 
     def edit_project(self, name: str, new_name: str, new_path: str):
         if not name or not new_name or not new_path:
-            print("Project name, new name, and new path cannot be empty.")
+            # print("Project name, new name, and new path cannot be empty.")
             return
         if not os.path.exists(new_path):
-            print(f"Path '{new_path}' does not exist.")
+            # print(f"Path '{new_path}' does not exist.")
             return
         if name not in self.projects:
-            print(f"Project '{name}' does not exist.")
+            # print(f"Project '{name}' does not exist.")
             return
         if not os.path.isabs(new_path):
-            print(f"Path '{new_path}' must be an absolute path.")
+            # print(f"Path '{new_path}' must be an absolute path.")
             return
         if not os.path.isdir(new_path):
-            print(f"Path '{new_path}' is not a directory.")
+            # print(f"Path '{new_path}' is not a directory.")
             return
 
         paths = self.projects
@@ -355,7 +355,7 @@ class GUI:
 
     def get_export_path(self, project: str):
         if project not in self.projects:
-            print(f"Project '{project}' not found.")
+            # print(f"Project '{project}' not found.")
             return None
         return self.projects[project]
 
@@ -372,12 +372,12 @@ class GUI:
     def get_files_for_project(self, project: str):
         projects = self.projects
         if project not in projects:
-            print(f"Project '{project}' not found.")
+            # print(f"Project '{project}' not found.")
             return []
 
         project_path = projects[project]
         if not os.path.exists(project_path):
-            print(f"Project path '{project_path}' does not exist.")
+            # print(f"Project path '{project_path}' does not exist.")
             return []
 
         files = []
@@ -426,7 +426,7 @@ class GUI:
     def project_overview(self, project: str):
         files = self.get_files_for_project(project)
         if not files:
-            print(f"No files found for project '{project}'.")
+            # print(f"No files found for project '{project}'.")
             return
         # Convert file paths to a JSON-compatible format
         files = [str(Path(file).resolve()) for file in files]
@@ -437,23 +437,23 @@ class GUI:
 
     def set_export_path(self, path: str):
         if not path:
-            print("Export path cannot be empty.")
+            # print("Export path cannot be empty.")
             return
         if not os.path.exists(path):
-            print(f"Export path '{path}' does not exist.")
+            # print(f"Export path '{path}' does not exist.")
             return
         if not os.path.isabs(path):
-            print(f"Export path '{path}' must be an absolute path.")
+            # print(f"Export path '{path}' must be an absolute path.")
             return
         self.next_export_path = path
 
     def open_file(self, file_path: str):
         file_path = Path(file_path.replace("/", os.sep)).resolve()
         if not file_path.exists():
-            print(f"File '{file_path}' does not exist.")
+            # print(f"File '{file_path}' does not exist.")
             return
         if not file_path.is_file():
-            print(f"Path '{file_path}' is not a file.")
+            # print(f"Path '{file_path}' is not a file.")
             return
 
         # open the file with like the file explorer
@@ -466,17 +466,17 @@ class GUI:
         formatted_files = ["/".join(p.parts[-4:]) for p in file_paths]
 
         if not formatted_files:
-            print("No files to process.")
+            # print("No files to process.")
             return
 
         if not self.next_export_path:
-            print("No export path set.")
+            # print("No export path set.")
             return
 
         # Ensure the export path exists
         export_path = Path(self.next_export_path)
         if not export_path.exists():
-            print(f"Export path '{self.next_export_path}' does not exist.")
+            # print(f"Export path '{self.next_export_path}' does not exist.")
             return
 
         webview.windows[0].evaluate_js(f"loadFilesInTable({formatted_files})")
@@ -853,6 +853,11 @@ if __name__ == "__main__":
             os.remove(tesseract_zip_path)
 
         tesseract_path = os.path.join(sys._MEIPASS, 'bin', 'tesseract', 'tesseract', 'tesseract.exe')
+
+        # Add the tesseract path to the system PATH variable if not already present
+        if tesseract_path not in os.environ['PATH']:
+            os.environ['PATH'] += os.pathsep + os.path.dirname(tesseract_path)
+
         pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
     print(f"Tesseract path: {pytesseract.pytesseract.tesseract_cmd}")
